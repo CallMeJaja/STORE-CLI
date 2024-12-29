@@ -1065,6 +1065,19 @@ class Service {
         int categoryId, productId;
         string category, quantity;
 
+        users = User::loadUsers(FILE_PATH_USERS);
+
+        auto it = find_if(users.begin(), users.end(), [&](const User &user) {
+            return user.id == currentUser->id;
+        });
+
+        if (it != users.end()) {
+            currentUser = &(*it);
+        } else {
+            cout << "User not found. Please log in again.\n";
+            return;
+        }
+
     ORDER_PRODUCT:
         vector<Category> categories = Admin::loadCategory();
         vector<Product> products = Admin::loadProducts();
@@ -1080,6 +1093,7 @@ class Service {
         }
 
         while (true) {
+
             if (!JSONUtility::validateIntInput(
                     categoryId, "\nChoose your category (0 = Back): ")) {
                 return;
@@ -1158,12 +1172,14 @@ class Service {
                         return;
                     }
 
-                    if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-                        sleep(2);
-                        return;
-                    }
-
                     if (choice == 1) {
+                        if (!currentUser->isActive) {
+                            cout << "This account has been deactivated. Please "
+                                    "contact the "
+                                    "owner.\n";
+                            return;
+                        }
+
                         cout << "\nYour Balance : "
                              << JSONUtility::displayCurrency(
                                     currentUser->balance)
@@ -1254,6 +1270,9 @@ class Service {
         cout << "> Sign In to J-STORE <" << endl;
         cin.ignore(1000, '\n');
         while (true) {
+
+            users = User::loadUsers(FILE_PATH_USERS);
+
             if (!JSONUtility::validateStringInput(email, "\nEnter Email: ")) {
                 return;
             }
@@ -1277,7 +1296,19 @@ class Service {
             for (auto &user : users) {
                 if (user.email == email && user.password == password) {
                     currentUser = &user;
-                    if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+
+                    auto it = find_if(users.begin(), users.end(),
+                                      [&](const User &user) {
+                                          return user.id == currentUser->id;
+                                      });
+
+                    if (it != users.end()) {
+                        currentUser = &(*it);
+                    }
+
+                    if (!currentUser->isActive) {
+                        cout << "\nThis account has been deactivated. Plese "
+                                "contact the owner\n";
                         sleep(2);
                         return;
                     }
