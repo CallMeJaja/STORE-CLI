@@ -338,7 +338,7 @@ class Admin {
         displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -390,7 +390,7 @@ class Admin {
         products.emplace_back(id, name, price, description, category, stock, 0);
         Product::saveProducts(products, filePath);
         cout << "\nProduct added successfully." << endl;
-        // sleep(2);
+        sleep(2);
     }
 
     static void editProduct(const string &filePath) {
@@ -405,7 +405,7 @@ class Admin {
         displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -435,7 +435,7 @@ class Admin {
 
         displayProducts(FILE_PATH_PRODUCTS);
         if (products.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -480,7 +480,7 @@ class Admin {
 
                     Product::saveProducts(products, filePath);
                     cout << "\nProduct update successfully." << endl;
-                    // sleep(2);
+                    sleep(2);
                     return;
                 } else {
                     cout << "Product ID not found." << endl;
@@ -500,7 +500,7 @@ class Admin {
         displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -530,7 +530,7 @@ class Admin {
         displayProducts(FILE_PATH_PRODUCTS);
 
         if (products.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -551,7 +551,7 @@ class Admin {
 
             if (it == products.end()) {
                 cout << "Product ID not found." << endl;
-                // sleep(2);
+                sleep(2);
                 continue;
             }
 
@@ -563,7 +563,7 @@ class Admin {
 
             Product::saveProducts(products, filePath);
             cout << "\nProduct deleted successfully." << endl;
-            // sleep(2);
+            sleep(2);
             return;
         }
     }
@@ -591,7 +591,7 @@ class Admin {
         categories.emplace_back(id, name);
         Category::saveCategories(categories, filePath);
         cout << "\nCategory added successfully." << endl;
-        // sleep(2);
+        sleep(2);
         return;
     }
 
@@ -605,7 +605,7 @@ class Admin {
         displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -637,7 +637,7 @@ class Admin {
                         category.name = name;
                         Category::saveCategories(categories, filePath);
                         cout << "\nCategory edited successfully." << endl;
-                        // sleep(2);
+                        sleep(2);
                         return;
                     }
                 }
@@ -655,7 +655,7 @@ class Admin {
         displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
@@ -676,7 +676,7 @@ class Admin {
 
             if (it == categories.end()) {
                 cout << "-> Invalid Category ID." << endl;
-                // sleep(2);
+                sleep(2);
                 continue;
             } else {
                 categories.erase(it);
@@ -687,7 +687,7 @@ class Admin {
 
                 Category::saveCategories(categories, filePath);
                 cout << "\nCategory deleted successfully." << endl;
-                // sleep(2);
+                sleep(2);
                 return;
             }
         }
@@ -734,6 +734,13 @@ class Service {
         currentUser = nullptr;
     }
 
+    void reloadData() {
+        users = Admin::loadUsers();
+        products = Admin::loadProducts();
+        categories = Admin::loadCategory();
+        transactions = Admin::loadTransaction();
+    }
+
     void addTransaction(const Transaction &transaction) {
         transactions.push_back(transaction);
         for (auto &user : users) {
@@ -774,6 +781,10 @@ class Service {
             return user.id == currentUser->id;
         });
 
+        if (it != users.end()) {
+            currentUser = &(*it);
+        }
+
         if (!currentUser->isActive) {
             cout << "\nThis account has been deactivated for some reason. "
                     "Please "
@@ -801,7 +812,7 @@ class Service {
                 cin.clear();
                 cin.ignore(1000, '\n');
                 cout << "-> Invalid option. Please try again.\n" << endl;
-                // sleep(2);
+                sleep(2);
             } else {
                 switch (choice) {
                     {
@@ -837,6 +848,7 @@ class Service {
         int choice = 0;
 
         while (true) {
+            reloadData();
             system("cls");
 
             if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
@@ -889,7 +901,7 @@ class Service {
                 cin.clear();
                 cin.ignore(1000, '\n');
                 cout << "-> Invalid option. Please try again.\n" << endl;
-                // sleep(2);
+                sleep(2);
             } else {
                 if (isAdmin) {
                     switch (choice) { // Admin
@@ -906,7 +918,7 @@ class Service {
                         currentUser = nullptr;
                         cout << "\nLogout successful. Wait for a moment..."
                              << endl;
-                        // sleep(2);
+                        sleep(2);
                         return;
                     default:
                         cout << "-> Invalid option. Please try again." << endl;
@@ -927,7 +939,7 @@ class Service {
                         currentUser = nullptr;
                         cout << "\nLogout successful. Wait for a moment..."
                              << endl;
-                        // sleep(2);
+                        sleep(2);
                         return;
                     default:
                         cout << "-> Invalid option. Please try again." << endl;
@@ -956,7 +968,7 @@ class Service {
                 cin.clear();
                 cin.ignore(1000, '\n');
                 cout << "-> Invalid option. Please try again.\n" << endl;
-                // sleep(2);
+                sleep(2);
             } else {
                 switch (choice) {
                 case 1:
@@ -992,7 +1004,7 @@ class Service {
                 cin.clear();
                 cin.ignore(1000, '\n');
                 cout << "-> Invalid option. Please try again.\n" << endl;
-                // sleep(2);
+                sleep(2);
             } else {
                 switch (choice) {
                 case 1:
@@ -1012,7 +1024,15 @@ class Service {
     }
 
     void topUpBalance() {
+        reloadData();
+
         system("cls");
+
+        if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+            sleep(2);
+            return;
+        }
+
         cout << "> Top Up Balance <" << endl;
         int amount, choice;
 
@@ -1055,7 +1075,7 @@ class Service {
 
             cout << "\nTop Up successful. Your new balance is: "
                  << JSONUtility::displayCurrency(currentUser->balance);
-            // sleep(2);
+            sleep(2);
             break;
         }
     }
@@ -1064,19 +1084,7 @@ class Service {
         int choice = 0;
         int categoryId, productId;
         string category, quantity;
-
-        users = User::loadUsers(FILE_PATH_USERS);
-
-        auto it = find_if(users.begin(), users.end(), [&](const User &user) {
-            return user.id == currentUser->id;
-        });
-
-        if (it != users.end()) {
-            currentUser = &(*it);
-        } else {
-            cout << "User not found. Please log in again.\n";
-            return;
-        }
+        reloadData();
 
     ORDER_PRODUCT:
         vector<Category> categories = Admin::loadCategory();
@@ -1088,12 +1096,11 @@ class Service {
         Admin::displayCategories(FILE_PATH_CATEGORIES);
 
         if (categories.empty()) {
-            // sleep(2);
+            sleep(2);
             return;
         }
 
         while (true) {
-
             if (!JSONUtility::validateIntInput(
                     categoryId, "\nChoose your category (0 = Back): ")) {
                 return;
@@ -1173,19 +1180,18 @@ class Service {
                     }
 
                     if (choice == 1) {
-                        if (!currentUser->isActive) {
-                            cout << "This account has been deactivated. Please "
-                                    "contact the "
-                                    "owner.\n";
-                            return;
-                        }
+                        // if (!checkUserStatus(currentUser, users,
+                        //                      FILE_PATH_USERS)) {
+                        //     sleep(2);
+                        //     return;
+                        // }
 
                         cout << "\nYour Balance : "
                              << JSONUtility::displayCurrency(
                                     currentUser->balance)
                              << endl;
                         cout << "\nProcessing your order..." << endl;
-                        // sleep(2);
+                        sleep(2);
 
                         int totalPayment = productIt->price * stoi(quantity);
 
@@ -1220,7 +1226,7 @@ class Service {
                                  << endl;
                             cout << "\nThank you for order!\n" << endl;
                             cout << "Returning to main menu..." << endl;
-                            // sleep(2);
+                            sleep(2);
                             return;
                         } else {
                             cout << "\nInsufficient balance!." << endl;
@@ -1233,12 +1239,12 @@ class Service {
 
                             if (choice == 1) {
                                 cout << "Redirecting to topup menu..." << endl;
-                                // sleep(2);
+                                sleep(2);
                                 topUpBalance();
                                 return;
                             } else if (choice == 0) {
                                 cout << "Redirecting to main menu..." << endl;
-                                // sleep(2);
+                                sleep(2);
                                 return;
                             } else {
                                 cout << "Invalid input. Please try again."
@@ -1248,7 +1254,7 @@ class Service {
                         }
                     } else if (choice == 0) {
                         cout << "Order cancelled. Returning to main menu....\n";
-                        // sleep(2);
+                        sleep(2);
                         return;
                     } else {
                         cout << ">Invalid input. Please try again." << endl;
@@ -1266,12 +1272,10 @@ class Service {
 
     void signIn() {
         system("cls");
-        string email, password;
+        string email, password, pin;
         cout << "> Sign In to J-STORE <" << endl;
         cin.ignore(1000, '\n');
         while (true) {
-
-            users = User::loadUsers(FILE_PATH_USERS);
 
             if (!JSONUtility::validateStringInput(email, "\nEnter Email: ")) {
                 return;
@@ -1287,7 +1291,7 @@ class Service {
                     currentUser = &admin;
                     cout << "\nSign In successful. Wait for a moment..."
                          << endl;
-                    // sleep(2);
+                    sleep(2);
                     displayAdminMenu();
                     return;
                 }
@@ -1297,31 +1301,37 @@ class Service {
                 if (user.email == email && user.password == password) {
                     currentUser = &user;
 
-                    auto it = find_if(users.begin(), users.end(),
-                                      [&](const User &user) {
-                                          return user.id == currentUser->id;
-                                      });
-
-                    if (it != users.end()) {
-                        currentUser = &(*it);
-                    }
-
-                    if (!currentUser->isActive) {
-                        cout << "\nThis account has been deactivated. Plese "
-                                "contact the owner\n";
+                    if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
                         sleep(2);
                         return;
                     }
 
+                    do {
+                        system("cls");
+
+                        while (!JSONUtility::validateStringInput(
+                            pin, "\nEnter Your Pin Security : ")) {
+                            return;
+                        }
+
+                        if (pin != currentUser->pin) {
+                            cout
+                                << "Incorrect PIN entered. Please try again.\n";
+                            sleep(2);
+                            continue;
+                        }
+
+                    } while (pin != currentUser->pin);
+
                     cout << "\nSign In successful. Wait for a moment..."
                          << endl;
-                    // sleep(2);
+                    sleep(2);
                     displayUserMenu();
                     return;
                 }
             }
             cout << "\nInvalid email or password. Please try again." << endl;
-            // sleep(2);
+            sleep(2);
         }
     }
 
@@ -1356,7 +1366,7 @@ class Service {
                 if (password != confirmPassword) {
                     cout << "\nPassword do not match. Please try again."
                          << endl;
-                    // sleep(2);
+                    sleep(2);
                     continue;
                 } else {
                     break;
@@ -1374,7 +1384,7 @@ class Service {
             currentUser = &users.back();
             updateAndSaveUser();
             cout << "\nSign Up successful. You can now sign in." << endl;
-            // sleep(2);
+            sleep(2);
             displayUserMenu();
             return;
         }
