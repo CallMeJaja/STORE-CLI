@@ -111,6 +111,8 @@ class User {
             users.emplace_back(item["id"], item["balance"], item["fullName"],
                                item["email"], item["password"], item["pin"],
                                item["totalTransactions"], item["isActive"]);
+            // cout << "Loaded user: " << item["email"]
+            //      << ", isActive : " << item["isActive"] << endl;
         }
         return users;
     }
@@ -283,6 +285,7 @@ class Admin {
 
     static void displayAllUser(const string &filePath) {
         vector<User> users = loadUsers();
+        string status;
         cout << "\nLIST OF USERS" << endl;
 
         if (users.empty()) {
@@ -291,13 +294,15 @@ class Admin {
         }
 
         for (auto &user : users) {
-            cout << user.id << ". " << user.fullName << endl;
+            if (user.isActive) {
+                status = "Active";
+            } else {
+                status = "Deactive";
+            }
+
+            cout << user.id << ". " << user.fullName << " (" << status << ")"
+                 << endl;
         }
-
-        // auto userIt = find_if(users.begin(), users.end(),
-        //                       [&](const User &user) { return user; });
-
-        // cout << userIt->id << ". " << userIt->fullName;
     }
 
     static void displayCategories(const string &filePath) {
@@ -762,6 +767,26 @@ class Service {
         products = Admin::loadProducts();
         categories = Admin::loadCategory();
         transactions = Admin::loadTransaction();
+
+        if (currentUser != nullptr) {
+            cout << "Before reloadData, currentUser: " << currentUser->email
+                 << ", isActive: " << currentUser->isActive << endl;
+            auto it =
+                find_if(users.begin(), users.end(), [this](const User &user) {
+                    return user.id == currentUser->id;
+                });
+
+            if (it != users.end()) {
+                currentUser = &(*it);
+                cout << "Updated currentUser inside reloadData : "
+                     << currentUser->email
+                     << ", isActive : " << currentUser->isActive << endl;
+            } else {
+                cout << "Current user not found in reloaded data." << endl;
+            }
+        } else {
+            cout << "currentuser is nullptr, cannot update." << endl;
+        }
     }
 
     void addTransaction(const Transaction &transaction) {
@@ -800,12 +825,22 @@ class Service {
             return false;
         }
 
+        // cout << "before checking user status, currentUser: "
+        //      << currentUser->email << ", isActive: " << currentUser->isActive
+        //      << endl;
+
         auto it = find_if(users.begin(), users.end(), [&](const User &user) {
             return user.id == currentUser->id;
         });
 
         if (it != users.end()) {
             currentUser = &(*it);
+            // cout << "Updated currentuser inside checkuserStatus: "
+            //      << currentUser->email
+            //      << ", isActive: " << currentUser->isActive << endl;
+        } else {
+            cout << "Current user not found in loaded users." << endl;
+            return false;
         }
 
         if (!currentUser->isActive) {
@@ -869,15 +904,12 @@ class Service {
 
     void displayMenu(bool isAdmin) {
         int choice = 0;
-
         while (true) {
-            reloadData();
+            // cout << "Before reloadData : " << currentUser->isActive << endl;
+            // reloadData();
+            // cout << "After reloadData : " << currentUser->isActive << endl;
+            // system("pause");
             system("cls");
-
-            if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-                sleep(2);
-                return;
-            }
 
             if (isAdmin) {
                 cout << "> Admin Panel - J-STORE <" << endl;
@@ -887,6 +919,11 @@ class Service {
                 cout << "4. Display Stats" << endl;
                 cout << "5. Sign Out" << endl;
             } else {
+                if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+                    sleep(2);
+                    // system("pause");
+                    return;
+                }
                 cout << "Hello, " << currentUser->fullName << "!" << endl;
                 cout << "Welcome to J-STORE" << endl;
                 cout << "\n> Total Users Active : " << users.size() << endl;
@@ -900,10 +937,9 @@ class Service {
                 cout << "3. Edit Profile" << endl;
                 cout << "4. Sign Out" << endl;
             }
-
             cout << "Choose an option: ", cin >> choice;
 
-            if (cin.fail() || choice < 1 || choice > 4) {
+            if (cin.fail() || choice < 1 || choice > 5) {
                 cin.clear();
                 cin.ignore(1000, '\n');
                 cout << "-> Invalid option. Please try again.\n" << endl;
@@ -959,16 +995,102 @@ class Service {
         }
     }
 
+    void displayActivationUser() {
+        reloadData();
+        int choice = 0;
+        bool userFound = false;
+        system("cls");
+        cout << "> Activation User <" << endl;
+
+        for (auto &user : users) {
+            if (!user.isActive) {
+                cout << user.id << ". " << user.fullName << endl;
+                userFound = true;
+            }
+        }
+
+        if (!userFound) {
+            cout << "No user deactivated.\n";
+            sleep(2);
+            return;
+        }
+
+        while (true) {
+            while (
+                !JSONUtility::validateIntInput(choice, "\nChoose User ID : ")) {
+                return;
+            }
+
+            auto userIt =
+                find_if(users.begin(), users.end(),
+                        [&](const User &user) { return choice == user.id; });
+
+            if (userIt != users.end()) {
+                userIt->isActive = true;
+                User::saveUsers(users, FILE_PATH_USERS);
+                cout << "Success activation user.\n";
+                // reloadData();
+                sleep(2);
+                return;
+            } else {
+                cout << "User ID not found. Please try again.\n";
+                sleep(1);
+                continue;
+            }
+        }
+    }
+
+    void displayDeactivationUser() {
+        reloadData();
+        int choice = 0;
+        bool userFound = false;
+        system("cls");
+        cout << "> Deactivation User <" << endl;
+
+        for (auto &user : users) {
+            if (user.isActive) {
+                cout << user.id << ". " << user.fullName << endl;
+            } else {
+                cout << "No user active.\n";
+                sleep(2);
+                return;
+            }
+        }
+
+        while (true) {
+            while (
+                !JSONUtility::validateIntInput(choice, "\nChoose User ID : ")) {
+                return;
+            }
+
+            auto userIt =
+                find_if(users.begin(), users.end(),
+                        [&](const User &user) { return choice == user.id; });
+
+            if (userIt != users.end()) {
+                userIt->isActive = false;
+                User::saveUsers(users, FILE_PATH_USERS);
+                cout << "Success deactivation user.\n";
+                sleep(2);
+                return;
+            } else {
+                cout << "User id not found. Please try again.\n";
+                sleep(1);
+                continue;
+            }
+        }
+    }
+
     void manageUser() {
         int choice = 0;
         while (true) {
             system("cls");
-            cout << "> Manage User <" << endl;
+            cout << "> Manage User <\n" << endl;
             Admin::displayAllUser(FILE_PATH_USERS);
             cout << "==================" << endl;
-            cout << "1. Activation User" << endl;
-            cout << "2. Deactivation User" << endl;
-            cout << "3. Delete User" << endl;
+            cout << "\n1. Activation" << endl;
+            cout << "2. Deactivation" << endl;
+            cout << "3. Delete" << endl;
             cout << "4. Back" << endl;
 
             while (!JSONUtility::validateIntInput(choice,
@@ -978,6 +1100,20 @@ class Service {
 
             if (choice == 4) {
                 return;
+            }
+
+            switch (choice) {
+            case 1:
+                displayActivationUser();
+                break;
+            case 2:
+                displayDeactivationUser();
+                break;
+            case 3:
+                // TODO Delete User
+                break;
+            default:
+                break;
             }
         }
     }
@@ -1056,8 +1192,9 @@ class Service {
     }
 
     void topUpBalance() {
-        reloadData();
-
+        // cout << "Before reloadData isactive: " << currentUser->isActive <<
+        // endl; reloadData(); cout << "after reloadData isactive: " <<
+        // currentUser->isActive << endl; system("pause");
         system("cls");
 
         if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
@@ -1116,7 +1253,9 @@ class Service {
         int choice = 0;
         int categoryId, productId;
         string category, quantity;
-        reloadData();
+        // cout << "before reloadData isActive: " << currentUser->isActive <<
+        // endl; reloadData(); cout << "after reloadData isActive: " <<
+        // currentUser->isActive << endl; system("pause");
 
     ORDER_PRODUCT:
         vector<Category> categories = Admin::loadCategory();
@@ -1212,7 +1351,6 @@ class Service {
                     }
 
                     if (choice == 1) {
-
                         if (!checkUserStatus(currentUser, users,
                                              FILE_PATH_USERS)) {
                             sleep(2);
@@ -1231,7 +1369,7 @@ class Service {
                         if (currentUser->balance > totalPayment) {
 
                             currentUser->balance -= totalPayment;
-                            currentUser->totalTransactions += 1;
+                            // currentUser->totalTransactions += 1;
 
                             productIt->stock -= stoi(quantity);
                             productIt->sold += stoi(quantity);
@@ -1302,7 +1440,10 @@ class Service {
     }
 
     void editProfile() {
-        reloadData();
+        cout << "Before update reloadData inside editProfile: "
+             << currentUser->email << ", isActive: " << currentUser->isActive
+             << endl;
+        // reloadData();
         system("cls");
         string fullName, email, pin, password, confirmPassword;
         int choice;
@@ -1362,7 +1503,7 @@ class Service {
             }
 
             updateAndSaveUser();
-            reloadData();
+            // reloadData();
             cout << "Success edit profile.\n";
             sleep(2);
             return;
@@ -1391,6 +1532,7 @@ class Service {
                          << endl;
                     sleep(2);
                     displayAdminMenu();
+                    reloadData();
                     return;
                 }
             }
@@ -1398,6 +1540,11 @@ class Service {
             for (auto &user : users) {
                 if (user.email == email && user.password == password) {
                     currentUser = &user;
+
+                    // cout << "Current User Full Name: " <<
+                    // currentUser->fullName
+                    //      << endl;
+                    // cout << "Current User Pin: " << currentUser->pin << endl;
 
                     if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
                         sleep(2);
@@ -1411,6 +1558,8 @@ class Service {
                             pin, "\nEnter Your Pin Security : ")) {
                             return;
                         }
+
+                        cout << "Entered PIN : " << pin << endl;
 
                         if (pin != currentUser->pin) {
                             cout
@@ -1427,6 +1576,7 @@ class Service {
 
                     if (it != users.end()) {
                         currentUser = &(*it);
+
                     } else {
                         cout << "User not found. Please log in again.\n";
                         sleep(2);
@@ -1435,8 +1585,13 @@ class Service {
 
                     cout << "\nSign In successful. Wait for a moment..."
                          << endl;
-                    sleep(2);
-                    reloadData();
+                    // sleep(2);
+                    // cout << "Current user isActive before reloadData: "
+                    //      << currentUser->isActive << endl;
+                    // reloadData();
+                    // cout << "Current user isActive after reloadData: "
+                    //      << currentUser->isActive << endl;
+                    // system("pause");
                     displayUserMenu();
                     return;
                 }
