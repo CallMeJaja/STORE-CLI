@@ -281,6 +281,25 @@ class Admin {
 
     static vector<User> loadUsers() { return User::loadUsers(FILE_PATH_USERS); }
 
+    static void displayAllUser(const string &filePath) {
+        vector<User> users = loadUsers();
+        cout << "\nLIST OF USERS" << endl;
+
+        if (users.empty()) {
+            cout << "No user register." << endl;
+            return;
+        }
+
+        for (auto &user : users) {
+            cout << user.id << ". " << user.fullName << endl;
+        }
+
+        // auto userIt = find_if(users.begin(), users.end(),
+        //                       [&](const User &user) { return user; });
+
+        // cout << userIt->id << ". " << userIt->fullName;
+    }
+
     static void displayCategories(const string &filePath) {
         vector<Category> categories = loadCategory();
         cout << "\nLIST OF CATEGORIES" << endl;
@@ -697,9 +716,12 @@ class Admin {
         vector<Product> products = loadProducts();
         vector<Category> categories = loadCategory();
         vector<Transaction> transactions = loadTransaction();
+        vector<User> users = loadUsers();
 
         system("cls");
+
         cout << "> Admin Stats <\n" << endl;
+        cout << "Total Users : " << users.size() << endl;
         cout << "Total Categories : " << categories.size() << endl;
         cout << "Total Products : " << products.size() << endl;
         cout << "Total Transactions : " << transactions.size() << endl;
@@ -708,7 +730,8 @@ class Admin {
         for (const auto &transaction : transactions) {
             totalRevenue += transaction.totalPayment;
         }
-        cout << "Total Revenue : Rp. " << totalRevenue << endl;
+        cout << "Total Revenue : " << JSONUtility::displayCurrency(totalRevenue)
+             << endl;
         cout << "\nPress any key to return the admin menu...";
         cin.ignore();
         cin.get();
@@ -860,27 +883,10 @@ class Service {
                 cout << "> Admin Panel - J-STORE <" << endl;
                 cout << "\n1. Manage Category" << endl;
                 cout << "2. Manage Product" << endl;
-                cout << "3. Display Stats" << endl;
-                cout << "4. Sign Out" << endl;
+                cout << "3. Manage User" << endl;
+                cout << "4. Display Stats" << endl;
+                cout << "5. Sign Out" << endl;
             } else {
-                auto it =
-                    find_if(users.begin(), users.end(), [&](const User &user) {
-                        return user.id == currentUser->id;
-                    });
-
-                if (it != users.end()) {
-                    currentUser = &(*it);
-                } else {
-                    cout << "User not found. Please log in again.\n";
-                    return;
-                }
-
-                if (!currentUser->isActive) {
-                    cout << "Upss...This account has been deactivated. Please "
-                            "contact owner.\n";
-                    sleep(2);
-                    return;
-                }
                 cout << "Hello, " << currentUser->fullName << "!" << endl;
                 cout << "Welcome to J-STORE" << endl;
                 cout << "\n> Total Users Active : " << users.size() << endl;
@@ -912,9 +918,12 @@ class Service {
                         manageProduct();
                         break;
                     case 3:
-                        Admin::displayAdminStats();
+                        manageUser();
                         break;
                     case 4:
+                        Admin::displayAdminStats();
+                        break;
+                    case 5:
                         currentUser = nullptr;
                         cout << "\nLogout successful. Wait for a moment..."
                              << endl;
@@ -946,6 +955,29 @@ class Service {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    void manageUser() {
+        int choice = 0;
+        while (true) {
+            system("cls");
+            cout << "> Manage User <" << endl;
+            Admin::displayAllUser(FILE_PATH_USERS);
+            cout << "==================" << endl;
+            cout << "1. Activation User" << endl;
+            cout << "2. Deactivation User" << endl;
+            cout << "3. Delete User" << endl;
+            cout << "4. Back" << endl;
+
+            while (!JSONUtility::validateIntInput(choice,
+                                                  "\nChoose an option: ")) {
+                return;
+            }
+
+            if (choice == 4) {
+                return;
             }
         }
     }
@@ -1180,11 +1212,12 @@ class Service {
                     }
 
                     if (choice == 1) {
-                        // if (!checkUserStatus(currentUser, users,
-                        //                      FILE_PATH_USERS)) {
-                        //     sleep(2);
-                        //     return;
-                        // }
+
+                        if (!checkUserStatus(currentUser, users,
+                                             FILE_PATH_USERS)) {
+                            sleep(2);
+                            return;
+                        }
 
                         cout << "\nYour Balance : "
                              << JSONUtility::displayCurrency(
@@ -1268,7 +1301,73 @@ class Service {
         }
     }
 
-    void editProfile() {} // TODO Update Profile
+    void editProfile() {
+        reloadData();
+        system("cls");
+        string fullName, email, pin, password, confirmPassword;
+        int choice;
+
+        if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+            sleep(2);
+            return;
+        }
+
+        cout << "> Edit Profile <\n";
+        cout << "\n> Current Profile" << endl;
+        cout << "Full Name \t: " << currentUser->fullName << endl;
+        cout << "Email \t\t: " << currentUser->email << endl;
+        cout << "PIN \t\t: " << currentUser->pin << endl;
+        cout << "\nWhich detail would you like to edit? :\n";
+        cout << "1. Full Name" << endl;
+        cout << "2. Email" << endl;
+        cout << "3. PIN" << endl;
+        cout << "4. Change Password" << endl;
+        cout << "5. Back" << endl;
+        while (true) {
+            while (
+                !JSONUtility::validateIntInput(choice, "Enter your choice: ")) {
+                return;
+            }
+
+            if (choice == 5) {
+                sleep(2);
+                return;
+            }
+
+            switch (choice) {
+            case 1:
+                while (!JSONUtility::validateStringInput(
+                    fullName, "\nEnter new Full Name: ")) {
+                    return;
+                }
+                currentUser->fullName = fullName;
+                break;
+            case 2:
+                while (!JSONUtility::validateStringInput(
+                    email, "\nEnter new Email: ")) {
+                    return;
+                }
+                currentUser->email = email;
+                break;
+            case 3:
+                while (!JSONUtility::validateStringInput(pin,
+                                                         "\nEnter new PIN: ")) {
+                    return;
+                }
+                currentUser->pin = pin;
+                break;
+            default:
+                cout << "Invalid input. Please try again.\n";
+                break;
+            }
+
+            updateAndSaveUser();
+            reloadData();
+            cout << "Success edit profile.\n";
+            sleep(2);
+            return;
+        }
+    }
 
     void signIn() {
         system("cls");
@@ -1276,7 +1375,6 @@ class Service {
         cout << "> Sign In to J-STORE <" << endl;
         cin.ignore(1000, '\n');
         while (true) {
-
             if (!JSONUtility::validateStringInput(email, "\nEnter Email: ")) {
                 return;
             }
@@ -1308,7 +1406,7 @@ class Service {
 
                     do {
                         system("cls");
-
+                        cout << currentUser->pin;
                         while (!JSONUtility::validateStringInput(
                             pin, "\nEnter Your Pin Security : ")) {
                             return;
@@ -1320,12 +1418,25 @@ class Service {
                             sleep(2);
                             continue;
                         }
-
                     } while (pin != currentUser->pin);
+
+                    auto it = find_if(users.begin(), users.end(),
+                                      [&](const User &user) {
+                                          return user.id == currentUser->id;
+                                      });
+
+                    if (it != users.end()) {
+                        currentUser = &(*it);
+                    } else {
+                        cout << "User not found. Please log in again.\n";
+                        sleep(2);
+                        return;
+                    }
 
                     cout << "\nSign In successful. Wait for a moment..."
                          << endl;
                     sleep(2);
+                    reloadData();
                     displayUserMenu();
                     return;
                 }
