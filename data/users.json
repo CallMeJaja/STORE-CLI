@@ -1,0 +1,46 @@
+[
+    {
+        "balance": 117,
+        "email": "asd@asd.asd",
+        "fullName": "asd",
+        "id": 1,
+        "isActive": true,
+        "isAdmin": false,
+        "password": "asdasd",
+        "pin": "1111",
+        "totalTransaction": 0
+    },
+    {
+        "balance": 0,
+        "email": "reza@gmail.com",
+        "fullName": "Reza Asriano Maulana",
+        "id": 2,
+        "isActive": true,
+        "isAdmin": false,
+        "password": "rezareza",
+        "pin": "1818",
+        "totalTransaction": 0
+    },
+    {
+        "balance": 0,
+        "email": "@asd.as",
+        "fullName": "asd",
+        "id": 3,
+        "isActive": true,
+        "isAdmin": false,
+        "password": "asdasd",
+        "pin": "1111",
+        "totalTransaction": 0
+    },
+    {
+        "balance": 0,
+        "email": "@asd.asd",
+        "fullName": "asd",
+        "id": 4,
+        "isActive": true,
+        "isAdmin": false,
+        "password": "asdasd",
+        "pin": "1222",
+        "totalTransaction": 0
+    }
+]

@@ -1,3 +1,5 @@
+#ifndef USER_REPOSITORY_HPP
+#define USER_REPOSITORY_HPP
 #pragma once
 #include "ctime"
 #include "string"
@@ -18,8 +20,8 @@ class Transaction {
     string productName;
     bool isCompleted;
 
-    Transaction(int id, int userId, int productId, int quantit, int totalPrice,
-                string &buyerName, string &productName)
+    Transaction(int id, int userId, int productId, int quantity, int totalPrice,
+                const string &buyerName, const string &productName)
         : id(id), userId(userId), productId(productId), quantity(quantity),
           totalPrice(totalPrice), buyerName(buyerName),
           productName(productName) {
@@ -27,3 +29,5 @@ class Transaction {
         isCompleted = false;
     }
 };
+
+#endif

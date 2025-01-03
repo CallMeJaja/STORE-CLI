@@ -1,45 +1,28 @@
-#pragma
+#pragma once
 #include "../../nlohmann/json.hpp"
 #include "../entities/User.hpp"
+#include "BaseRepository.hpp"
 #include "fstream"
 #include "vector"
 
 using json = nlohmann::json;
 
-class UserRepository {
+class UserRepository : public BaseRepository {
   private:
-    const string filePath;
-    vector<User> users;
-    json readJSON() {
-        ifstream file(filePath);
-        json data;
-        if (file.is_open()) {
-            file >> data;
-            file.close();
-        }
-        return data;
-    }
-
-    void writeJSON(const json &data) {
-        ofstream file(filePath);
-        if (file.is_open()) {
-            file << data.dump(4);
-            file.close();
-        }
-    }
-
     bool isValidPath() {
         ifstream file(filePath);
         return file.good();
     }
 
   public:
-    UserRepository(const string &path) : filePath(path) {}
+    UserRepository(const string &path) : BaseRepository(path) {}
 
     vector<User> getUsers() {
         auto data = readJSON();
+
         vector<User> users;
         for (const auto &item : data) {
+
             users.emplace_back(item["id"], item["fullName"], item["email"],
                                item["password"], item["pin"]);
             users.back().balance = item["balance"];
@@ -47,6 +30,7 @@ class UserRepository {
             users.back().isActive = item["isActive"];
             users.back().isAdmin = item["isAdmin"];
         }
+
         return users;
     }
 
@@ -93,7 +77,11 @@ class UserRepository {
         auto userIt =
             find_if(users.begin(), users.end(),
                     [&email](const User &user) { return user.email == email; });
-        return userIt != users.end() ? &(*userIt) : nullptr;
+        if (userIt != users.end()) {
+            return &(*userIt);
+        }
+
+        return nullptr;
     }
 
     User *findById(int id) {

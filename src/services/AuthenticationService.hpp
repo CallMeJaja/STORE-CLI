@@ -1,27 +1,45 @@
 #pragma once
 #include "../repositories/UserRepository.hpp"
+#include "../utils/InputValidator.hpp"
 #include "string"
 
 class AuthenticationService {
     UserRepository &userRepository;
     User *currentUser;
 
+    // void initializeDefaultAdmin() {
+    //     auto users = userRepository.getUsers();
+    //     User admin(1, "Admin", "admin@admin.com", "admin", "1111");
+    //     admin.isAdmin = true;
+    //     admin.isActive = true;
+    //     userRepository.saveUsers(admin);
+    // }
+
   public:
     AuthenticationService(UserRepository &userRepository)
-        : userRepository(userRepository), currentUser(nullptr) {}
+        : userRepository(userRepository), currentUser(nullptr) {
+        // initializeDefaultAdmin();
+    }
 
-    bool logIn(const string &email, const string &password, const string &pin) {
+    string logIn(const string &email, const string &password,
+                 const string &pin) {
         auto user = userRepository.findByEmail(email);
-        if (!user || user->password != password || user->pin != pin) {
-            return false;
+
+        if (!user) {
+            return "USER_NOT_FOUND";
         }
 
-        if (!currentUser->isActive) {
-            return false;
+        if (password != user->password) {
+            return "PASSWORD_INCORRECT";
         }
 
         currentUser = user;
-        return true;
+
+        if (!currentUser->isActive) {
+            return "USER_INACTIVE";
+        }
+
+        return "SUCCESS";
     }
 
     bool registerUser(const string &fullName, const string &email,
@@ -34,6 +52,8 @@ class AuthenticationService {
         int newId = users.empty() ? 1 : users.back().id + 1;
 
         User newUser(newId, fullName, email, password, pin);
+        newUser.isActive = true;
+        newUser.balance = 0;
         userRepository.saveUsers(newUser);
         return true;
     }
@@ -44,26 +64,10 @@ class AuthenticationService {
 
     bool isAdmin() { return currentUser && currentUser->isAdmin; }
 
-    bool validatePassword(const string &password) {
-        return password.length() >= 5;
-    }
-
-    bool validatePin(const string &pin) {
-        return pin.length() == 4 && all_of(pin.begin(), pin.end(), ::isdigit);
-    }
-
-    bool validateEmail(const string &email) {
-        if (email.empty())
-            return false;
-
-        return email.find('@') != string::npos &&
-               email.find('.') != string::npos;
-    }
-
     bool updatePassword(const string &currentPassword,
                         const string &newPasswword) {
         if (!currentUser || currentUser->password != currentPassword ||
-            !validatePassword(newPasswword)) {
+            !InputValidator::validatePassword(newPasswword)) {
             return false;
         }
 
@@ -73,7 +77,7 @@ class AuthenticationService {
 
     bool updatePin(const string &currentPin, const string &newPin) {
         if (!currentUser || currentUser->pin != currentPin ||
-            !validatePin(newPin)) {
+            !InputValidator::validatePin(newPin)) {
             return false;
         }
 

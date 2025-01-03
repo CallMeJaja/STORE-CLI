@@ -1,18 +1,21 @@
 #pragma once
 #include "../repositories/TransactionRepository.hpp"
 #include "../repositories/UserRepository.hpp"
+#include "AuthenticationService.hpp"
 #include "vector"
 
 class UserService {
   private:
     UserRepository &userRepository;
     TransactionRepository &transactionRepository;
+    AuthenticationService &authService;
 
   public:
     UserService(UserRepository &userRepository,
-                TransactionRepository &transactionRepository)
+                TransactionRepository &transactionRepository,
+                AuthenticationService &authServ)
         : userRepository(userRepository),
-          transactionRepository(transactionRepository) {}
+          transactionRepository(transactionRepository), authService(authServ) {}
 
     bool topUpBalance(int userId, int amount) {
         if (amount <= 0)
@@ -45,6 +48,22 @@ class UserService {
     }
 
     vector<User> getUsers() { return userRepository.getUsers(); }
+
+    vector<Transaction> getUserTransactions(int userId) {
+        auto transactions = transactionRepository.getTransactions();
+        vector<Transaction> userTransactions;
+
+        copy_if(transactions.begin(), transactions.end(),
+                back_inserter(userTransactions),
+                [userId](const Transaction &t) { return t.userId == userId; });
+
+        sort(userTransactions.begin(), userTransactions.end(),
+             [](const Transaction &a, const Transaction &b) {
+                 return a.createdAt > b.createdAt;
+             });
+
+        return userTransactions;
+    }
 
     bool updateUser(User &user) { return userRepository.updateUser(user); }
 
@@ -88,4 +107,5 @@ class UserService {
     }
 
     User *findById(int userId) { return userRepository.findById(userId); }
+    User *getCurrentUser() { return authService.getCurrentUser(); }
 };
