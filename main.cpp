@@ -1,6 +1,7 @@
 #include "fstream"
 #include "iomanip"
 #include "iostream"
+#include "mutex"
 #include "nlohmann/json.hpp"
 #include "unistd.h"
 #include "vector"
@@ -11,12 +12,14 @@
 
 using namespace std;
 using json = nlohmann::json;
+mutex jsonMutex;
 
 class JSONUtility {
   private:
     string filePath;
 
     json readJSON() {
+        lock_guard<mutex> lock(jsonMutex);
         ifstream file(filePath);
         json data;
         if (file.is_open()) {
@@ -27,6 +30,7 @@ class JSONUtility {
     }
 
     void writeJSON(const json &data) {
+        lock_guard<mutex> lock(jsonMutex);
         ofstream file(filePath);
         if (file.is_open()) {
             file << data.dump(4);
@@ -129,8 +133,8 @@ class User {
                             {"pin", user.pin},
                             {"totalTransactions", user.totalTransactions},
                             {"isActive", user.isActive}});
-            service.saveData(data);
         }
+        service.saveData(data);
     }
 };
 
@@ -790,16 +794,22 @@ class Service {
     }
 
     void addTransaction(const Transaction &transaction) {
+        reloadData();
+
         transactions.push_back(transaction);
-        for (auto &user : users) {
-            if (user.id == transaction.userId) {
-                user.totalTransactions++;
-                break;
-            }
+
+        auto userIt =
+            find_if(users.begin(), users.end(), [&](const User &user) {
+                return user.id == transaction.userId;
+            });
+
+        if (userIt != users.end()) {
+            userIt->totalTransactions++;
+            userIt->balance -= transaction.totalPayment;
         }
 
-        User::saveUsers(users, FILE_PATH_USERS);
         Transaction::saveTransactions(transactions, FILE_PATH_TRANSACTIONS);
+        User::saveUsers(users, FILE_PATH_USERS);
     }
 
     void updateAndSaveUser() {
@@ -816,6 +826,50 @@ class Service {
         User::saveUsers(users, FILE_PATH_USERS);
     }
 
+    bool validateUserStatus(User *&currentUser, vector<User> &users,
+                            const string &filePath) {
+        users = User::loadUsers(filePath); // Reload data pengguna
+
+        // Cari ulang pengguna berdasarkan ID
+        auto it = find_if(users.begin(), users.end(), [&](const User &user) {
+            return user.id == currentUser->id;
+        });
+
+        if (it != users.end()) {
+            currentUser = &(*it); // Perbarui pointer currentUser
+            if (!currentUser->isActive) {
+                cout << "\n[Error]: Your account has been deactivated by the "
+                        "admin."
+                     << endl;
+                currentUser = nullptr; // Reset pointer
+                return false;
+            }
+            return true;
+        }
+
+        cout << "\n[Error]: Current user not found. Please log in again."
+             << endl;
+        currentUser = nullptr; // Reset pointer jika pengguna tidak ditemukan
+        return false;
+    }
+
+    bool checkStatus(User *currentUser, vector<User> &users) {
+        if (currentUser != nullptr) {
+            auto userIt =
+                find_if(users.begin(), users.end(), [&](const User &user) {
+                    return currentUser->id == user.id;
+                });
+
+            // TODO Implement Check Status New
+
+        } else {
+            cout << "User not found. Please log in again." << endl;
+            sleep(2);
+            displayMainMenu();
+            return false;
+        }
+    }
+
     bool checkUserStatus(User *&currentUser, vector<User> &users,
                          const string &filePath) {
         users = User::loadUsers(FILE_PATH_USERS);
@@ -829,17 +883,27 @@ class Service {
         //      << currentUser->email << ", isActive: " << currentUser->isActive
         //      << endl;
 
-        auto it = find_if(users.begin(), users.end(), [&](const User &user) {
-            return user.id == currentUser->id;
-        });
+        // cout << currentUser->fullName;
 
-        if (it != users.end()) {
-            currentUser = &(*it);
-            // cout << "Updated currentuser inside checkuserStatus: "
-            //      << currentUser->email
-            //      << ", isActive: " << currentUser->isActive << endl;
+        system("pause");
+
+        auto userIt =
+            find_if(users.begin(), users.end(), [&](const User &user) {
+                return user.id == currentUser->id;
+            });
+
+        // cout << userIt->fullName;
+
+        system("pause");
+
+        if (userIt != users.end()) {
+            currentUser = &(*userIt);
+            cout << "Updated currentuser inside checkuserStatus: "
+                 << currentUser->email
+                 << ", isActive: " << currentUser->isActive << endl;
         } else {
-            cout << "Current user not found in loaded users." << endl;
+            currentUser = nullptr;
+            cout << " Currentuser not found in loaded users." << endl;
             return false;
         }
 
@@ -857,6 +921,8 @@ class Service {
         int choice = 0;
         while (true) {
             system("cls");
+            cout << "Current USER ID : " << (currentUser ? currentUser->id : -1)
+                 << endl;
             cout << "Welcome to J-STORE" << endl;
             cout << "Your trusted platform for all you needs!\n" << endl;
             cout << "Total Users : " << users.size() << endl;
@@ -886,9 +952,10 @@ class Service {
                         cout << "List Service" << endl;
                         break;
                     case 4:
+                        currentUser = nullptr;
                         cout << "\nExiting program..." << endl;
                         system("pause");
-                        return;
+                        exit(1);
                     default:
                         cout << "-> Invalid option. Please try again." << endl;
                         break;
@@ -903,6 +970,11 @@ class Service {
     void displayAdminMenu() { displayMenu(true); }
 
     void displayMenu(bool isAdmin) {
+        // if (!validateUserStatus(currentUser, users, FILE_PATH_USERS)) {
+        //     sleep(2);
+        //     displayMainMenu();
+        // }
+
         int choice = 0;
         while (true) {
             // cout << "Before reloadData : " << currentUser->isActive << endl;
@@ -919,11 +991,12 @@ class Service {
                 cout << "4. Display Stats" << endl;
                 cout << "5. Sign Out" << endl;
             } else {
-                if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-                    sleep(2);
-                    // system("pause");
-                    return;
-                }
+                // if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+                //     sleep(2);
+                //     // system("pause");
+                //     return;
+                // }
+
                 cout << "Hello, " << currentUser->fullName << "!" << endl;
                 cout << "Welcome to J-STORE" << endl;
                 cout << "\n> Total Users Active : " << users.size() << endl;
@@ -975,7 +1048,8 @@ class Service {
                         topUpBalance();
                         break;
                     case 2:
-                        orderProduct();
+                        // orderProduct();
+                        orderProductRefactor();
                         break;
                     case 3:
                         editProfile();
@@ -996,7 +1070,6 @@ class Service {
     }
 
     void displayActivationUser() {
-        reloadData();
         int choice = 0;
         bool userFound = false;
         system("cls");
@@ -1041,7 +1114,6 @@ class Service {
     }
 
     void displayDeactivationUser() {
-        reloadData();
         int choice = 0;
         bool userFound = false;
         system("cls");
@@ -1081,6 +1153,56 @@ class Service {
         }
     }
 
+    void dispalyDeleteUser() {
+        // FIXME Bug Delete User
+        int choice = 0;
+        system("cls");
+        cout << "> Delete User <" << endl;
+
+        if (users.empty()) {
+            cout << "No User Regist." << endl;
+            sleep(2);
+            return;
+        }
+
+        for (auto &user : users) {
+            cout << user.id << ". " << user.fullName << " ("
+                 << (user.isActive ? "Active" : "Inactive") << ")" << endl;
+        }
+
+        while (true) {
+            if (!JSONUtility::validateIntInput(
+                    choice, "\nChoose User ID to delete (Back = 0): ")) {
+                return;
+            }
+
+            if (choice == 0) {
+                return;
+            }
+
+            auto userIt =
+                find_if(users.begin(), users.end(),
+                        [&](const User &user) { return user.id == choice; });
+
+            if (userIt != users.end()) {
+                users.erase(userIt);
+
+                // for (int i = 0; i < users.size(); i++) {
+                //     users[i].id = i + 1;
+                // }
+                User::saveUsers(users, FILE_PATH_USERS);
+
+                cout << "\nSuccess delete user." << endl;
+                sleep(2);
+                return;
+            } else {
+                cout << "User ID not found." << endl;
+                sleep(2);
+                continue;
+            }
+        }
+    }
+
     void manageUser() {
         int choice = 0;
         while (true) {
@@ -1110,7 +1232,7 @@ class Service {
                 displayDeactivationUser();
                 break;
             case 3:
-                // TODO Delete User
+                dispalyDeleteUser();
                 break;
             default:
                 break;
@@ -1197,10 +1319,15 @@ class Service {
         // currentUser->isActive << endl; system("pause");
         system("cls");
 
-        if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-            sleep(2);
-            return;
-        }
+        // if (!validateUserStatus(currentUser, users, FILE_PATH_USERS)) {
+        //     sleep(2);
+        //     displayMainMenu();
+        // }
+
+        // if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+        //     sleep(2);
+        //     return;
+        // }
 
         cout << "> Top Up Balance <" << endl;
         int amount, choice;
@@ -1249,6 +1376,200 @@ class Service {
         }
     }
 
+    // Refactor orderProduct()
+    void orderProductRefactor() {
+        int choice = 0;
+        int categoryId, productId;
+        string category, quantity;
+
+        vector<Category> categories = Admin::loadCategory();
+        vector<Product> products = Admin::loadProducts();
+        vector<Transaction> transactions = Admin::loadTransaction();
+
+        while (true) {
+            system("cls");
+            cout << "> Order Product <" << endl;
+
+            // Display Categories List
+            Admin::displayCategories(FILE_PATH_CATEGORIES);
+
+            if (categories.empty()) {
+                sleep(2);
+                return;
+            }
+
+            // Step 1: Category selection
+            if (!JSONUtility::validateIntInput(
+                    categoryId, "\nChoose your category (Back = 0): ")) {
+                return;
+            }
+
+            if (categoryId == 0) {
+                return;
+            }
+
+            auto categoryIt = find_if(categories.begin(), categories.end(),
+                                      [categoryId](const Category category) {
+                                          return categoryId == category.id;
+                                      });
+
+            if (categoryIt == categories.end()) {
+                cout << "-> Invalid Category ID." << endl;
+                sleep(2);
+                continue;
+            }
+
+            category = categoryIt->name;
+
+            // Step 2: Product Selection
+            Admin::displayProductsByCategory(products, category);
+            Product *selectedProduct = nullptr;
+
+            while (true) {
+                if (!JSONUtility::validateIntInput(
+                        productId, "\nChoose your product (Back = 0): ")) {
+                    return;
+                }
+
+                if (productId == 0) {
+                    break;
+                }
+
+                auto productIt =
+                    find_if(products.begin(), products.end(),
+                            [productId, &category](const Product &product) {
+                                return productId == product.id &&
+                                       category == product.category;
+                            });
+
+                if (productIt == products.end()) {
+                    cout << "Product not found." << endl;
+                    continue;
+                }
+
+                if (productIt->stock == 0) {
+                    cout << "No stock." << endl;
+                    continue;
+                }
+
+                selectedProduct = &(*productIt);
+
+                // Step 3: Quantity Input
+                while (true) {
+                    if (!JSONUtility::validateStringInput(
+                            quantity, "\nEnter Quantity: ")) {
+                        return;
+                    }
+
+                    if (stoi(quantity) <= selectedProduct->stock) {
+                        break;
+                    } else {
+                        cout << "Stock not enough. Available: "
+                             << selectedProduct->stock << endl;
+                        continue;
+                    }
+                }
+
+                // Step 4: Confirm Order
+                system("cls");
+                int totalPayment = selectedProduct->price * stoi(quantity);
+                int newTransactionId =
+                    transactions.empty()
+                        ? 1
+                        : transactions.back().transactionId + 1;
+
+                cout << "> Product Informatioin <" << endl;
+                cout << "Product: " << selectedProduct->name << endl;
+                cout << "Description: " << selectedProduct->description << endl;
+                cout << "Stock: " << selectedProduct->stock << endl;
+                cout << "Quantity: " << quantity << endl;
+                cout << "Unit Price: "
+                     << JSONUtility::displayCurrency(selectedProduct->price)
+                     << endl;
+                cout << "Total Payment: "
+                     << JSONUtility::displayCurrency(totalPayment) << endl;
+
+                while (true) {
+                    while (!JSONUtility::validateIntInput(
+                        choice, "\nType '1' to Order or '0' to Cancel: ")) {
+                        return;
+                    }
+
+                    if (choice == 0) {
+                        cout << "Order cancelled. Returning to main "
+                                "menu...\n";
+                        sleep(2);
+                        return;
+                    } else if (choice == 1) {
+                        if (!validateUserStatus(currentUser, users,
+                                                FILE_PATH_USERS)) {
+                            sleep(2);
+                            displayMainMenu();
+                        }
+
+                        cout << "\nYour Balance: "
+                             << JSONUtility::displayCurrency(
+                                    currentUser->balance)
+                             << endl;
+                        sleep(1);
+
+                        if (currentUser->balance > totalPayment) {
+
+                            selectedProduct->stock -= stoi(quantity);
+                            selectedProduct->sold += stoi(quantity);
+
+                            Transaction newTransaction(
+                                newTransactionId, currentUser->id,
+                                selectedProduct->id, selectedProduct->name,
+                                stoi(quantity), totalPayment,
+                                currentUser->fullName);
+
+                            addTransaction(newTransaction);
+
+                            Product::saveProducts(products, FILE_PATH_PRODUCTS);
+                            updateAndSaveUser();
+
+                            cout << "\nPurchase successfully!" << endl;
+                            cout << "New Balance: "
+                                 << JSONUtility::displayCurrency(
+                                        currentUser->balance);
+                            cout << "\nThank you for order!\n" << endl;
+                            system("pause");
+                            sleep(1);
+                            return;
+                        } else {
+                            cout << "\nnot enough balance!." << endl;
+
+                            while (true) {
+                                while (!JSONUtility::validateIntInput(
+                                    choice,
+                                    "\nWould you like to Top-Up? (Type '1' "
+                                    "for Yes or '0' for No): ")) {
+                                    return;
+                                }
+
+                                if (choice == 0) {
+                                    cout << "Redirecting to main menu...";
+                                    sleep(2);
+                                    return;
+                                } else if (choice == 1) {
+                                    cout << "Redirecting to Top-Up Menu...";
+                                    sleep(1);
+                                    return;
+                                } else {
+                                    cout << "Invalid input. Please try "
+                                            "again.\n"
+                                         << endl;
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     void orderProduct() {
         int choice = 0;
         int categoryId, productId;
@@ -1257,7 +1578,6 @@ class Service {
         // endl; reloadData(); cout << "after reloadData isActive: " <<
         // currentUser->isActive << endl; system("pause");
 
-    ORDER_PRODUCT:
         vector<Category> categories = Admin::loadCategory();
         vector<Product> products = Admin::loadProducts();
         vector<Transaction> transactions = Admin::loadTransaction();
@@ -1271,6 +1591,7 @@ class Service {
             return;
         }
 
+        // Step 1 : choose category
         while (true) {
             if (!JSONUtility::validateIntInput(
                     categoryId, "\nChoose your category (0 = Back): ")) {
@@ -1294,147 +1615,173 @@ class Service {
                 category = it->name;
                 break;
             }
-        }
-
-    PRODUCT_LIST:
-        Admin::displayProductsByCategory(products, category);
-
-        while (true) {
-            if (!JSONUtility::validateIntInput(
-                    productId, "\nChoose your product (0 = Back): ")) {
-                return;
-            }
-
-            if (productId == 0) {
-                goto ORDER_PRODUCT;
-            }
-
-            auto productIt =
-                find_if(products.begin(), products.end(),
-                        [productId, &category](const Product &product) {
-                            return productId == product.id &&
-                                   category == product.category;
-                        });
 
             while (true) {
-                if (!JSONUtility::validateStringInput(quantity,
-                                                      "\nEnter Quantity: ")) {
-                    return;
-                }
+                Admin::displayProductsByCategory(products, category);
+                Product *selectedProduct = nullptr;
 
-                if (stoi(quantity) <= productIt->stock) {
-                    break;
-                } else {
-                    cout << "Insufficient stock. Available : "
-                         << productIt->stock << endl;
-                    continue;
-                }
-            }
-
-            if (productIt != products.end()) {
-                system("cls");
-                cout << "> Product Information <\n" << endl;
-                cout << productIt->name << endl;
-                cout << "> Description : " << productIt->description << endl;
-                cout << "> Stock : " << productIt->stock << endl;
-                cout << "> Quantity : " << quantity << endl;
-                cout << "> Unit Price : "
-                     << JSONUtility::displayCurrency(productIt->price) << endl;
-                cout << "Total Payment : "
-                     << JSONUtility::displayCurrency(stoi(quantity) *
-                                                     productIt->price)
-                     << endl;
                 while (true) {
-                    while (!JSONUtility::validateIntInput(
-                        choice, "\nType '1' to Order or '0' to Cancel: ")) {
+                    if (!JSONUtility::validateIntInput(
+                            productId, "\nChoose your product (0 = Back): ")) {
                         return;
                     }
 
-                    if (choice == 1) {
-                        if (!checkUserStatus(currentUser, users,
-                                             FILE_PATH_USERS)) {
-                            sleep(2);
+                    if (productId == 0) {
+                        break;
+                    }
+
+                    auto productIt =
+                        find_if(products.begin(), products.end(),
+                                [productId, &category](const Product &product) {
+                                    return productId == product.id &&
+                                           category == product.category;
+                                });
+                    if (productIt == products.end()) {
+                        cout << "Product not found." << endl;
+                        continue;
+                    }
+
+                    if (productIt->stock == 0) {
+                        cout << "no stock" << endl;
+                        continue;
+                    }
+
+                    selectedProduct = &(*productIt);
+                    break;
+
+                    while (true) {
+                        if (!JSONUtility::validateStringInput(
+                                quantity, "\nEnter Quantity: ")) {
                             return;
                         }
 
-                        cout << "\nYour Balance : "
-                             << JSONUtility::displayCurrency(
-                                    currentUser->balance)
-                             << endl;
-                        cout << "\nProcessing your order..." << endl;
-                        sleep(2);
+                        if (stoi(quantity) <= selectedProduct->stock) {
+                            break;
+                        } else {
+                            cout << "Insufficient stock. Available : "
+                                 << selectedProduct->stock << endl;
+                            continue;
+                        }
+                    }
+                }
 
-                        int totalPayment = productIt->price * stoi(quantity);
+                if (selectedProduct != nullptr) {
+                    system("cls");
+                    cout << "> Product Information <\n" << endl;
+                    cout << selectedProduct->name << endl;
+                    cout << "> Description : " << selectedProduct->description
+                         << endl;
+                    cout << "> Stock : " << selectedProduct->stock << endl;
+                    cout << "> Quantity : " << quantity << endl;
+                    cout << "> Unit Price : "
+                         << JSONUtility::displayCurrency(selectedProduct->price)
+                         << endl;
+                    cout << "Total Payment : "
+                         << JSONUtility::displayCurrency(stoi(quantity) *
+                                                         selectedProduct->price)
+                         << endl;
+                    while (true) {
+                        while (!JSONUtility::validateIntInput(
+                            choice, "\nType '1' to Order or '0' to Cancel: ")) {
+                            return;
+                        }
 
-                        if (currentUser->balance > totalPayment) {
+                        if (choice == 1) {
+                            if (!checkUserStatus(currentUser, users,
+                                                 FILE_PATH_USERS)) {
+                                sleep(2);
+                                return;
+                            }
 
-                            currentUser->balance -= totalPayment;
-                            // currentUser->totalTransactions += 1;
-
-                            productIt->stock -= stoi(quantity);
-                            productIt->sold += stoi(quantity);
-
-                            int newTransactionId =
-                                transactions.empty()
-                                    ? 1
-                                    : transactions.back().transactionId + 1;
-
-                            Transaction newTransaction(
-                                newTransactionId, currentUser->id,
-                                productIt->id, productIt->name, stoi(quantity),
-                                totalPayment, currentUser->fullName);
-
-                            addTransaction(newTransaction);
-
-                            Product::saveProducts(products, FILE_PATH_PRODUCTS);
-
-                            updateAndSaveUser();
-
-                            cout << "\nPurchase successful!" << endl;
-                            cout << "New Balance : "
+                            cout << "\nYour Balance : "
                                  << JSONUtility::displayCurrency(
                                         currentUser->balance)
                                  << endl;
-                            cout << "\nThank you for order!\n" << endl;
-                            cout << "Returning to main menu..." << endl;
+                            cout << "\nProcessing your order..." << endl;
                             sleep(2);
-                            return;
-                        } else {
-                            cout << "\nInsufficient balance!." << endl;
-                        TRY_AGAIN:
-                            while (!JSONUtility::validateIntInput(
-                                choice, "\nWould you like to TopUp? (Type '1' "
-                                        "for Yes, '0' for No): ")) {
-                                return;
-                            }
 
-                            if (choice == 1) {
-                                cout << "Redirecting to topup menu..." << endl;
-                                sleep(2);
-                                topUpBalance();
-                                return;
-                            } else if (choice == 0) {
-                                cout << "Redirecting to main menu..." << endl;
+                            int totalPayment =
+                                selectedProduct->price * stoi(quantity);
+
+                            if (currentUser->balance > totalPayment) {
+
+                                currentUser->balance -= totalPayment;
+                                // currentUser->totalTransactions += 1;
+
+                                selectedProduct->stock -= stoi(quantity);
+                                selectedProduct->sold += stoi(quantity);
+
+                                int newTransactionId =
+                                    transactions.empty()
+                                        ? 1
+                                        : transactions.back().transactionId + 1;
+
+                                Transaction newTransaction(
+                                    newTransactionId, currentUser->id,
+                                    selectedProduct->id, selectedProduct->name,
+                                    stoi(quantity), totalPayment,
+                                    currentUser->fullName);
+
+                                addTransaction(newTransaction);
+
+                                Product::saveProducts(products,
+                                                      FILE_PATH_PRODUCTS);
+
+                                updateAndSaveUser();
+
+                                cout << "\nPurchase successful!" << endl;
+                                cout << "New Balance : "
+                                     << JSONUtility::displayCurrency(
+                                            currentUser->balance)
+                                     << endl;
+                                cout << "\nThank you for order!\n" << endl;
+                                cout << "Returning to main menu..." << endl;
                                 sleep(2);
                                 return;
                             } else {
-                                cout << "Invalid input. Please try again."
-                                     << endl;
-                                goto TRY_AGAIN;
+                                cout << "\nInsufficient balance!." << endl;
+                                while (true) {
+                                    while (!JSONUtility::validateIntInput(
+                                        choice,
+                                        "\nWould you like to TopUp? (Type '1' "
+                                        "for Yes, '0' for No): ")) {
+                                        return;
+                                    }
+
+                                    if (choice == 1) {
+                                        cout << "Redirecting to topup menu..."
+                                             << endl;
+                                        sleep(2);
+                                        topUpBalance();
+                                        return;
+                                    } else if (choice == 0) {
+                                        cout << "Redirecting to main menu..."
+                                             << endl;
+                                        sleep(2);
+                                        return;
+                                    } else {
+                                        cout << "Invalid input. Please try "
+                                                "again."
+                                             << endl;
+                                        continue;
+                                    }
+                                }
                             }
+                        } else if (choice == 0) {
+                            cout << "Order cancelled. Returning to main "
+                                    "menu....\n";
+                            sleep(2);
+                            return;
+                        } else {
+                            cout << ">Invalid input. Please try again." << endl;
+                            continue;
                         }
-                    } else if (choice == 0) {
-                        cout << "Order cancelled. Returning to main menu....\n";
-                        sleep(2);
-                        return;
-                    } else {
-                        cout << ">Invalid input. Please try again." << endl;
-                        continue;
                     }
+                } else {
+                    cout << "No product selected." << endl;
+                    continue;
                 }
-            } else {
-                cout << "Product ID not found." << endl;
-                continue;
+                break;
             }
         }
     }
@@ -1444,14 +1791,21 @@ class Service {
              << currentUser->email << ", isActive: " << currentUser->isActive
              << endl;
         // reloadData();
+        system("pause");
         system("cls");
         string fullName, email, pin, password, confirmPassword;
         int choice;
 
-        if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+        if (!validateUserStatus(currentUser, users, FILE_PATH_USERS)) {
+            cout << "\nRedirecting to main menu..." << endl;
             sleep(2);
-            return;
+            displayMainMenu(); // Kembali ke menu utama
         }
+
+        // if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
+        //     sleep(2);
+        //     return;
+        // }
 
         cout << "> Edit Profile <\n";
         cout << "\n> Current Profile" << endl;
@@ -1512,6 +1866,7 @@ class Service {
 
     void signIn() {
         system("cls");
+        // FIXME Handle user not list and give it feedback.
         string email, password, pin;
         cout << "> Sign In to J-STORE <" << endl;
         cin.ignore(1000, '\n');
@@ -1532,72 +1887,49 @@ class Service {
                          << endl;
                     sleep(2);
                     displayAdminMenu();
-                    reloadData();
-                    return;
-                }
-            }
-
-            for (auto &user : users) {
-                if (user.email == email && user.password == password) {
-                    currentUser = &user;
-
-                    // cout << "Current User Full Name: " <<
-                    // currentUser->fullName
-                    //      << endl;
-                    // cout << "Current User Pin: " << currentUser->pin << endl;
-
-                    if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-                        sleep(2);
-                        return;
-                    }
-
-                    do {
-                        system("cls");
-                        cout << currentUser->pin;
-                        while (!JSONUtility::validateStringInput(
-                            pin, "\nEnter Your Pin Security : ")) {
-                            return;
-                        }
-
-                        cout << "Entered PIN : " << pin << endl;
-
-                        if (pin != currentUser->pin) {
-                            cout
-                                << "Incorrect PIN entered. Please try again.\n";
-                            sleep(2);
-                            continue;
-                        }
-                    } while (pin != currentUser->pin);
-
-                    auto it = find_if(users.begin(), users.end(),
-                                      [&](const User &user) {
-                                          return user.id == currentUser->id;
-                                      });
-
-                    if (it != users.end()) {
-                        currentUser = &(*it);
-
-                    } else {
-                        cout << "User not found. Please log in again.\n";
-                        sleep(2);
-                        return;
-                    }
-
-                    cout << "\nSign In successful. Wait for a moment..."
-                         << endl;
-                    // sleep(2);
-                    // cout << "Current user isActive before reloadData: "
-                    //      << currentUser->isActive << endl;
                     // reloadData();
-                    // cout << "Current user isActive after reloadData: "
-                    //      << currentUser->isActive << endl;
-                    // system("pause");
-                    displayUserMenu();
                     return;
                 }
             }
-            cout << "\nInvalid email or password. Please try again." << endl;
-            sleep(2);
+
+            auto userIt =
+                find_if(users.begin(), users.end(), [&](const User &user) {
+                    return user.email == email && user.password == password;
+                });
+
+            if (userIt != users.end()) {
+                currentUser = &(*userIt);
+
+                if (!currentUser->isActive) {
+                    cout << "[!] Your account has been deactivated. Please "
+                            "contact the owner.\n";
+                    currentUser = nullptr;
+                    sleep(2);
+                    displayMainMenu();
+                }
+                while (true) {
+                    system("cls");
+                    while (!JSONUtility::validateStringInput(
+                        pin, "\nEnter Your Pin Security : ")) {
+                        return;
+                    }
+
+                    if (currentUser->pin != pin) {
+                        cout << "Incorrect PIN entered. Please try again.\n";
+                        sleep(2);
+                        continue;
+                    }
+                    break;
+                }
+                cout << "Sign In successfull. Wait for a moment..." << endl;
+                sleep(2);
+                displayUserMenu();
+                return;
+            } else {
+                cout << "[Error]: Invalid email or password. Please try again."
+                     << endl;
+                sleep(2);
+            }
         }
     }
 
@@ -1613,9 +1945,27 @@ class Service {
                 return;
             }
 
-            if (!JSONUtility::validateStringInput(email,
-                                                  "\nEnter Email Address: ")) {
-                return;
+            while (true) {
+                if (!JSONUtility::validateStringInput(
+                        email, "\nEnter Email Address: ")) {
+                    return;
+                }
+
+                // TODO Check format email
+
+                auto userIt =
+                    find_if(users.begin(), users.end(), [&](const User &user) {
+                        return user.email == email;
+                    });
+
+                if (userIt != users.end()) {
+                    cout << "\nEmail already registered. Please try again."
+                         << endl;
+                    sleep(0.5);
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             while (true) {
@@ -1632,13 +1982,14 @@ class Service {
                 if (password != confirmPassword) {
                     cout << "\nPassword do not match. Please try again."
                          << endl;
-                    sleep(2);
+                    sleep(0.5);
                     continue;
                 } else {
                     break;
                 }
             }
 
+            // TODO Check PIN format
             if (!JSONUtility::validateStringInput(pin,
                                                   "\nEnter PIN (4 digits): ")) {
                 return;
