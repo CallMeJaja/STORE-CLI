@@ -773,23 +773,24 @@ class Service {
         transactions = Admin::loadTransaction();
 
         if (currentUser != nullptr) {
-            cout << "Before reloadData, currentUser: " << currentUser->email
+            cout << "Before reloadData: currentUser: " << currentUser->email
                  << ", isActive: " << currentUser->isActive << endl;
-            auto it =
+            auto userIt =
                 find_if(users.begin(), users.end(), [this](const User &user) {
                     return user.id == currentUser->id;
                 });
 
-            if (it != users.end()) {
-                currentUser = &(*it);
-                cout << "Updated currentUser inside reloadData : "
+            if (userIt != users.end()) {
+                currentUser = &(*userIt);
+                cout << "Updated currentUser inside reloadData: "
                      << currentUser->email
-                     << ", isActive : " << currentUser->isActive << endl;
+                     << ", isActive: " << currentUser->isActive << endl;
             } else {
-                cout << "Current user not found in reloaded data." << endl;
+                cout << "User not found inside reloadData." << endl;
+                currentUser = nullptr;
             }
         } else {
-            cout << "currentuser is nullptr, cannot update." << endl;
+            cout << "currentUser is null inside reloadData." << endl;
         }
     }
 
@@ -826,91 +827,34 @@ class Service {
         User::saveUsers(users, FILE_PATH_USERS);
     }
 
-    bool validateUserStatus(User *&currentUser, vector<User> &users,
-                            const string &filePath) {
-        users = User::loadUsers(filePath); // Reload data pengguna
-
-        // Cari ulang pengguna berdasarkan ID
-        auto it = find_if(users.begin(), users.end(), [&](const User &user) {
-            return user.id == currentUser->id;
-        });
-
-        if (it != users.end()) {
-            currentUser = &(*it); // Perbarui pointer currentUser
-            if (!currentUser->isActive) {
-                cout << "\n[Error]: Your account has been deactivated by the "
-                        "admin."
-                     << endl;
-                currentUser = nullptr; // Reset pointer
-                return false;
-            }
-            return true;
-        }
-
-        cout << "\n[Error]: Current user not found. Please log in again."
-             << endl;
-        currentUser = nullptr; // Reset pointer jika pengguna tidak ditemukan
-        return false;
-    }
-
-    bool checkStatus(User *currentUser, vector<User> &users) {
-        if (currentUser != nullptr) {
-            auto userIt =
-                find_if(users.begin(), users.end(), [&](const User &user) {
-                    return currentUser->id == user.id;
-                });
-
-            // TODO Implement Check Status New
-
-        } else {
-            cout << "User not found. Please log in again." << endl;
-            sleep(2);
-            displayMainMenu();
-            return false;
-        }
-    }
-
-    bool checkUserStatus(User *&currentUser, vector<User> &users,
-                         const string &filePath) {
-        users = User::loadUsers(FILE_PATH_USERS);
+    bool checkStatus(User *&currentUser, vector<User> &users) {
+        // users = Admin::loadUsers();
 
         if (currentUser == nullptr) {
             cout << "\nCurrent user is not set. Please log in again.\n";
             return false;
         }
 
-        // cout << "before checking user status, currentUser: "
-        //      << currentUser->email << ", isActive: " << currentUser->isActive
-        //      << endl;
-
-        // cout << currentUser->fullName;
-
-        system("pause");
-
         auto userIt =
             find_if(users.begin(), users.end(), [&](const User &user) {
-                return user.id == currentUser->id;
+                return currentUser->id == user.id;
             });
-
-        // cout << userIt->fullName;
-
-        system("pause");
 
         if (userIt != users.end()) {
             currentUser = &(*userIt);
-            cout << "Updated currentuser inside checkuserStatus: "
-                 << currentUser->email
-                 << ", isActive: " << currentUser->isActive << endl;
+            if (!currentUser->isActive) {
+                cout << "\n[Error]: Your account has been deactivated by the "
+                        "admin."
+                     << endl;
+                currentUser = nullptr; // Reset pointer
+                sleep(2);
+                return false;
+            }
         } else {
-            currentUser = nullptr;
-            cout << " Currentuser not found in loaded users." << endl;
-            return false;
-        }
-
-        if (!currentUser->isActive) {
-            cout << "\nThis account has been deactivated for some reason. "
-                    "Please "
-                    "contact the owner.\n";
+            cout << "\n[Error]: Current user not found in loaded users."
+                 << endl;
+            currentUser = nullptr; // Reset pointer
+            sleep(2);
             return false;
         }
 
@@ -1314,20 +1258,12 @@ class Service {
     }
 
     void topUpBalance() {
-        // cout << "Before reloadData isactive: " << currentUser->isActive <<
-        // endl; reloadData(); cout << "after reloadData isactive: " <<
-        // currentUser->isActive << endl; system("pause");
         system("cls");
+        reloadData();
 
-        // if (!validateUserStatus(currentUser, users, FILE_PATH_USERS)) {
-        //     sleep(2);
-        //     displayMainMenu();
-        // }
-
-        // if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-        //     sleep(2);
-        //     return;
-        // }
+        if (!checkStatus(currentUser, users)) {
+            return;
+        }
 
         cout << "> Top Up Balance <" << endl;
         int amount, choice;
@@ -1501,10 +1437,8 @@ class Service {
                         sleep(2);
                         return;
                     } else if (choice == 1) {
-                        if (!validateUserStatus(currentUser, users,
-                                                FILE_PATH_USERS)) {
-                            sleep(2);
-                            displayMainMenu();
+                        if (!checkStatus(currentUser, users)) {
+                            return;
                         }
 
                         cout << "\nYour Balance: "
@@ -1687,9 +1621,7 @@ class Service {
                         }
 
                         if (choice == 1) {
-                            if (!checkUserStatus(currentUser, users,
-                                                 FILE_PATH_USERS)) {
-                                sleep(2);
+                            if (!checkStatus(currentUser, users)) {
                                 return;
                             }
 
@@ -1787,25 +1719,13 @@ class Service {
     }
 
     void editProfile() {
-        cout << "Before update reloadData inside editProfile: "
-             << currentUser->email << ", isActive: " << currentUser->isActive
-             << endl;
-        // reloadData();
-        system("pause");
         system("cls");
         string fullName, email, pin, password, confirmPassword;
         int choice;
 
-        if (!validateUserStatus(currentUser, users, FILE_PATH_USERS)) {
-            cout << "\nRedirecting to main menu..." << endl;
-            sleep(2);
-            displayMainMenu(); // Kembali ke menu utama
+        if (!checkStatus(currentUser, users)) {
+            return;
         }
-
-        // if (!checkUserStatus(currentUser, users, FILE_PATH_USERS)) {
-        //     sleep(2);
-        //     return;
-        // }
 
         cout << "> Edit Profile <\n";
         cout << "\n> Current Profile" << endl;
@@ -1866,8 +1786,8 @@ class Service {
 
     void signIn() {
         system("cls");
-        // FIXME Handle user not list and give it feedback.
         string email, password, pin;
+
         cout << "> Sign In to J-STORE <" << endl;
         cin.ignore(1000, '\n');
         while (true) {
@@ -1880,16 +1800,19 @@ class Service {
                 return;
             }
 
-            for (auto &admin : admins) {
-                if (admin.email == email && admin.password == password) {
-                    currentUser = &admin;
-                    cout << "\nSign In successful. Wait for a moment..."
-                         << endl;
-                    sleep(2);
-                    displayAdminMenu();
-                    // reloadData();
-                    return;
-                }
+            reloadData();
+
+            auto adminIt =
+                find_if(admins.begin(), admins.end(), [&](const User &admin) {
+                    return admin.email == email & admin.password == password;
+                });
+
+            if (adminIt != admins.end()) {
+                currentUser = &(*adminIt);
+                cout << "\nSign In successful. Wait for a moment..." << endl;
+                sleep(1.5);
+                displayAdminMenu();
+                return;
             }
 
             auto userIt =
@@ -1901,12 +1824,19 @@ class Service {
                 currentUser = &(*userIt);
 
                 if (!currentUser->isActive) {
-                    cout << "[!] Your account has been deactivated. Please "
-                            "contact the owner.\n";
+                    cout << "[Error]: Your account has been deactivated by the "
+                            "admin. Please contact the admin for more "
+                            "information."
+                         << endl;
                     currentUser = nullptr;
                     sleep(2);
-                    displayMainMenu();
+                    return;
                 }
+
+                // if (!checkStatus(currentUser, users)) {
+                //     return;
+                // }
+
                 while (true) {
                     system("cls");
                     while (!JSONUtility::validateStringInput(
