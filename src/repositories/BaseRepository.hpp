@@ -15,7 +15,7 @@ class BaseRepository {
     json readJSON() {
         // lock_guard<mutex> lock(jsonMutex);
         ifstream file(filePath);
-        json data;
+        json data = json::array();
         if (file.is_open()) {
             file >> data;
             file.close();
@@ -33,5 +33,9 @@ class BaseRepository {
     }
 
   public:
-    BaseRepository(const string &path) : filePath(path) {}
+    BaseRepository(const string &path) : filePath(path) {
+        if (!filesystem::exists(path)) {
+            writeJSON(json::array());
+        }
+    }
 };

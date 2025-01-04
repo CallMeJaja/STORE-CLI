@@ -1,8 +1,11 @@
 #pragma once
+#include "../services/AdminService.hpp"
 #include "../services/AuthenticationService.hpp"
 #include "../services/ShoppingService.hpp"
 #include "../services/UserService.hpp"
 #include "../utils/InputValidator.hpp"
+#include "AdminMenu.hpp"
+#include "ShoppingMenu.hpp"
 #include "iostream"
 #include "string"
 #include "unistd.h"
@@ -14,6 +17,7 @@ class MainMenu {
     AuthenticationService &authService;
     ShoppingService &shoppingService;
     UserService &userService;
+    AdminService &adminService;
     string fullName, email, password, confirmPassword, pin;
 
     void clearScreen() { system("cls"); }
@@ -37,8 +41,40 @@ class MainMenu {
         if (!InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
             return;
         }
+
+        string status = authService.logIn(email, password, pin);
+
+        if (status == "USER_NOT_FOUND") {
+            cout << "[Error]: User not found. Please try again." << endl;
+            sleep(1);
+            return;
         }
 
+        if (status == "PASSWORD_INCORRECT") {
+            cout << "[Error]: Incorrect password. Please try again." << endl;
+            sleep(1);
+            return;
+        }
+
+        if (status == "USER_INACTIVE") {
+            cout << "\n[!]: Your account has been deactivated for some reason. "
+                    "Please contact admin."
+                 << endl;
+            sleep(1);
+            return;
+        }
+
+        if (status == "SUCCESS") {
+            if (authService.isAdmin()) {
+                AdminMenu adminMenu(adminService);
+                adminMenu.display();
+            } else {
+                ShoppingMenu shoppingMenu(shoppingService, userService);
+                shoppingMenu.display();
+            }
+            authService.logOut();
+        }
+    }
     void handleSignUp() {
         clearScreen();
         cout << "> Sign Up to J-STORE <" << endl;
@@ -102,7 +138,6 @@ class MainMenu {
 
         if (authService.registerUser(fullName, email, password, pin)) {
             cout << "\nRegistration successful! Please sign in to continue.";
-            // TODO: Route to displaymenu
             sleep(2);
             return;
         } else {
@@ -116,8 +151,9 @@ class MainMenu {
 
   public:
     MainMenu(AuthenticationService &auth, ShoppingService &shopping,
-             UserService &user)
-        : authService(auth), shoppingService(shopping), userService(user) {}
+             UserService &user, AdminService &admin)
+        : authService(auth), shoppingService(shopping), userService(user),
+          adminService(admin) {}
 
     void displayMainMenu() {
         int choice = 0;

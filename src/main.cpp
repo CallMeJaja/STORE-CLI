@@ -27,10 +27,14 @@ int main() {
                                           userRepo);
     ShoppingService shoppingService(productRepo, userRepo, transactionService,
                                     categoryRepo);
+    ProductService productService(productRepo, categoryRepo);
+    CategoryService categoryService(categoryRepo);
     UserService userService(userRepo, transactionRepo, authService);
+    AdminService admin(userService, transactionService, productService,
+                       categoryService);
 
     // Start application
-    MainMenu menu(authService, shoppingService, userService);
+    MainMenu menu(authService, shoppingService, userService, admin);
     menu.displayMainMenu();
     return 0;
 }

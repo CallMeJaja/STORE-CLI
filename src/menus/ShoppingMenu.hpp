@@ -17,7 +17,11 @@ class ShoppingMenu : public MenuBase {
 
     void display() {
         while (true) {
-            clearScreen();
+            // clearScreen();
+            cout << "> Welcome to J-STORE <" << endl;
+            cout << "Your trusted platform for all your needs!\n" << endl;
+            cout << "Hello, " << userService.getCurrentUser()->fullName << "!"
+                 << endl;
             cout << "Shopping Menu" << endl;
             cout << "\n1. Browse Categories" << endl;
             cout << "2. Transaction History" << endl;
@@ -82,7 +86,7 @@ class ShoppingMenu : public MenuBase {
         auto products = shopService.getProductsByCategory(category);
         if (products.empty()) {
             cout << "No products available in this category." << endl;
-            pause;
+            pause();
             return;
         }
 
@@ -155,7 +159,8 @@ class ShoppingMenu : public MenuBase {
 
     void topUpBalance() {
         while (true) {
-            clearScreen();
+            // clearScreen();
+            cout << userService.getCurrentUser()->fullName << endl;
             cout << "> Top Up Balance <\n" << endl;
             cout << "Current Balance: "
                  << FormatHelper::displayCurrency(
@@ -188,9 +193,8 @@ class ShoppingMenu : public MenuBase {
                         amount, "\nEnter custom amount (minimum Rp.10.000): "))
                     continue;
                 if (amount < 10000) {
-                    cout << "\n[Error]: Minimum top up amount is Rp.10.000."
+                    cout << "[Error]: Minimum top up amount is Rp.10.000."
                          << endl;
-                    pause();
                     continue;
                 }
                 break;
@@ -201,28 +205,41 @@ class ShoppingMenu : public MenuBase {
                 break;
             }
 
-            cout << "\nConfirm top up amount: "
-                 << FormatHelper::displayCurrency(amount) << " (Y/N): ";
-            char confirm;
-            cin >> confirm;
-            cin.ignore();
-
-            if (tolower(confirm) == 'y') {
-                if (userService.topUpBalance(userService.getCurrentUser()->id,
-                                             amount)) {
-                    cout << "\nTop up successful!" << endl;
-                    cout << "New Balance: "
-                         << FormatHelper::displayCurrency(
-                                userService.getCurrentUser()->balance)
-                         << endl;
-                    pause();
-                } else {
-                    cout << "\n[Error]: Top up failed. Please try again."
-                         << endl;
-                    pause();
-                    return;
-                }
+            if (userService.topUpBalance(userService.getCurrentUser()->id,
+                                         amount)) {
+                cout << "\nTop up successful!" << endl;
+                cout << "New Balance: "
+                     << FormatHelper::displayCurrency(
+                            userService.getCurrentUser()->balance)
+                     << endl;
+                // pause();
+                return;
+            } else {
+                cout << "\n[Error]: Top up failed. Please try again." << endl;
+                // pause();
+                return;
             }
+
+            // if (InputValidator::validateConfirmation(
+            //         "Confirm top up amount: " +
+            //         FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
+            //     if
+            //     (userService.topUpBalance(userService.getCurrentUser()->id,
+            //                                  amount)) {
+            //         cout << "\nTop up successful!" << endl;
+            //         cout << "New Balance: "
+            //              << FormatHelper::displayCurrency(
+            //                     userService.getCurrentUser()->balance)
+            //              << endl;
+            //         pause();
+            //         return;
+            //     } else {
+            //         cout << "\n[Error]: Top up failed. Please try again."
+            //              << endl;
+            //         pause();
+            //         return;
+            //     }
+            // }
         }
     }
 

@@ -42,8 +42,6 @@ class AdminService {
         return userService.toggleUserStatus(userId);
     }
 
-    vector<User> getAllUsers() { return userService.getUsers(); }
-
     vector<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
     }

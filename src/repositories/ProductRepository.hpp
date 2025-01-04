@@ -56,6 +56,7 @@ class ProductRepository : public BaseRepository {
                 return true;
             }
         }
+        return false;
     }
 
     vector<Product> getProducts() {
