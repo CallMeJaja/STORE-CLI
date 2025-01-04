@@ -1,8 +1,8 @@
-#include "src/MainMenu.hpp"
-#include "src/repositories/CategoryRepository.hpp"
-#include "src/repositories/ProductRepository.hpp"
-#include "src/repositories/TransactionRepository.hpp"
-#include "src/repositories/UserRepository.hpp"
+#include "menus/MainMenu.hpp"
+#include "repositories/CategoryRepository.hpp"
+#include "repositories/ProductRepository.hpp"
+#include "repositories/TransactionRepository.hpp"
+#include "repositories/UserRepository.hpp"
 #include <filesystem>
 
 int main() {
@@ -27,7 +27,7 @@ int main() {
                                           userRepo);
     ShoppingService shoppingService(productRepo, userRepo, transactionService,
                                     categoryRepo);
-    UserService userService(userRepo, transactionRepo);
+    UserService userService(userRepo, transactionRepo, authService);
 
     // Start application
     MainMenu menu(authService, shoppingService, userService);

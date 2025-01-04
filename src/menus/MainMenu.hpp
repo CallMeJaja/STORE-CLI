@@ -37,27 +37,7 @@ class MainMenu {
         if (!InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
             return;
         }
-        // FIXME: FIX LOGIC SIGNIN
-        //  if (authService.logIn(email, password, pin)) {
-        //      cout << "\nSign In Successfull!" << endl;
-        //      // sleep(1);
-
-        //     if (authService.isAdmin()) {
-        //         cout << "ADMIN MENU\n";
-        //         system("pause");
-        //         // displayAdminMenu() TODO: Implement AdminMenu
-        //         // sleep(1);
-        //     } else {
-        //         cout << "USER MENU\n";
-        //         system("pause");
-        //         // displayUserMenu() TODO: Implement UserMenu
-        //         // sleep(1);
-        //     }
-        // } else {
-        //     cout << "[Error] Incorrect email or password. Please try
-        //     again.\n"; sleep(2);
-        // }
-    }
+        }
 
     void handleSignUp() {
         clearScreen();
