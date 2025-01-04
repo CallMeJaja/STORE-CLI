@@ -3,6 +3,7 @@
 #include "../entities/Product.hpp"
 #include "BaseRepository.hpp"
 #include "fstream"
+#include "memory"
 #include "vector"
 
 using json = nlohmann::json;
@@ -83,12 +84,15 @@ class ProductRepository : public BaseRepository {
         writeJSON(data);
     }
 
-    Product *findById(int id) {
+    shared_ptr<Product> findById(int id) {
         auto products = getProducts();
         auto productIt =
             find_if(products.begin(), products.end(),
                     [id](const Product &product) { return product.id == id; });
-        return productIt != products.end() ? &(*productIt) : nullptr;
+        if (productIt != products.end()) {
+            return make_shared<Product>(*productIt);
+        }
+        return nullptr;
     }
 
     bool exists(int id) {

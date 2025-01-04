@@ -4,6 +4,7 @@
 #include "../repositories/UserRepository.hpp"
 #include "TransactionService.hpp"
 #include "map"
+#include "memory"
 
 class ShoppingService {
   private:
@@ -26,7 +27,7 @@ class ShoppingService {
         return categoryRepository.getCategories();
     }
 
-    Product *getProductDetails(int productId) {
+    shared_ptr<Product> getProductDetails(int productId) {
         return productRepository.findById(productId);
     }
 

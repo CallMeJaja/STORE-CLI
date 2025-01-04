@@ -1,5 +1,6 @@
 #pragma once
 #include "../repositories/CategoryRepository.hpp"
+#include "memory"
 #include "string"
 #include "vector"
 
@@ -46,7 +47,9 @@ class CategoryService {
         return categoryRepository.getActiveCategories();
     }
 
-    Category *findById(int id) { return categoryRepository.findById(id); }
+    shared_ptr<Category> findById(int id) {
+        return categoryRepository.findById(id);
+    }
 
     bool toggleCategoryStatus(int id) {
         auto category = categoryRepository.findById(id);

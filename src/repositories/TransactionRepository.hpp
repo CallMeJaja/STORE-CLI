@@ -1,6 +1,7 @@
 #pragma once
 #include "../entities/Transaction.hpp"
 #include "BaseRepository.hpp"
+#include "memory"
 #include "vector"
 
 class TransactionRepository : public BaseRepository {
@@ -54,12 +55,16 @@ class TransactionRepository : public BaseRepository {
         return false;
     }
 
-    Transaction *findById(int id) {
-        auto transaction = getTransactions();
+    shared_ptr<Transaction> findById(int id) {
+        auto transactions = getTransactions();
         auto transactionIt =
-            find_if(transaction.begin(), transaction.end(),
+            find_if(transactions.begin(), transactions.end(),
                     [id](const Transaction &t) { return t.id == id; });
-        return transactionIt != transaction.end() ? &(*transactionIt) : nullptr;
+
+        if (transactionIt != transactions.end()) {
+            return make_shared<Transaction>(*transactionIt);
+        }
+        return nullptr;
     }
 
     vector<Transaction> getUserTransaction(int userId) {

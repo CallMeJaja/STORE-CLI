@@ -1,7 +1,8 @@
 #pragma once
 #include "../entities/Category.hpp"
 #include "BaseRepository.hpp"
-#include <vector>
+#include "memory"
+#include "vector"
 
 class CategoryRepository : public BaseRepository {
   public:
@@ -71,13 +72,13 @@ class CategoryRepository : public BaseRepository {
         return active;
     }
 
-    Category *findById(int id) {
+    shared_ptr<Category> findById(int id) {
         auto categories = getCategories();
         auto categoryIt = find_if(
             categories.begin(), categories.end(),
             [id](const Category &category) { return category.id == id; });
         if (categoryIt != categories.end()) {
-            return &(*categoryIt);
+            return make_shared<Category>(*categoryIt);
         }
         return nullptr;
     }

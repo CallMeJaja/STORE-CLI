@@ -2,6 +2,10 @@
 #include "../repositories/TransactionRepository.hpp"
 #include "../repositories/UserRepository.hpp"
 #include "AuthenticationService.hpp"
+#include "algorithm"
+#include "map"
+#include "memory"
+#include "numeric"
 #include "vector"
 
 class UserService {
@@ -26,7 +30,21 @@ class UserService {
         return userRepository.findById(userId);
     }
 
+    shared_ptr<User> findByEmail(const string &email) {
+        return userRepository.findByEmail(email);
+    }
+
     vector<User> getUsers() { return userRepository.getUsers(); }
+
+    vector<User> getActiveUsers() {
+        auto users = getUsers();
+        vector<User> active;
+        copy_if(users.begin(), users.end(), back_inserter(active),
+                [](const User &u) { return u.isActive; });
+        return active;
+    }
+
+    int getTotalUsers() { return userRepository.getUsers().size(); }
 
     void setCurrentUser(int userId) {
         currentUser = userRepository.findById(userId);
@@ -92,14 +110,13 @@ class UserService {
         return false;
     }
 
-    int getTotalUsers() { return userRepository.getUsers().size(); }
-
-    vector<User> getActiveUsers() {
-        auto users = getUsers();
-        vector<User> active;
-        copy_if(users.begin(), users.end(), back_inserter(active),
-                [](const User &u) { return u.isActive; });
-        return active;
+    // Transaction History
+    map<string, int> getUserStats(int userId) {
+        return {
+            {"totalTransactions", getUserTotalTransactions(userId)},
+            {"totalSpent", static_cast<int>(getUserTotalSpent(userId))},
+            {"balance", currentUser ? currentUser->balance : 0},
+        };
     }
 
     vector<Transaction> getUserTransactions(int userId) {
@@ -116,15 +133,6 @@ class UserService {
              });
 
         return userTransactions;
-    }
-
-    // Statistics
-    map<string, int> getUserStats(int userId) {
-        return {
-            {"totalTransactions", getUserTotalTransactions(userId)},
-            {"totalSpent", static_cast<int>(getUserTotalSpent(userId))},
-            {"balance", currentUser ? currentUser->balance : 0},
-        };
     }
 
     double getUserTotalSpent(int userId) {

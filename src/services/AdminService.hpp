@@ -222,8 +222,6 @@ class AdminService {
         return userService.updateUser(*user);
     }
 
-    User *findUserById(int userId) { return userService.findById(userId); }
-
     vector<User> getAllUsers() { return userService.getUsers(); }
 
     vector<Product> getAllProducts() { return productService.getProducts(); }

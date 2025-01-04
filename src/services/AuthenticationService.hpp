@@ -1,11 +1,12 @@
 #pragma once
 #include "../repositories/UserRepository.hpp"
 #include "../utils/InputValidator.hpp"
+#include "memory"
 #include "string"
 
 class AuthenticationService {
     UserRepository &userRepository;
-    User *currentUser;
+    shared_ptr<User> currentUser;
 
     // void initializeDefaultAdmin() {
     //     auto users = userRepository.getUsers();
@@ -25,19 +26,19 @@ class AuthenticationService {
                  const string &pin) {
         auto user = userRepository.findByEmail(email);
 
-        if (!user) {
+        if (!user)
             return "USER_NOT_FOUND";
-        }
 
-        if (password != user->password) {
+        if (password != user->password)
             return "PASSWORD_INCORRECT";
-        }
+
+        if (pin != user->pin)
+            return "PIN_INCORRECT";
+
+        if (!user->isActive)
+            return "USER_INACTIVE";
 
         currentUser = user;
-
-        if (!currentUser->isActive) {
-            return "USER_INACTIVE";
-        }
 
         return "SUCCESS";
     }
@@ -85,5 +86,5 @@ class AuthenticationService {
         return userRepository.updateUser(*currentUser);
     }
 
-    User *getCurrentUser() { return currentUser; }
+    shared_ptr<User> getCurrentUser() { return currentUser; }
 };
