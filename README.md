@@ -14,11 +14,11 @@ This project is a collection of algorithms implemented in various programming la
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/username/algo_reza.git
+   git clone https://github.com/CallMeJaja/TA.git
    ```
 2. Navigate to the project directory:
    ```sh
-   cd algo_reza
+   cd TA
    ```
 
 ## Contributing
