@@ -22,14 +22,14 @@ int main() {
     CategoryRepository categoryRepo(categoryPath);
 
     // Initialize services
-    AuthenticationService authService(userRepo);
     TransactionService transactionService(transactionRepo, productRepo,
                                           userRepo);
     ShoppingService shoppingService(productRepo, userRepo, transactionService,
                                     categoryRepo);
     ProductService productService(productRepo, categoryRepo);
     CategoryService categoryService(categoryRepo);
-    UserService userService(userRepo, transactionRepo, authService);
+    UserService userService(userRepo, transactionRepo);
+    AuthenticationService authService(userRepo, userService);
     AdminService admin(userService, transactionService, productService,
                        categoryService);
 

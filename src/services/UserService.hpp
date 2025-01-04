@@ -12,16 +12,14 @@ class UserService {
   private:
     UserRepository &userRepository;
     TransactionRepository &transactionRepository;
-    AuthenticationService &authService;
     shared_ptr<User> currentUser;
 
   public:
     // Constructor
     UserService(UserRepository &userRepository,
-                TransactionRepository &transactionRepository,
-                AuthenticationService &authServ)
+                TransactionRepository &transactionRepository)
         : userRepository(userRepository),
-          transactionRepository(transactionRepository), authService(authServ) {}
+          transactionRepository(transactionRepository) {}
 
     // User Management
     shared_ptr<User> getCurrentUser() { return currentUser; }
@@ -49,6 +47,8 @@ class UserService {
     void setCurrentUser(int userId) {
         currentUser = userRepository.findById(userId);
     }
+
+    void clearCurrentUser() { currentUser.reset(); }
 
     bool updateUser(User &user) { return userRepository.updateUser(user); }
 
@@ -146,6 +146,10 @@ class UserService {
     int getUserTotalTransactions(int userId) {
         auto transactions = transactionRepository.getTransactions();
         return transactionRepository.getUserTransaction(userId).size();
+    }
+
+    int getTotalTransactions() {
+        return transactionRepository.getTransactions().size();
     }
 
     bool validateUserEmail(const string &email) {

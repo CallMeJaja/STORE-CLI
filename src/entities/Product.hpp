@@ -14,7 +14,7 @@ class Product {
     string name;
     string description;
     vector<string> categories;
-    static const string DEFAULT_CATEGORY;
+    inline static const string DEFAULT_CATEGORY = "All Products";
 
     Product(int id, const string &name, int price, const string &description,
             const vector<string> &categories = {DEFAULT_CATEGORY},
@@ -103,5 +103,3 @@ class Product {
 
     const vector<string> &getCategories() const { return categories; }
 };
-
-const string Product::DEFAULT_CATEGORY = "All Products";
