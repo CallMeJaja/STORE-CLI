@@ -50,4 +50,12 @@ class InputValidator {
         return email.find('@') != string::npos &&
                email.find('.') != string::npos;
     }
+
+    static bool validateConfirmation(const string &prompt) {
+        char confirmation;
+        cout << prompt;
+        cin >> confirmation;
+        cin.ignore();
+        return tolower(confirmation) == 'y';
+    }
 };

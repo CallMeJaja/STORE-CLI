@@ -21,4 +21,14 @@ class FormatHelper {
 
         return "Rp. " + result;
     }
+
+    static string formatDate(const time_t &timestamp) {
+        struct tm *timeInfo;
+        char buffer[80];
+
+        timeInfo = localtime(&timestamp);
+        strftime(buffer, 80, "%d-%m-%Y %I:%M:%S", timeInfo);
+
+        return string(buffer);
+    }
 };

@@ -228,5 +228,7 @@ class AdminService {
 
     vector<User> getAllUsers() { return userService.getUsers(); }
 
+    vector<Product> getAllProducts() { return productService.getProducts(); }
+
     vector<User> getActiveUsers() { return userService.getActiveUsers(); }
 };
