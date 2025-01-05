@@ -144,18 +144,6 @@ class AdminService {
         return success;
     }
 
-    map<string, int> getTransactionsStats() {
-        auto transactions = transactionService.getAllTransactions();
-        int totalTransactions = transactions.size();
-        int completedTransactions =
-            count_if(transactions.begin(), transactions.end(),
-                     [](const Transaction &t) { return t.isCompleted; });
-
-        return {{"total", totalTransactions},
-                {"completed", completedTransactions},
-                {"pending", totalTransactions - completedTransactions}};
-    }
-
     vector<pair<string, double>> getProductPerformance() {
         auto products = productService.getProducts();
         vector<pair<string, double>> performance;
@@ -225,6 +213,10 @@ class AdminService {
     vector<User> getAllUsers() { return userService.getUsers(); }
 
     vector<Product> getAllProducts() { return productService.getProducts(); }
+
+    vector<Product> getAllProductsByCategory(const string &category) {
+        return productService.getProductsByCategory(category);
+    }
 
     vector<User> getActiveUsers() { return userService.getActiveUsers(); }
 

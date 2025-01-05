@@ -67,15 +67,17 @@ class UserRepository : public BaseRepository {
 
         vector<User> users;
         for (const auto &item : data) {
-
-            users.emplace_back(item["id"], item["fullName"], item["email"],
-                               item["password"], item["pin"]);
-            users.back().balance = item["balance"];
-            users.back().totalTransactions = item["totalTransaction"];
-            users.back().isActive = item["isActive"];
-            users.back().isAdmin = item["isAdmin"];
+            try {
+                users.emplace_back(item["id"], item["fullName"], item["email"],
+                                   item["password"], item["pin"]);
+                users.back().balance = item["balance"];
+                users.back().totalTransactions = item["totalTransaction"];
+                users.back().isActive = item["isActive"];
+                users.back().isAdmin = item["isAdmin"];
+            } catch (...) {
+                cout << "[Error]: Failed to parse user data." << endl;
+            }
         }
-
         return users;
     }
 

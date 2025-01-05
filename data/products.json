@@ -1,1 +1,105 @@
-[]
+[
+    {
+        "categories": [
+            "All Products",
+            "ASD"
+        ],
+        "description": "NONTON FILM",
+        "id": 1,
+        "name": "NETFLIX",
+        "price": 2,
+        "sold": 22,
+        "stock": 80
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "g",
+        "id": 2,
+        "name": "SPOTIFY",
+        "price": 10000,
+        "sold": 0,
+        "stock": 100
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "f",
+        "id": 3,
+        "name": "2",
+        "price": 0,
+        "sold": 0,
+        "stock": 0
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "as",
+        "id": 4,
+        "name": "asd",
+        "price": 2,
+        "sold": 0,
+        "stock": 2
+    },
+    {
+        "categories": [
+            "All Products",
+            "ANJAY"
+        ],
+        "description": "KKK",
+        "id": 5,
+        "name": "EAK",
+        "price": 22222,
+        "sold": 0,
+        "stock": 2222
+    },
+    {
+        "categories": [
+            "All Products",
+            "All Products"
+        ],
+        "description": "s",
+        "id": 6,
+        "name": "asd",
+        "price": 2,
+        "sold": 0,
+        "stock": 2
+    },
+    {
+        "categories": [
+            "All Products",
+            "All Products"
+        ],
+        "description": "asd",
+        "id": 7,
+        "name": "ads",
+        "price": 2,
+        "sold": 0,
+        "stock": 2
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "s",
+        "id": 8,
+        "name": "asd",
+        "price": 2,
+        "sold": 0,
+        "stock": 1
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "2",
+        "id": 9,
+        "name": "sa",
+        "price": 2,
+        "sold": 0,
+        "stock": 2
+    }
+]

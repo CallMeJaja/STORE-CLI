@@ -1,6 +1,7 @@
 #pragma once
 #include "../entities/Category.hpp"
 #include "BaseRepository.hpp"
+#include "iostream"
 #include "memory"
 #include "vector"
 
@@ -12,8 +13,12 @@ class CategoryRepository : public BaseRepository {
         auto data = readJSON();
         vector<Category> categories;
         for (const auto &item : data) {
-            categories.emplace_back(item["id"], item["name"],
-                                    item["isActive", true]);
+            try {
+                categories.emplace_back(item["id"], item["name"],
+                                        item["isActive"], item["isDefault"]);
+            } catch (...) {
+                std::cout << "[Error]: Failed to parse category data." << endl;
+            }
         }
         return categories;
     }
@@ -24,6 +29,7 @@ class CategoryRepository : public BaseRepository {
             {"id", category.id},
             {"name", category.name},
             {"isActive", category.isActive},
+            {"isDefault", category.isDefault},
         };
         data.push_back(newCategory);
         writeJSON(data);
@@ -43,12 +49,16 @@ class CategoryRepository : public BaseRepository {
     }
 
     bool updateCategory(const Category &category) {
+        if (category.isDefault)
+            return false; // Prevent updating default category
+
         auto data = readJSON();
         for (auto &item : data) {
             if (item["id"] == category.id) {
                 item = {{"id", category.id},
                         {"name", category.name},
-                        {"isActive", category.isActive}};
+                        {"isActive", category.isActive},
+                        {"isDefault", category.isDefault}};
                 writeJSON(data);
                 return true;
             }

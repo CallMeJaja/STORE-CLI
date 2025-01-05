@@ -18,9 +18,26 @@ class CategoryService {
         }
 
         auto categories = categoryRepository.getCategories();
-        int newId = categories.empty() ? 1 : categories.back().id + 1;
+        bool hasDefault = false;
 
-        Category newCategory(newId, name);
+        // Check for default category
+        for (const auto &cat : categories) {
+            if (cat.name == "All Products") {
+                hasDefault = true;
+                break;
+            }
+        }
+
+        // Add default category is not exist
+        if (!hasDefault) {
+            Category defaultCategory(1, "All Products", true);
+            defaultCategory.isDefault = true;
+            categoryRepository.saveCategories(defaultCategory);
+        }
+
+        // Add new category
+        int newId = categories.empty() ? 1 : categories.back().id + 1;
+        Category newCategory(newId, name, true, false);
         categoryRepository.saveCategories(newCategory);
         return true;
     }

@@ -8,7 +8,8 @@ class Category {
     int id;
     string name;
     bool isActive;
+    bool isDefault;
 
-    Category(int id, string name, bool isActive = true)
-        : id(id), name(name), isActive(isActive) {}
+    Category(int id, string name, bool isActive = true, bool isDefault = false)
+        : id(id), name(name), isActive(isActive), isDefault(isDefault) {}
 };

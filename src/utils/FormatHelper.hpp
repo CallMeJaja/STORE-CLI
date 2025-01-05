@@ -31,4 +31,22 @@ class FormatHelper {
 
         return string(buffer);
     }
+
+    static void displayMessage(const string &type, const string &message) {
+        if (type == "success") {
+            std::cout << "[Success]: " << message << endl;
+        } else if (type == "error") {
+            std::cout << "[Error]: " << message << endl;
+        } else if (type == "info") {
+            std::cout << "[Info]: " << message << endl;
+        }
+    }
+
+    static void handleInvalidOption() {
+        displayMessage("error", "Invalid option. Please try again.");
+    }
+
+    static void handleInvalidInput() {
+        displayMessage("error", "Invalid input. Please try again.");
+    }
 };

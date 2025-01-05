@@ -22,17 +22,19 @@ class InputValidator {
     }
 
     static bool validateIntInput(int &input, const string &prompt) {
-        cout << prompt;
-        cin >> input;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "[Error] Invalid input. Please try again." << endl;
-            sleep(0.5);
-            return false;
+        while (true) {
+            cout << prompt;
+            cin >> input;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "[Error] Invalid input. Please try again." << endl;
+                sleep(0.5);
+            } else {
+                cin.ignore(1000, '\n');
+                return true;
+            }
         }
-        cin.ignore(1000, '\n');
-        return true;
     }
 
     static bool validatePassword(const string &password) {

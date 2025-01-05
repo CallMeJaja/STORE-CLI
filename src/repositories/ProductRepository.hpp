@@ -3,6 +3,7 @@
 #include "../entities/Product.hpp"
 #include "BaseRepository.hpp"
 #include "fstream"
+#include "iostream"
 #include "memory"
 #include "vector"
 
@@ -64,9 +65,13 @@ class ProductRepository : public BaseRepository {
         auto data = readJSON();
         vector<Product> products;
         for (const auto &item : data) {
-            products.emplace_back(item["id"], item["name"], item["price"],
-                                  item["description"], item["category"],
-                                  item["stock"], item["sold"]);
+            try {
+                products.emplace_back(item["id"], item["name"], item["price"],
+                                      item["description"], item["categories"],
+                                      item["stock"], item["sold"]);
+            } catch (...) {
+                std::cout << "[Error]: Failed to parse product data." << endl;
+            }
         }
         return products;
     }

@@ -14,20 +14,11 @@ class Product {
     string name;
     string description;
     vector<string> categories;
-    inline static const string DEFAULT_CATEGORY = "All Products";
 
     Product(int id, const string &name, int price, const string &description,
-            const vector<string> &categories = {DEFAULT_CATEGORY},
-            int stock = 0, int sold = 0)
+            const vector<string> &categories, int stock = 0, int sold = 0)
         : id(id), name(name), price(price), description(description),
-          categories(categories), stock(stock), sold(sold) {
-
-        // Ensure product always has default category
-        if (find(categories.begin(), categories.end(), DEFAULT_CATEGORY) ==
-            categories.end()) {
-            this->categories.push_back(DEFAULT_CATEGORY);
-        }
-    }
+          categories(categories), stock(stock), sold(sold) {}
 
     int getAvailableStock() const { return stock; }
 

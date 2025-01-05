@@ -12,11 +12,16 @@ class TransactionRepository : public BaseRepository {
         auto data = readJSON();
         vector<Transaction> transactions;
         for (const auto &item : data) {
-            transactions.emplace_back(
-                item["id"], item["userId"], item["productId"], item["quantity"],
-                item["totalPrice"], item["buyerName"], item["productName"]);
-            transactions.back().createdAt = item["createdAt"];
-            transactions.back().isCompleted = item["isCompleted"];
+            try {
+                transactions.emplace_back(item["id"], item["userId"],
+                                          item["productId"], item["quantity"],
+                                          item["totalPrice"], item["buyerName"],
+                                          item["productName"]);
+                transactions.back().createdAt = item["createdAt"];
+            } catch (...) {
+                std::cout << "[Error]: Failed to parse transaction data."
+                          << endl;
+            }
         }
         return transactions;
     }
@@ -30,8 +35,7 @@ class TransactionRepository : public BaseRepository {
                                {"totalPrice", transaction.totalPrice},
                                {"buyerName", transaction.buyerName},
                                {"productName", transaction.productName},
-                               {"createdAt", transaction.createdAt},
-                               {"isCompleted", transaction.isCompleted}};
+                               {"createdAt", transaction.createdAt}};
         data.push_back(newTransaction);
         writeJSON(data);
     }

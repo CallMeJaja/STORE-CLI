@@ -43,6 +43,9 @@ void ShoppingMenu::display() {
             topUpBalance();
             break;
         case 4:
+            // TODO updateProfile();
+            break;
+        case 5:
             cout << "\nSigning out. Please wait..." << endl;
             userService.clearCurrentUser();
             mainMenu->displayMainMenu();
@@ -57,7 +60,7 @@ void ShoppingMenu::display() {
 void ShoppingMenu::browseCategories() {
     clearScreen();
     cout << "> Categories List <\n" << endl;
-    auto categories = shopService.getCategories();
+    auto categories = shopService.getCategories(); // FIXME json error
     if (categories.empty()) {
         cout << "No categories available." << endl;
         pause();

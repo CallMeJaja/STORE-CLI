@@ -18,7 +18,6 @@ class Transaction {
     time_t createdAt;
     string buyerName;
     string productName;
-    bool isCompleted;
 
     Transaction(int id, int userId, int productId, int quantity, int totalPrice,
                 const string &buyerName, const string &productName)
@@ -26,7 +25,6 @@ class Transaction {
           totalPrice(totalPrice), buyerName(buyerName),
           productName(productName) {
         createdAt = time(nullptr);
-        isCompleted = false;
     }
 };
 

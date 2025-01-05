@@ -162,31 +162,31 @@ void MainMenu::displayMainMenu() {
         cout << "3. List Service" << endl;
         cout << "4. Exit" << endl;
 
-        if (!InputValidator::validateIntInput(choice, "Choose an option: ")) {
-            // sleep(1);
-            continue;
-        }
+        while (true) {
+            while (!InputValidator::validateIntInput(choice,
+                                                     "\nChoose an option: ")) {
+                continue;
+            }
 
-        switch (choice) {
-        case 1:
-            handleSignIn();
-            break;
-        case 2:
-            handleSignUp();
-            break;
-        case 3:
-            // TODO: REF: Implement listService()
-            break;
-        case 4:
-            cout << "\nThank you for using J-STORE";
-            cout << "\nExiting program..." << endl;
-            // sleep(1);
-            exit(0);
-            break;
-        default:
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            sleep(1);
-            break;
+            switch (choice) {
+            case 1:
+                handleSignIn();
+                break;
+            case 2:
+                handleSignUp();
+                break;
+            case 3:
+                // TODO: REF: Implement listService()
+                break;
+            case 4:
+                cout << "\nThank you for using J-STORE";
+                cout << "\nExiting program..." << endl;
+                exit(0);
+                break;
+            default:
+                cout << "[Error]: Invalid option. Please try again." << endl;
+                continue;
+            }
         }
     }
 }

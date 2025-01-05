@@ -1,6 +1,14 @@
 [
-  {
-    "id": 1,
-    "name": "All Products"
-  }
+    {
+        "id": 1,
+        "isActive": true,
+        "isDefault": true,
+        "name": "All Products"
+    },
+    {
+        "id": 2,
+        "isActive": true,
+        "isDefault": false,
+        "name": "ANJAY"
+    }
 ]

@@ -17,15 +17,19 @@ class ProductService {
 
     bool addProduct(const string &name, int price, const string &description,
                     const vector<string> &categories, int stock) {
-        if (price <= 0 || stock < 0)
+        try {
+            auto products = productRepository.getProducts();
+            int newId = products.empty() ? 1 : products.back().id + 1;
+
+            Product newProduct(newId, name, price, description, categories,
+                               stock);
+
+                        productRepository.saveProduct(newProduct);
+            return true;
+        } catch (const exception &e) {
+            cout << "[Error]: " << e.what() << endl;
             return false;
-
-        auto products = productRepository.getProducts();
-        int newId = products.empty() ? 1 : products.back().id + 1;
-
-        Product newProduct(newId, name, price, description, categories, stock);
-        productRepository.saveProduct(newProduct);
-        return true;
+        }
     }
 
     bool updateProduct(int id, const string &name, int price,

@@ -37,4 +37,6 @@ class AdminMenu : public MenuBase {
     AdminMenu(AdminService &adminService, MainMenu *mainMenu);
 
     void display();
+    void displayAllProducts();
+    void displayAllCategories();
 };
