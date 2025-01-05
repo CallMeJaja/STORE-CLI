@@ -35,17 +35,27 @@ J-STORE follows a multi-tier architecture, separating concerns into different co
 
 ## Getting Started
 
-1.  Clone the repository: (Instructions on how to clone would go here if this were a real project hosted online).
-2.  Compile the code: `g++ src/main.cpp src/menus/*.cpp src/services/*.cpp`.
-3.  Run the executable: `.\a.exe`.
+1.  Clone the repository:
+
+```sh
+git clone https://github.com/CallMeJaja/TA && cd TA
+```
+
+3.  Compile the code:
+
+```sh
+g++ src/main.cpp src/menus/*.cpp src/services/*.cpp
+```
+
+4.  Run the executable:
+
+```sh
+.\a.exe
+```
 
 ## Usage
 
 Upon launching the application, you'll be presented with the main menu. Choose to sign in, sign up, or view services. Follow the on-screen prompts to navigate through the application.
-
-## Contributing
-
-Contributions are welcome! (Instructions for contributing, including coding style guidelines and branching strategies, would be added here).
 
 ## Future Development
 
@@ -55,10 +65,14 @@ Contributions are welcome! (Instructions for contributing, including coding styl
 - Improved reporting and analytics.
 - Graphical User Interface (GUI).
 
-## Contact
+## Contributing
 
-(Contact information or a link to a developer profile would be here).
+Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
 ## License
 
-(License information, such as MIT or GPL, would be stated here).
+This project is licensed under the MIT License.
+
+## Contact
+
+For any questions or suggestions, please open an issue or contact the project maintainer.
