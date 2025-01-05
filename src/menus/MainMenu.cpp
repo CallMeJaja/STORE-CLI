@@ -159,8 +159,7 @@ void MainMenu::displayMainMenu() {
         cout << "Your trusted platform for all you needs!\n" << endl;
         cout << "1. Sign In" << endl;
         cout << "2. Sign Up" << endl;
-        cout << "3. List Service" << endl;
-        cout << "4. Exit" << endl;
+        cout << "3. Exit" << endl;
 
         while (true) {
             while (!InputValidator::validateIntInput(choice,
@@ -176,9 +175,6 @@ void MainMenu::displayMainMenu() {
                 handleSignUp();
                 break;
             case 3:
-                // TODO: REF: Implement listService()
-                break;
-            case 4:
                 cout << "\nThank you for using J-STORE";
                 cout << "\nExiting program..." << endl;
                 exit(0);

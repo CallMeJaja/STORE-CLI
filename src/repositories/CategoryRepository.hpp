@@ -40,8 +40,17 @@ class CategoryRepository : public BaseRepository {
         auto categoryIt =
             find_if(data.begin(), data.end(),
                     [id](const json &item) { return item["id"] == id; });
-        if (categoryIt == data.end()) {
+        cout << "[DEBUG] ID " << id << endl;
+        cout << data.dump(4) << endl;
+        system("pause");
+
+        if (categoryIt != data.end()) {
             data.erase(categoryIt);
+
+            for (int i = 1; i < data.size(); i++) {
+                data[i]["id"] = i + 1;
+            }
+
             writeJSON(data);
             return true;
         }

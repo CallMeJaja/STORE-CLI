@@ -1,105 +1,182 @@
 [
     {
         "categories": [
-            "All Products",
-            "ASD"
+            "Streaming",
+            "All Products"
         ],
-        "description": "NONTON FILM",
+        "description": "Premium streaming service",
         "id": 1,
-        "name": "NETFLIX",
-        "price": 2,
-        "sold": 22,
+        "name": "Netflix Premium",
+        "price": 15000,
+        "sold": 24,
+        "stock": 76
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Premium music streaming service",
+        "id": 2,
+        "name": "Spotify Premium",
+        "price": 12000,
+        "sold": 0,
+        "stock": 150
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Online course subscription",
+        "id": 3,
+        "name": "Coursera Plus",
+        "price": 40000,
+        "sold": 0,
         "stock": 80
     },
     {
         "categories": [
+            "Streaming",
             "All Products"
         ],
-        "description": "g",
-        "id": 2,
-        "name": "SPOTIFY",
-        "price": 10000,
+        "description": "Streaming service with movies and shows",
+        "id": 4,
+        "name": "Disney+ Hotstar",
+        "price": 20000,
+        "sold": 0,
+        "stock": 75
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Streaming service with movies and shows",
+        "id": 5,
+        "name": "Amazon Prime Video",
+        "price": 25000,
+        "sold": 0,
+        "stock": 60
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 6,
+        "name": "Apple Music",
+        "price": 18000,
+        "sold": 0,
+        "stock": 90
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Ad-free YouTube experience",
+        "id": 7,
+        "name": "YouTube Premium",
+        "price": 16000,
+        "sold": 0,
+        "stock": 120
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Online courses taught by experts",
+        "id": 8,
+        "name": "Masterclass Subscription",
+        "price": 35000,
         "sold": 0,
         "stock": 100
     },
     {
         "categories": [
+            "Education",
             "All Products"
         ],
-        "description": "f",
-        "id": 3,
-        "name": "2",
-        "price": 0,
-        "sold": 0,
-        "stock": 0
-    },
-    {
-        "categories": [
-            "All Products"
-        ],
-        "description": "as",
-        "id": 4,
-        "name": "asd",
-        "price": 2,
-        "sold": 0,
-        "stock": 2
-    },
-    {
-        "categories": [
-            "All Products",
-            "ANJAY"
-        ],
-        "description": "KKK",
-        "id": 5,
-        "name": "EAK",
-        "price": 22222,
-        "sold": 0,
-        "stock": 2222
-    },
-    {
-        "categories": [
-            "All Products",
-            "All Products"
-        ],
-        "description": "s",
-        "id": 6,
-        "name": "asd",
-        "price": 2,
-        "sold": 0,
-        "stock": 2
-    },
-    {
-        "categories": [
-            "All Products",
-            "All Products"
-        ],
-        "description": "asd",
-        "id": 7,
-        "name": "ads",
-        "price": 2,
-        "sold": 0,
-        "stock": 2
-    },
-    {
-        "categories": [
-            "All Products"
-        ],
-        "description": "s",
-        "id": 8,
-        "name": "asd",
-        "price": 2,
-        "sold": 0,
-        "stock": 1
-    },
-    {
-        "categories": [
-            "All Products"
-        ],
-        "description": "2",
+        "description": "Bundle of online courses",
         "id": 9,
-        "name": "sa",
-        "price": 2,
+        "name": "Udemy Course Bundle",
+        "price": 22000,
         "sold": 0,
-        "stock": 2
+        "stock": 70
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 10,
+        "name": "Joox VIP",
+        "price": 10000,
+        "sold": 0,
+        "stock": 85
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Creative skill online courses",
+        "id": 11,
+        "name": "Skillshare Premium",
+        "price": 30000,
+        "sold": 0,
+        "stock": 65
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "High-fidelity music streaming",
+        "id": 12,
+        "name": "Tidal HiFi",
+        "price": 45000,
+        "sold": 0,
+        "stock": 55
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Streaming service with movies and shows",
+        "id": 13,
+        "name": "Paramount+",
+        "price": 19000,
+        "sold": 0,
+        "stock": 110
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "University courses online",
+        "id": 14,
+        "name": "edX Plus",
+        "price": 38000,
+        "sold": 1,
+        "stock": 94
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 15,
+        "name": "SoundCloud Go+",
+        "price": 14000,
+        "sold": 0,
+        "stock": 70
     }
 ]

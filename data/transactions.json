@@ -42,5 +42,55 @@
         "quantity": 10,
         "totalPrice": 20,
         "userId": 2
+    },
+    {
+        "buyerName": "Reza Asriano Maulana",
+        "createdAt": 1736069075,
+        "id": 5,
+        "productId": 1,
+        "productName": "Netflix Premium",
+        "quantity": 1,
+        "totalPrice": 15000,
+        "userId": 2
+    },
+    {
+        "buyerName": "Reza Asriano Maulana",
+        "createdAt": 1736069550,
+        "id": 6,
+        "productId": 1,
+        "productName": "Netflix Premium",
+        "quantity": 20,
+        "totalPrice": 300000,
+        "userId": 2
+    },
+    {
+        "buyerName": "Reza Asriano Maulana",
+        "createdAt": 1736071013,
+        "id": 7,
+        "productId": 14,
+        "productName": "edX Plus",
+        "quantity": 1,
+        "totalPrice": 38000,
+        "userId": 2
+    },
+    {
+        "buyerName": "Reza Asriano Maulana",
+        "createdAt": 1736071454,
+        "id": 8,
+        "productId": 1,
+        "productName": "Netflix Premium",
+        "quantity": 2,
+        "totalPrice": 30000,
+        "userId": 2
+    },
+    {
+        "buyerName": "Reza Asriano Maulana",
+        "createdAt": 1736071573,
+        "id": 9,
+        "productId": 1,
+        "productName": "Netflix Premium",
+        "quantity": 1,
+        "totalPrice": 15000,
+        "userId": 2
     }
 ]

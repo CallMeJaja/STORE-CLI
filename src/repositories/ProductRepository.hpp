@@ -35,6 +35,12 @@ class ProductRepository : public BaseRepository {
 
         if (productIt != data.end()) {
             data.erase(productIt);
+
+            // Reindex id product
+            for (int i = 0; i < data.size(); i++) {
+                data[i]["id"] = i + 1;
+            }
+
             writeJSON(data);
             return true;
         }

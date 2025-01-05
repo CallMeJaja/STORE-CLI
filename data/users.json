@@ -11,7 +11,7 @@
         "totalTransaction": 0
     },
     {
-        "balance": 1450000,
+        "balance": 1485000,
         "email": "r",
         "fullName": "Reza Asriano Maulana",
         "id": 2,
@@ -29,28 +29,6 @@
         "isActive": true,
         "isAdmin": false,
         "password": "test",
-        "pin": "1",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 199980,
-        "email": "test",
-        "fullName": "Testing",
-        "id": 3,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "test",
-        "pin": "1",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 1449980,
-        "email": "r",
-        "fullName": "Reza Asriano Maulana",
-        "id": 2,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "r",
         "pin": "1",
         "totalTransaction": 0
     }

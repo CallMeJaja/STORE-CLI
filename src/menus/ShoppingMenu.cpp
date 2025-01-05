@@ -68,31 +68,38 @@ void ShoppingMenu::browseCategories() {
     }
 
     for (int i = 0; i < categories.size(); i++) {
-        cout << i << ". " << categories[i].name << endl;
+        cout << i + 1 << ". " << categories[i].name << endl;
     }
-    cout << categories.size() << ". Back" << endl;
+    cout << categories.size() + 1 << ". Back to Menu" << endl;
 
     int choice;
-    if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
-        return;
-    if (choice == categories.size())
-        return; // Back
-    if (choice < 0 || choice >= categories.size()) {
-        cout << "[Error]: Invalid option. Please try again." << endl;
-        pause();
-        return;
+    while (true) {
+        if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            return;
+        }
+
+        if (choice == categories.size() + 1) {
+            return;
+        }
+
+        if (choice < 0 || choice >= categories.size()) {
+            cout << "[Error]: Invalid option. Please try again." << endl;
+            continue;
+        } else {
+            break;
+        }
     }
 
-    viewProducts(categories[choice].name);
+    viewProducts(categories[choice - 1].name);
 }
 
 void ShoppingMenu::viewProducts(const string &category) {
     clearScreen();
-    cout << "> List Products in " << category << " <\n" << endl;
+    cout << "> List Products in " << category << " <" << endl;
 
     auto products = shopService.getProductsByCategory(category);
     if (products.empty()) {
-        cout << "No products available in this category." << endl;
+        cout << "\nNo products available in this category." << endl;
         pause();
         return;
     }
@@ -108,63 +115,78 @@ void ShoppingMenu::viewProducts(const string &category) {
         cout << "   Stock: " << products[i].stock << endl;
         cout << "   Description: " << products[i].description << endl;
     }
-    cout << products.size() + 1 << ". Back" << endl;
+    cout << products.size() + 1 << ". Back to Menu" << endl;
 
     int choice;
-    if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
-        return;
+    while (true) {
+        if (!InputValidator::validateIntInput(choice, "\nEnter Product ID: ")) {
+            break;
+        }
 
-    if (choice == products.size() + 1)
-        return; // Back
+        if (choice == products.size() + 1)
+            return;
 
-    if (choice < 0 || choice >= products.size()) {
-        cout << "\n[Error]: Invalid option. Please try again." << endl;
-        pause();
-        return;
+        if (choice < 0 || choice >= products.size()) {
+            cout << "[Error]: Invalid option. Please try again." << endl;
+            continue;
+        } else {
+            break;
+        }
     }
 
     int quantity;
-    if (!InputValidator::validateIntInput(quantity, "\nEnter quantity: "))
-        return;
+    while (true) {
+        if (!InputValidator::validateIntInput(
+                quantity,
+                "\nEnter quantity for " + products[choice - 1].name + ": ")) {
+            break;
+        }
 
-    if (!shopService.isProductAvailabe(products[choice].id, quantity)) {
-        cout << "\n[Error]: Product is not available or insufficient stock."
-             << endl;
-        pause();
-        return;
+        if (!shopService.isProductAvailabe(products[choice].id, quantity)) {
+            cout << "[Error]: Product is not available or insufficient stock."
+                 << endl;
+            continue;
+        } else {
+            break;
+        }
     }
 
-    int totalPrice = products[choice].price * quantity;
-    cout << "\nTotal Price: " << FormatHelper::displayCurrency(totalPrice)
+    int totalPrice = products[choice - 1].price * quantity;
+    clearScreen();
+    cout << "> Product Information <" << endl;
+    cout << "Product: " << products[choice - 1].name << endl;
+    cout << "Descriptioni: " << products[choice - 1].description << endl;
+    cout << "Stock: " << products[choice - 1].price << endl;
+    cout << "Quantity: " << quantity << endl;
+    cout << "Unit Price: "
+         << FormatHelper::displayCurrency(products[choice - 1].price) << endl;
+    cout << "\nTotal Payment: " << FormatHelper::displayCurrency(totalPrice)
          << endl;
-    cout << "Confirm purchase? (Y/N): ";
-    char confirm;
-    cin >> confirm;
-    cin.ignore();
 
-    if (tolower(confirm) == 'y') {
+    if (InputValidator::validateConfirmation("Confirm purchase? (Y/N): ")) {
         if (shopService.purchaseProduct(userService.getCurrentUser()->id,
                                         products[choice - 1].id, quantity)) {
             cout << "\nPurchase successful!" << endl;
             pause();
         } else {
-            cout << "\n[Error]: Insufficient balance." << endl;
-            cout << "Would you like to top up your balance? (Y/N): ";
-            char topUp;
-            cin >> topUp;
-            cin.ignore();
-            if (tolower(topUp) == 'y') {
+            cout << "[Error]: Insufficient balance." << endl;
+            if (InputValidator::validateConfirmation(
+                    "Would you like to top up your balance? (Y/N): ")) {
                 topUpBalance();
+            } else {
+                cout << "Redirecting to menu..." << endl;
+                sleep(1);
             }
-            pause();
         }
+    } else {
+        cout << "Purchase canceled" << endl;
         sleep(1);
     }
 }
 
 void ShoppingMenu::topUpBalance() {
     while (true) {
-        // clearScreen();
+        clearScreen();
         cout << userService.getCurrentUser()->fullName << endl;
         cout << "> Top Up Balance <\n" << endl;
         cout << "Current Balance: "
@@ -212,38 +234,40 @@ void ShoppingMenu::topUpBalance() {
         if (userService.topUpBalance(userService.getCurrentUser()->id,
                                      amount)) {
             cout << "\nTop up successful!" << endl;
+            sleep(0.5);
             cout << "New Balance: "
                  << FormatHelper::displayCurrency(
                         userService.getCurrentUser()->balance)
                  << endl;
-            // pause();
+            sleep(0.5);
+            pause();
             return;
         } else {
-            cout << "\n[Error]: Top up failed. Please try again." << endl;
-            // pause();
+            cout << "[Error]: Top up failed. Please try again." << endl;
+            pause();
             return;
         }
 
-        // if (InputValidator::validateConfirmation(
-        //         "Confirm top up amount: " +
-        //         FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
-        //     if
-        //     (userService.topUpBalance(userService.getCurrentUser()->id,
-        //                                  amount)) {
-        //         cout << "\nTop up successful!" << endl;
-        //         cout << "New Balance: "
-        //              << FormatHelper::displayCurrency(
-        //                     userService.getCurrentUser()->balance)
-        //              << endl;
-        //         pause();
-        //         return;
-        //     } else {
-        //         cout << "\n[Error]: Top up failed. Please try again."
-        //              << endl;
-        //         pause();
-        //         return;
-        //     }
-        // }
+        /* if (InputValidator::validateConfirmation(
+                "Confirm top up amount: " +
+                FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
+            if
+            (userService.topUpBalance(userService.getCurrentUser()->id,
+                                         amount)) {
+                cout << "\nTop up successful!" << endl;
+                cout << "New Balance: "
+                     << FormatHelper::displayCurrency(
+                            userService.getCurrentUser()->balance)
+                     << endl;
+                pause();
+                return;
+            } else {
+                cout << "\n[Error]: Top up failed. Please try again."
+                     << endl;
+                pause();
+                return;
+            }
+        } */
     }
 }
 
@@ -267,8 +291,10 @@ void ShoppingMenu::viewTransactionHistory() {
         cout << "Quantity: " << transaction.quantity << endl;
         cout << "Total Price: "
              << FormatHelper::displayCurrency(transaction.totalPrice) << endl;
-        cout << "Transaction Date: " << transaction.createdAt << endl;
+        cout << "Transaction Date: "
+             << FormatHelper::formatDate(transaction.createdAt) << endl;
         cout << "\n" << string(50, '=') << endl;
     }
+
     pause();
 }

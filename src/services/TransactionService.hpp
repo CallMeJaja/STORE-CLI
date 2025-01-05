@@ -39,8 +39,11 @@ class TransactionService {
 
         transactionRepository.saveTransactions(newTransaction);
 
+        cout << "Before: " << user->balance << endl;
         user->balance -= totalPrice;
-        userRepository.saveUsers(*user);
+        cout << "After: " << user->balance << endl;
+        system("pause");
+        userRepository.updateUser(*user); // TODO UpdateUSerService
 
         product->updateSold(quantity);
         productRepository.updateProduct(*product);
