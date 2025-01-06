@@ -1,14 +1,14 @@
 #pragma once
-#include "../services/AdminService.hpp"
-#include "../services/AuthenticationService.hpp"
-#include "../services/ShoppingService.hpp"
-#include "../services/UserService.hpp"
-#include "../utils/InputValidator.hpp"
-#include "AdminMenu.hpp"
+
+#include "MainMenu.hpp"
 #include "ShoppingMenu.hpp"
 #include "iostream"
+#include "services/AdminService.hpp"
+#include "services/AuthenticationService.hpp"
+#include "services/UserService.hpp"
 #include "string"
 #include "unistd.h"
+#include "utils/InputValidator.hpp"
 
 using namespace std;
 

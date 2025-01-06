@@ -1,7 +1,7 @@
 #pragma once
-#include "../repositories/CategoryRepository.hpp"
-#include "../repositories/ProductRepository.hpp"
 #include "algorithm"
+#include "repositories/CategoryRepository.hpp"
+#include "repositories/ProductRepository.hpp"
 #include "vector"
 
 class ProductService {
@@ -24,7 +24,7 @@ class ProductService {
             Product newProduct(newId, name, price, description, categories,
                                stock);
 
-                        productRepository.saveProduct(newProduct);
+            productRepository.saveProduct(newProduct);
             return true;
         } catch (const exception &e) {
             cout << "[Error]: " << e.what() << endl;

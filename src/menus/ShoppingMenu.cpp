@@ -30,29 +30,32 @@ void ShoppingMenu::display() {
         cout << "5. Sign Out" << endl;
 
         int choice;
-        if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
-            continue;
-        switch (choice) {
-        case 1:
-            browseCategories();
-            break;
-        case 2:
-            viewTransactionHistory();
-            break;
-        case 3:
-            topUpBalance();
-            break;
-        case 4:
-            // TODO updateProfile();
-            break;
-        case 5:
-            cout << "\nSigning out. Please wait..." << endl;
-            userService.clearCurrentUser();
-            mainMenu->displayMainMenu();
-            break;
-        default:
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            break;
+        while (true) {
+            if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
+                continue;
+
+            switch (choice) {
+            case 1:
+                browseCategories();
+                return;
+            case 2:
+                viewTransactionHistory();
+                return;
+            case 3:
+                topUpBalance();
+                return;
+            case 4:
+                updateProfile();
+                return;
+            case 5:
+                cout << "\nSigning out. Please wait..." << endl;
+                userService.clearCurrentUser();
+                mainMenu->displayMainMenu();
+                return;
+            default:
+                cout << "[Error]: Invalid option. Please try again." << endl;
+                continue;
+            }
         }
     }
 }
@@ -60,7 +63,7 @@ void ShoppingMenu::display() {
 void ShoppingMenu::browseCategories() {
     clearScreen();
     cout << "> Categories List <\n" << endl;
-    auto categories = shopService.getCategories(); // FIXME json error
+    auto categories = shopService.getCategories();
     if (categories.empty()) {
         cout << "No categories available." << endl;
         pause();
@@ -126,7 +129,7 @@ void ShoppingMenu::viewProducts(const string &category) {
         if (choice == products.size() + 1)
             return;
 
-        if (choice < 0 || choice >= products.size()) {
+        if (choice < 0 || choice >= products.size() + 1) {
             cout << "[Error]: Invalid option. Please try again." << endl;
             continue;
         } else {
@@ -142,12 +145,12 @@ void ShoppingMenu::viewProducts(const string &category) {
             break;
         }
 
-        if (!shopService.isProductAvailabe(products[choice].id, quantity)) {
+        if (products[choice - 1].stock >= quantity) {
+            break;
+        } else {
             cout << "[Error]: Product is not available or insufficient stock."
                  << endl;
             continue;
-        } else {
-            break;
         }
     }
 
@@ -185,22 +188,21 @@ void ShoppingMenu::viewProducts(const string &category) {
 }
 
 void ShoppingMenu::topUpBalance() {
-    while (true) {
-        clearScreen();
-        cout << userService.getCurrentUser()->fullName << endl;
-        cout << "> Top Up Balance <\n" << endl;
-        cout << "Current Balance: "
-             << FormatHelper::displayCurrency(
-                    userService.getCurrentUser()->balance)
-             << endl;
-        cout << "\nSelect Amount:" << endl;
-        cout << "1. Rp. 50.000" << endl;
-        cout << "2. Rp. 100.000" << endl;
-        cout << "3. Rp. 200.000" << endl;
-        cout << "4. Custom Amount" << endl;
-        cout << "5. Back" << endl;
+    clearScreen();
+    cout << userService.getCurrentUser()->fullName << endl;
+    cout << "> Top Up Balance <\n" << endl;
+    cout << "Current Balance: "
+         << FormatHelper::displayCurrency(userService.getCurrentUser()->balance)
+         << endl;
+    cout << "\nSelect Amount:" << endl;
+    cout << "1. Rp. 50.000" << endl;
+    cout << "2. Rp. 100.000" << endl;
+    cout << "3. Rp. 200.000" << endl;
+    cout << "4. Custom Amount" << endl;
+    cout << "5. Back" << endl;
 
-        int choice;
+    int choice;
+    while (true) {
         if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
             continue;
 
@@ -208,13 +210,13 @@ void ShoppingMenu::topUpBalance() {
         switch (choice) {
         case 1:
             amount = 50000;
-            break;
+            return;
         case 2:
             amount = 100000;
-            break;
+            return;
         case 3:
             amount = 200000;
-            break;
+            return;
         case 4:
             if (!InputValidator::validateIntInput(
                     amount, "\nEnter custom amount (minimum Rp.10.000): "))
@@ -223,12 +225,12 @@ void ShoppingMenu::topUpBalance() {
                 cout << "[Error]: Minimum top up amount is Rp.10.000." << endl;
                 continue;
             }
-            break;
+            return;
         case 5:
             return;
         default:
             cout << "\n[Error]: Invalid option. Please try again." << endl;
-            break;
+            continue;
         }
 
         if (userService.topUpBalance(userService.getCurrentUser()->id,
@@ -239,7 +241,6 @@ void ShoppingMenu::topUpBalance() {
                  << FormatHelper::displayCurrency(
                         userService.getCurrentUser()->balance)
                  << endl;
-            sleep(0.5);
             pause();
             return;
         } else {
@@ -247,7 +248,7 @@ void ShoppingMenu::topUpBalance() {
             pause();
             return;
         }
-
+        // TODO Confirmation Top Up
         /* if (InputValidator::validateConfirmation(
                 "Confirm top up amount: " +
                 FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
@@ -293,8 +294,13 @@ void ShoppingMenu::viewTransactionHistory() {
              << FormatHelper::displayCurrency(transaction.totalPrice) << endl;
         cout << "Transaction Date: "
              << FormatHelper::formatDate(transaction.createdAt) << endl;
-        cout << "\n" << string(50, '=') << endl;
     }
+    cout << endl;
+    pause();
+}
 
+void ShoppingMenu::updateProfile() {
+    clearScreen();
+    cout << "> Update Profile <\n" << endl;
     pause();
 }

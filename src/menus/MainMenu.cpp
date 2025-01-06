@@ -1,9 +1,10 @@
-#include "MainMenu.hpp"
-#include "../services/AdminService.hpp"
-#include "../services/AuthenticationService.hpp"
-#include "../services/ShoppingService.hpp"
-#include "../services/UserService.hpp"
+#include "menus/MainMenu.hpp"
 #include "iostream"
+#include "menus/AdminMenu.hpp"
+#include "services/AdminService.hpp"
+#include "services/AuthenticationService.hpp"
+#include "services/ShoppingService.hpp"
+#include "services/UserService.hpp"
 
 using namespace std;
 
@@ -19,18 +20,11 @@ void MainMenu::handleSignIn() {
     cout << "> Sign In to J-STORE <" << endl;
 
     while (true) {
-
         if (!InputValidator::validateStringInput(email,
-                                                 "\nEnter Email Address: ")) {
-            return;
-        }
-
-        if (!InputValidator::validateStringInput(password,
-                                                 "\nEnter Password: ")) {
-            return;
-        }
-
-        if (!InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
+                                                 "\nEnter Email Address: ") ||
+            !InputValidator::validateStringInput(password,
+                                                 "\nEnter Password: ") ||
+            !InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
             return;
         }
 
@@ -38,32 +32,16 @@ void MainMenu::handleSignIn() {
 
         if (status == "USER_NOT_FOUND") {
             cout << "[Error]: User not found. Please try again." << endl;
-            sleep(1);
-            return;
-        }
-
-        if (status == "PASSWORD_INCORRECT") {
+        } else if (status == "PASSWORD_INCORRECT") {
             cout << "[Error]: Incorrect password. Please try again." << endl;
-            sleep(1);
-            return;
-        }
-
-        if (status == "PIN_INCORRECT") {
+        } else if (status == "PIN_INCORRECT") {
             cout << "[Error]: Incorrect PIN. Please try again." << endl;
-            sleep(1);
-            return;
-        }
-
-        if (status == "USER_INACTIVE") {
+        } else if (status == "USER_INACTIVE") {
             cout << "\n[!]: Your account has been deactivated for some "
                     "reason. "
                     "Please contact admin."
                  << endl;
-            sleep(1);
-            return;
-        }
-
-        if (status == "SUCCESS") {
+        } else if (status == "SUCCESS") {
             if (authService.isAdmin()) {
                 AdminMenu adminMenu(adminService, this);
                 adminMenu.display();
@@ -73,6 +51,8 @@ void MainMenu::handleSignIn() {
             }
             authService.logOut();
         }
+        sleep(1);
+        return;
     }
 }
 
@@ -81,8 +61,7 @@ void MainMenu::handleSignUp() {
     clearScreen();
     cout << "> Sign Up to J-STORE <" << endl;
 
-    while (
-        !InputValidator::validateStringInput(fullName, "\nEnter Full Name: ")) {
+    if (!InputValidator::validateStringInput(fullName, "\nEnter Full Name: ")) {
         return;
     }
 
@@ -162,23 +141,22 @@ void MainMenu::displayMainMenu() {
         cout << "3. Exit" << endl;
 
         while (true) {
-            while (!InputValidator::validateIntInput(choice,
-                                                     "\nChoose an option: ")) {
+            if (!InputValidator::validateIntInput(choice,
+                                                  "\nChoose an option: ")) {
                 continue;
             }
 
             switch (choice) {
             case 1:
                 handleSignIn();
-                break;
+                return;
             case 2:
                 handleSignUp();
-                break;
+                return;
             case 3:
                 cout << "\nThank you for using J-STORE";
                 cout << "\nExiting program..." << endl;
                 exit(0);
-                break;
             default:
                 cout << "[Error]: Invalid option. Please try again." << endl;
                 continue;

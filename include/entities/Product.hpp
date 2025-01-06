@@ -20,8 +20,6 @@ class Product {
         : id(id), name(name), price(price), description(description),
           categories(categories), stock(stock), sold(sold) {}
 
-    int getAvailableStock() const { return stock; }
-
     int getTotalQuantity() const { return stock + sold; }
 
     bool canPurchase(int quantity) const {
@@ -33,6 +31,10 @@ class Product {
     bool validatePrice() const { return price > 0; }
 
     bool isLowStock(int threshold = 1) const { return stock <= threshold; }
+
+    // FIXME Clear this trash
+    // FIXME Moving implement to service
+    // FIXME update userafterbuy
 
     bool setPrice(int newPrice) {
         if (newPrice > 0) {

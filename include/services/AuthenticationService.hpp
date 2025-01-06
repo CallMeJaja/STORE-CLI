@@ -1,9 +1,9 @@
 #pragma once
-#include "../repositories/UserRepository.hpp"
-#include "../utils/InputValidator.hpp"
 #include "UserService.hpp"
 #include "memory"
+#include "repositories/UserRepository.hpp"
 #include "string"
+#include "utils/InputValidator.hpp"
 
 class UserService;
 

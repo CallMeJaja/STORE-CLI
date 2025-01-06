@@ -1,9 +1,9 @@
 #pragma once
-#include "../services/AdminService.hpp"
-#include "../utils/FormatHelper.hpp"
-#include "../utils/InputValidator.hpp"
 #include "MainMenu.hpp"
 #include "MenuBase.hpp"
+#include "services/AdminService.hpp"
+#include "utils/FormatHelper.hpp"
+#include "utils/InputValidator.hpp"
 #include <unistd.h>
 
 class MainMenu;
@@ -19,11 +19,13 @@ class AdminMenu : public MenuBase {
     void manageUsers();
 
     // Product Operation
+    void listProducts();
     void addProduct();
     void updateProduct();
     void deleteProduct();
 
     // Category Operation
+    void listCategories();
     void addCategory();
     void updateCategory();
     void deleteCategory();

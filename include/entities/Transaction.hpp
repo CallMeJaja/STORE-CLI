@@ -1,5 +1,3 @@
-#ifndef USER_REPOSITORY_HPP
-#define USER_REPOSITORY_HPP
 #pragma once
 #include "ctime"
 #include "string"
@@ -20,12 +18,5 @@ class Transaction {
     string productName;
 
     Transaction(int id, int userId, int productId, int quantity, int totalPrice,
-                const string &buyerName, const string &productName)
-        : id(id), userId(userId), productId(productId), quantity(quantity),
-          totalPrice(totalPrice), buyerName(buyerName),
-          productName(productName) {
-        createdAt = time(nullptr);
-    }
+                const string &buyerName, const string &productName);
 };
-
-#endif

@@ -1,10 +1,10 @@
 #pragma once
-#include "../repositories/CategoryRepository.hpp"
-#include "../repositories/ProductRepository.hpp"
-#include "../repositories/UserRepository.hpp"
 #include "TransactionService.hpp"
 #include "map"
 #include "memory"
+#include "repositories/CategoryRepository.hpp"
+#include "repositories/ProductRepository.hpp"
+#include "repositories/UserRepository.hpp"
 
 class ShoppingService {
   private:

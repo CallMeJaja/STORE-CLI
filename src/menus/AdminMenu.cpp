@@ -3,43 +3,46 @@
 #include "../utils/FormatHelper.hpp"
 #include "../utils/InputValidator.hpp"
 #include "algorithm"
+#include "conio.h"
+#include "iomanip"
 #include "unistd.h"
 
 AdminMenu::AdminMenu(AdminService &adminService, MainMenu *mainMenu)
     : adminService(adminService), mainMenu(mainMenu) {}
 
 void AdminMenu::manageProducts() {
+    clearScreen();
+    cout << "> Manage Products <" << endl;
+    cout << "\n1. Add Product" << endl;
+    cout << "2. Update Product" << endl;
+    cout << "3. Delete Product" << endl;
+    cout << "4. List Products" << endl;
+    cout << "5. Back" << endl;
+
+    int choice;
     while (true) {
-        clearScreen();
-        cout << "> Manage Products <" << endl;
-        cout << "\n1. Add Product" << endl;
-        cout << "2. Update Product" << endl;
-        cout << "3. Delete Product" << endl;
-        cout << "4. Back" << endl;
+        if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            continue;
+        }
 
-        int choice;
-        while (true) {
-            while (
-                !InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-                continue;
-            }
-
-            switch (choice) {
-            case 1:
-                addProduct();
-                return;
-            case 2:
-                updateProduct();
-                return;
-            case 3:
-                deleteProduct();
-                return;
-            case 4:
-                return;
-            default:
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        switch (choice) {
+        case 1:
+            addProduct();
+            return;
+        case 2:
+            updateProduct();
+            return;
+        case 3:
+            deleteProduct();
+            return;
+        case 4:
+            listProducts();
+            return;
+        case 5:
+            return;
+        default:
+            cout << "[Error]: Invalid option. Please try again." << endl;
+            continue;
         }
     }
 }
@@ -90,8 +93,7 @@ void AdminMenu::manageUsers() {
 
         int choice;
         while (true) {
-            while (
-                !InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
                 continue;
             }
 
@@ -110,6 +112,86 @@ void AdminMenu::manageUsers() {
             }
         }
     }
+}
+
+void AdminMenu::listProducts() {
+    clearScreen();
+    cout << "> List Products <" << endl;
+    auto products = adminService.getAllProducts();
+    if (products.empty()) {
+        cout << "No products available." << endl;
+        pause();
+        return;
+    }
+
+    int pageSize = 10;
+    int currentPage = 1; // FIXME Pagination
+    int totalPages = (products.size() + pageSize - 1) / pageSize;
+
+    while (true) {
+        clearScreen();
+        int startIndex = currentPage * pageSize;
+        int endIndex =
+            min(startIndex + pageSize, static_cast<int>(products.size()));
+
+        cout << "> List Products - Page " << currentPage + 1 << " of "
+             << totalPages << endl;
+        cout << left << setw(5) << "ID" << setw(25) << "Name" << setw(15)
+             << "Price" << setw(10) << "Stock" << endl;
+        cout << string(50, '-') << endl;
+
+        for (int i = startIndex; i < endIndex; i++) {
+            cout << left << setw(5) << i + 1 << setw(25) << products[i].name
+                 << setw(15) << FormatHelper::displayCurrency(products[i].price)
+                 << setw(10) << products[i].stock << endl;
+        }
+
+        cout << string(50, '-') << endl;
+        cout << "\nPress ";
+
+        if (currentPage > 1)
+            cout << "[p] Previous, ";
+        if (currentPage == totalPages)
+            cout << "[n] Next, ";
+        cout << "[b] to Back: ";
+
+        string input = "";
+        while (input.empty()) {
+            if (_kbhit()) {
+                input += _getch();
+            }
+            sleep(0.1);
+            cout << input;
+        }
+
+        if (input == "b") {
+            return;
+        }
+
+        if (currentPage < totalPages - 1 && input == "n") {
+            currentPage++;
+            continue;
+        } else if (currentPage > 0 && input == "p") {
+            currentPage--;
+            continue;
+        } else {
+            if (currentPage == 1) {
+                cout << "\n[Error]: Invalid input. Please choose [n] or [b]\n"
+                     << endl;
+            } else if (currentPage == totalPages) {
+                cout << "\n[Error]: Invalid input. Please choose [p] or [b]\n"
+                     << endl;
+            } else {
+                cout << "\n[Error]: Invalid input. Please choose [n], [p] or "
+                        "[b]\n"
+                     << endl;
+            }
+            pause();
+            continue;
+        }
+    }
+
+    pause();
 }
 
 void AdminMenu::addProduct() {
@@ -324,6 +406,24 @@ void AdminMenu::deleteProduct() {
     }
 }
 
+void AdminMenu::listCategories() {
+    clearScreen();
+    cout << "> List Categories \n<" << endl;
+    auto categories = adminService.getCategories();
+
+    if (categories.empty()) {
+        cout << "No categories available." << endl;
+        pause();
+        return;
+    }
+
+    for (int i = 0; i < categories.size(); i++) {
+        cout << i + 1 << ". " << categories[i].name << endl;
+    }
+
+    pause();
+}
+
 void AdminMenu::addCategory() {
     clearScreen();
     cout << "> Add Category <" << endl;
@@ -453,14 +553,18 @@ void AdminMenu::viewUsers() {
     }
 
     for (int i = 0; i < users.size(); i++) {
-        cout << i + 1 << ". " << users[i].fullName << endl;
-        cout << "   Email: " << users[i].email << endl;
-        cout << "   Balance: "
-             << FormatHelper::displayCurrency(users[i].balance) << endl;
-        cout << "   Total Transactions: " << users[i].totalTransactions << endl;
-        cout << "   Status: " << (users[i].isActive ? "Active" : "Inactive")
-             << endl;
-        cout << "   Role: " << (users[i].isAdmin ? "Admin" : "User") << endl;
+        if (!users[i].isAdmin) {
+            cout << i + 1 << ". " << users[i].fullName << endl;
+            cout << "   Email: " << users[i].email << endl;
+            cout << "   Balance: "
+                 << FormatHelper::displayCurrency(users[i].balance) << endl;
+            cout << "   Total Transactions: " << users[i].totalTransactions
+                 << endl;
+            cout << "   Status: " << (users[i].isActive ? "Active" : "Inactive")
+                 << endl;
+            cout << "   Role: " << (users[i].isAdmin ? "Admin" : "User")
+                 << endl;
+        }
     }
     pause();
 }
@@ -560,14 +664,22 @@ void AdminMenu::display() {
         cout << "5. Sign Out" << endl;
 
         int choice;
-        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-            continue;
+        while (true) {
+            if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+                continue;
+            }
+
+            if (choice >= 1 && choice <= 5) {
+                break;
+            } else {
+                cout << "[Error]: Invalid option. Please try again." << endl;
+            }
         }
 
         switch (choice) {
         case 1:
             manageProducts();
-            break;
+            break; // FIXME Return menu bug
         case 2:
             manageCategories();
             break;
@@ -585,7 +697,6 @@ void AdminMenu::display() {
             return;
         default:
             cout << "[Error]: Invalid option. Please try again." << endl;
-            sleep(1);
         }
     }
 }

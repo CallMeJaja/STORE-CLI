@@ -1,35 +1,35 @@
 [
-    {
-        "balance": 0,
-        "email": "a",
-        "fullName": "Admin Jstore",
-        "id": 1,
-        "isActive": true,
-        "isAdmin": true,
-        "password": "a",
-        "pin": "1",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 1485000,
-        "email": "r",
-        "fullName": "Reza Asriano Maulana",
-        "id": 2,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "r",
-        "pin": "1",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 200000,
-        "email": "test",
-        "fullName": "Testing",
-        "id": 3,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "test",
-        "pin": "1",
-        "totalTransaction": 0
-    }
+  {
+    "balance": 0,
+    "email": "a",
+    "fullName": "Admin Jstore",
+    "id": 1,
+    "isActive": true,
+    "isAdmin": true,
+    "password": "a",
+    "pin": "1",
+    "totalTransaction": 0
+  },
+  {
+    "balance": 505000,
+    "email": "r",
+    "fullName": "Reza Asriano Maulana",
+    "id": 2,
+    "isActive": true,
+    "isAdmin": false,
+    "password": "r",
+    "pin": "1",
+    "totalTransaction": 0
+  },
+  {
+    "balance": 200000,
+    "email": "test",
+    "fullName": "Testing",
+    "id": 3,
+    "isActive": true,
+    "isAdmin": false,
+    "password": "test",
+    "pin": "1",
+    "totalTransaction": 0
+  }
 ]

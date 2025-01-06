@@ -1,8 +1,8 @@
 #pragma once
-#include "../entities/Transaction.hpp"
-#include "../repositories/ProductRepository.hpp"
-#include "../repositories/TransactionRepository.hpp"
-#include "../repositories/UserRepository.hpp"
+#include "entities/Transaction.hpp"
+#include "repositories/ProductRepository.hpp"
+#include "repositories/TransactionRepository.hpp"
+#include "repositories/UserRepository.hpp"
 
 class TransactionService {
   private:

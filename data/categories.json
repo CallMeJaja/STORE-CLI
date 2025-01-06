@@ -22,5 +22,17 @@
     "isActive": true,
     "isDefault": false,
     "name": "Education"
+  },
+  {
+    "id": 5,
+    "isActive": true,
+    "isDefault": false,
+    "name": "Gaming"
+  },
+  {
+    "id": 6,
+    "isActive": true,
+    "isDefault": false,
+    "name": "Books"
   }
 ]
