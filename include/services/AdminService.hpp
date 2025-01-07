@@ -45,5 +45,5 @@ class AdminService {
     vector<Product> getAllProducts();
     vector<Product> getAllProductsByCategory(const string &category);
     vector<User> getActiveUsers();
-    void clearCurrentUser() { userService.clearCurrentUser(); }
+    void clearCurrentUser();
 };

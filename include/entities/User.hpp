@@ -14,5 +14,9 @@ class User {
     string pin;
     bool isActive;
     bool isAdmin;
-    User(int id, string fullName, string email, string password, string pin);
+    User(int id, int totalTransactions, string fullName, string email,
+         string password, string pin, int balance, bool isActive, bool isAdmin);
+    // User(int id, string fullName, string email, string password, string pin,
+    //      bool isActive, bool isAdmin, int totalTransactions = 0,
+    //      int balance = 0);
 };

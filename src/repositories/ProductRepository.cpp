@@ -67,7 +67,7 @@ bool ProductRepository::saveProduct(const Product &product) {
         };
         data.push_back(newProduct);
         writeJSON(data);
-
+        return true;
     } catch (...) {
         return false;
     }

@@ -5,6 +5,7 @@
 #include "services/AuthenticationService.hpp"
 #include "services/ShoppingService.hpp"
 #include "services/UserService.hpp"
+#include "utils/InputValidator.hpp"
 
 using namespace std;
 
@@ -17,52 +18,41 @@ void MainMenu::clearScreen() { system("cls"); }
 
 void MainMenu::handleSignIn() {
     clearScreen();
+    InputValidator::clearInputBuffer();
+
     cout << "> Sign In to J-STORE <" << endl;
-
-    while (true) {
-        if (!InputValidator::validateStringInput(email,
-                                                 "\nEnter Email Address: ") ||
-            !InputValidator::validateStringInput(password,
-                                                 "\nEnter Password: ") ||
-            !InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
-            return;
-        }
-
-        string status = authService.logIn(email, password, pin);
-
-        if (status == "USER_NOT_FOUND") {
-            cout << "[Error]: User not found. Please try again." << endl;
-        } else if (status == "PASSWORD_INCORRECT") {
-            cout << "[Error]: Incorrect password. Please try again." << endl;
-        } else if (status == "PIN_INCORRECT") {
-            cout << "[Error]: Incorrect PIN. Please try again." << endl;
-        } else if (status == "USER_INACTIVE") {
-            cout << "\n[!]: Your account has been deactivated for some "
-                    "reason. "
-                    "Please contact admin."
-                 << endl;
-        } else if (status == "SUCCESS") {
-            if (authService.isAdmin()) {
-                AdminMenu adminMenu(adminService, this);
-                adminMenu.display();
-            } else {
-                ShoppingMenu shoppingMenu(shoppingService, userService, this);
-                shoppingMenu.display();
-            }
-            authService.logOut();
-        }
-        sleep(1);
+    while (
+        !InputValidator::validateStringInput(email,
+                                             "\nEnter Email Address: ") ||
+        !InputValidator::validateStringInput(password, "\nEnter Password: ") ||
+        !InputValidator::validateStringInput(pin, "\nEnter PIN: ")) {
         return;
+    }
+
+    if (authService.logIn(email, password, pin)) {
+        cout << "\n[Info]: Login successful!" << endl;
+        sleep(0.5);
+        if (authService.isAdmin()) {
+            AdminMenu adminMenu(adminService, this);
+            adminMenu.display();
+        } else {
+            ShoppingMenu shoppingMenu(shoppingService, userService, this);
+            shoppingMenu.display();
+        }
+        authService.logOut();
+    } else {
+        sleep(2);
     }
 }
 
 void MainMenu::handleSignUp() {
-
     clearScreen();
+    InputValidator::clearInputBuffer();
     cout << "> Sign Up to J-STORE <" << endl;
 
-    if (!InputValidator::validateStringInput(fullName, "\nEnter Full Name: ")) {
-        return;
+    while (
+        !InputValidator::validateStringInput(fullName, "\nEnter Full Name: ")) {
+        break;
     }
 
     while (true) {
@@ -118,15 +108,13 @@ void MainMenu::handleSignUp() {
     }
 
     if (authService.registerUser(fullName, email, password, pin)) {
-        cout << "\nRegistration successful! Please sign in to continue.";
+        cout << "\nRegistration kocak successful! Please sign in to continue.";
         sleep(2);
-        return;
     } else {
         cout << "[Error]: Email already registered. Please try again.\n";
         sleep(1);
-        cout << "Redirecting to Main Menu..." << endl;
+        cout << "\nRedirecting to Main Menu..." << endl;
         sleep(2);
-        return;
     }
 }
 
@@ -140,27 +128,22 @@ void MainMenu::displayMainMenu() {
         cout << "2. Sign Up" << endl;
         cout << "3. Exit" << endl;
 
-        while (true) {
-            if (!InputValidator::validateIntInput(choice,
-                                                  "\nChoose an option: ")) {
-                continue;
-            }
+        while (!InputValidator::validateIntInput(choice,
+                                                 "\nChoose an option: ", 3)) {
+            break;
+        }
 
-            switch (choice) {
-            case 1:
-                handleSignIn();
-                return;
-            case 2:
-                handleSignUp();
-                return;
-            case 3:
-                cout << "\nThank you for using J-STORE";
-                cout << "\nExiting program..." << endl;
-                exit(0);
-            default:
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        switch (choice) {
+        case 1:
+            handleSignIn();
+            break;
+        case 2:
+            handleSignUp();
+            break;
+        case 3:
+            cout << "\nThank you for using J-STORE";
+            cout << "\nExiting program..." << endl;
+            exit(0);
         }
     }
 }

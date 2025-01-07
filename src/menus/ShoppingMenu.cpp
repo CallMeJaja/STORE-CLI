@@ -1,9 +1,9 @@
-#include "ShoppingMenu.hpp"
-#include "../services/ShoppingService.hpp"
-#include "../services/UserService.hpp"
-#include "../utils/FormatHelper.hpp"
-#include "../utils/InputValidator.hpp"
+#include "menus/ShoppingMenu.hpp"
+#include "services/ShoppingService.hpp"
+#include "services/UserService.hpp"
 #include "string"
+#include "utils/FormatHelper.hpp"
+#include "utils/InputValidator.hpp"
 
 ShoppingMenu::ShoppingMenu(ShoppingService &shopService,
                            UserService &userService, MainMenu *mainMenu)

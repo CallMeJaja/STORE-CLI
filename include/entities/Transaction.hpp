@@ -18,5 +18,6 @@ class Transaction {
     string productName;
 
     Transaction(int id, int userId, int productId, int quantity, int totalPrice,
-                const string &buyerName, const string &productName);
+                const string &buyerName, const string &productName,
+                time_t createdAt = time(nullptr));
 };

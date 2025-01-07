@@ -1,30 +1,40 @@
-#include "AuthenticationService.hpp"
-#include "../utils/InputValidator.hpp"
+#include "services/AuthenticationService.hpp"
 #include "iostream"
+#include "utils/InputValidator.hpp"
 
 AuthenticationService::AuthenticationService(UserRepository &userRepository,
                                              UserService &userService)
     : userRepository(userRepository), userService(userService) {}
 
-string AuthenticationService::logIn(const string &email, const string &password,
-                                    const string &pin) {
+bool AuthenticationService::logIn(const string &email, const string &password,
+                                  const string &pin) {
     auto user = userRepository.findByEmail(email);
 
-    if (!user)
-        return "USER_NOT_FOUND";
+    if (!user) {
+        cout << "[Error]: User not found. Please try again." << endl;
+        return false;
+    }
 
-    if (password != user->password)
-        return "PASSWORD_INCORRECT";
+    if (password != user->password) {
+        cout << "[Error]: Incorrect password. Please try again." << endl;
+        return false;
+    }
 
-    if (pin != user->pin)
-        return "PIN_INCORRECT";
+    if (pin != user->pin) {
+        cout << "[Error]: Incorrect PIN. Please try again." << endl;
+        return false;
+    }
 
-    if (!user->isActive)
-        return "USER_INACTIVE";
+    if (!user->isActive) {
+        cout << "\n[!]: Your account has been deactivated for some "
+                "reason. "
+                "Please contact admin."
+             << endl;
+        return false;
+    }
 
     userService.setCurrentUser(user->id);
-
-    return "SUCCESS";
+    return true;
 }
 
 bool AuthenticationService::registerUser(const string &fullName,
@@ -38,11 +48,15 @@ bool AuthenticationService::registerUser(const string &fullName,
     auto users = userRepository.getUsers();
     int newId = users.empty() ? 1 : users.back().id + 1;
 
-    User newUser(newId, fullName, email, password, pin);
-    newUser.isActive = true;
-    newUser.balance = 0;
-    userRepository.saveUsers(newUser);
-    return true;
+    try {
+        User newUser(newId, 0, fullName, email, password, pin, 0, true, false);
+        userRepository.saveUsers(newUser);
+        return true;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
+    return false;
 }
 
 void AuthenticationService::logOut() { userService.clearCurrentUser(); }

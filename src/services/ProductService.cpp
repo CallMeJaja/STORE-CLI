@@ -80,7 +80,7 @@ vector<Product> ProductService::getLowStockProducts(int threshold) {
     vector<Product> lowStockProducts;
 
     copy_if(products.begin(), products.end(), back_inserter(lowStockProducts),
-            [&](const Product &p) { return p.isLowStock(threshold); });
+            [&](Product &p) { return p.isLowStock(threshold); });
 
     return lowStockProducts;
 }
@@ -98,7 +98,7 @@ vector<Product> ProductService::getAvailableProducts() {
     vector<Product> availableProducts;
 
     copy_if(products.begin(), products.end(), back_inserter(availableProducts),
-            [&](const Product &p) { return p.isAvailable(); });
+            [&](Product &p) { return p.isAvailable(); });
 
     return availableProducts;
 }

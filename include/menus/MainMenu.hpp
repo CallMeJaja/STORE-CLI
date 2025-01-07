@@ -5,6 +5,7 @@
 #include "iostream"
 #include "services/AdminService.hpp"
 #include "services/AuthenticationService.hpp"
+#include "services/ShoppingService.hpp"
 #include "services/UserService.hpp"
 #include "string"
 #include "unistd.h"

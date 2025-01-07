@@ -26,7 +26,7 @@ class ProductService {
 
     // Getter Product
     int getTotalProducts();
-    vector<Product> getLowStockProducts(int threshold = 1);
+    vector<Product> getLowStockProducts(int threshold);
     vector<Product> getProductsByCategory(const string &category);
     vector<Product> getProducts();
     vector<Product> getAvailableProducts();

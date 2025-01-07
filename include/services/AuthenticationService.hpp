@@ -15,8 +15,7 @@ class AuthenticationService {
     AuthenticationService(UserRepository &userRepository,
                           UserService &userService);
 
-    string logIn(const string &email, const string &password,
-                 const string &pin);
+    bool logIn(const string &email, const string &password, const string &pin);
 
     bool registerUser(const string &fullName, const string &email,
                       const string &password, const string &pin);

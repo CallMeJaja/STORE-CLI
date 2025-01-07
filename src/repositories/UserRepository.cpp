@@ -54,8 +54,10 @@ vector<User> UserRepository::getUsers() {
                                item["fullName"], item["email"],
                                item["password"], item["pin"], item["balance"],
                                item["isActive"], item["isAdmin"]);
-        } catch (...) {
+
+        } catch (exception &e) {
             cout << "[Error]: Failed to parse user data." << endl;
+            cout << e.what() << endl;
         }
     }
     return users;
@@ -66,6 +68,7 @@ shared_ptr<User> UserRepository::findByEmail(const string &email) {
     auto userIt =
         find_if(users.begin(), users.end(),
                 [&email](const User &user) { return user.email == email; });
+
     if (userIt != users.end()) {
         return make_shared<User>(*userIt);
     }

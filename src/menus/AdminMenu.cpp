@@ -1,11 +1,11 @@
-#include "AdminMenu.hpp"
-#include "../services/AdminService.hpp"
-#include "../utils/FormatHelper.hpp"
-#include "../utils/InputValidator.hpp"
+#include "menus/AdminMenu.hpp"
 #include "algorithm"
 #include "conio.h"
 #include "iomanip"
+#include "services/AdminService.hpp"
 #include "unistd.h"
+#include "utils/FormatHelper.hpp"
+#include "utils/InputValidator.hpp"
 
 AdminMenu::AdminMenu(AdminService &adminService, MainMenu *mainMenu)
     : adminService(adminService), mainMenu(mainMenu) {}
@@ -20,31 +20,27 @@ void AdminMenu::manageProducts() {
     cout << "5. Back" << endl;
 
     int choice;
-    while (true) {
-        if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-            continue;
-        }
 
-        switch (choice) {
-        case 1:
-            addProduct();
-            return;
-        case 2:
-            updateProduct();
-            return;
-        case 3:
-            deleteProduct();
-            return;
-        case 4:
-            listProducts();
-            return;
-        case 5:
-            return;
-        default:
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            continue;
-        }
+    while (!InputValidator::validateIntInput(choice, "\nEnter choice: ", 5)) {
+        return;
     }
+
+    switch (choice) {
+    case 1:
+        addProduct();
+        return;
+    case 2:
+        updateProduct();
+        return;
+    case 3:
+        deleteProduct();
+        return;
+    case 4:
+        listProducts();
+        return;
+    case 5:
+        return;
+     }
 }
 
 void AdminMenu::manageCategories() {
@@ -175,6 +171,7 @@ void AdminMenu::listProducts() {
             currentPage--;
             continue;
         } else {
+            // FIXME Error Output Pagination
             if (currentPage == 1) {
                 cout << "\n[Error]: Invalid input. Please choose [n] or [b]\n"
                      << endl;
@@ -664,15 +661,13 @@ void AdminMenu::display() {
         cout << "5. Sign Out" << endl;
 
         int choice;
-        while (true) {
-            if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-                continue;
-            }
 
+        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
             if (choice >= 1 && choice <= 5) {
                 break;
             } else {
                 cout << "[Error]: Invalid option. Please try again." << endl;
+                continue;
             }
         }
 
@@ -695,8 +690,6 @@ void AdminMenu::display() {
             sleep(1);
             mainMenu->displayMainMenu();
             return;
-        default:
-            cout << "[Error]: Invalid option. Please try again." << endl;
         }
     }
 }
