@@ -13,75 +13,15 @@ class TransactionService {
   public:
     TransactionService(TransactionRepository &transactionRepository,
                        ProductRepository &productRepository,
-                       UserRepository &userRepository)
-        : transactionRepository(transactionRepository),
-          productRepository(productRepository), userRepository(userRepository) {
-    }
+                       UserRepository &userRepository);
 
-    bool createTransaction(int userId, int productid, int quantity) {
-        auto product = productRepository.findById(productid);
-        auto user = userRepository.findById(userId);
+    bool createTransaction(int userId, int productid, int quantity);
 
-        if (!product || !user)
-            return false;
-        if (!product->canPurchase(quantity))
-            return false;
+    vector<Transaction> getUserTransactions(int userId);
+    vector<Transaction> getAllTransactions();
 
-        int totalPrice = product->price * quantity;
-        if (user->balance < totalPrice)
-            return false;
+    int getTotalTransactions();
+    double getTotalRevenue();
 
-        auto transactions = transactionRepository.getTransactions();
-        int newId = transactions.empty() ? 1 : transactions.back().id + 1;
-
-        Transaction newTransaction(newId, userId, productid, quantity,
-                                   totalPrice, user->fullName, product->name);
-
-        transactionRepository.saveTransactions(newTransaction);
-
-        cout << "Before: " << user->balance << endl;
-        user->balance -= totalPrice;
-        cout << "After: " << user->balance << endl;
-        system("pause");
-        userRepository.updateUser(*user); // TODO UpdateUSerService
-
-        product->updateSold(quantity);
-        productRepository.updateProduct(*product);
-
-        return true;
-    }
-
-    vector<Transaction> getUserTransactions(int userId) {
-        return transactionRepository.getUserTransaction(userId);
-    }
-
-    vector<Transaction> getAllTransactions() {
-        return transactionRepository.getTransactions();
-    }
-
-    int getTotalTransactions() {
-        return transactionRepository.getTransactions().size();
-    }
-
-    double getTotalRevenue() {
-        auto transactions = transactionRepository.getTransactions();
-        return accumulate(transactions.begin(), transactions.end(), 0.0,
-                          [](double sum, const Transaction &t) {
-                              return sum + t.totalPrice;
-                          });
-    }
-
-    bool validateTransaction(int userId, int productId, int quantity) {
-        auto product = productRepository.findById(productId);
-        auto user = userRepository.findById(userId);
-
-        if (!product || !user)
-            return false;
-        if (!product->canPurchase(quantity))
-            return false;
-        if (user->balance < product->price * quantity)
-            return false;
-
-        return true;
-    }
+    bool validateTransaction(int userId, int productId, int quantity);
 };

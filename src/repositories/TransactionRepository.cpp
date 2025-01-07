@@ -3,7 +3,7 @@
 TransactionRepository::TransactionRepository(const string &path)
     : BaseRepository(path) {}
 
-void TransactionRepository::saveTransactions(const Transaction &transaction) {
+bool TransactionRepository::saveTransactions(const Transaction &transaction) {
     try {
         auto data = readJSON();
         json newTransaction = {
@@ -18,8 +18,10 @@ void TransactionRepository::saveTransactions(const Transaction &transaction) {
         };
         data.push_back(newTransaction);
         writeJSON(data);
+        return true;
     } catch (...) {
         std::cout << "[Error]: Failed to save transaction data." << endl;
+        return false;
     }
 }
 

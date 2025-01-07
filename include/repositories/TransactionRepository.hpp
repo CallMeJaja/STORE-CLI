@@ -9,7 +9,7 @@ class TransactionRepository : public BaseRepository {
   public:
     TransactionRepository(const string &path);
 
-    void saveTransactions(const Transaction &transaction);
+    bool saveTransactions(const Transaction &transaction);
     bool updateTransaction(const Transaction &transaction);
 
     shared_ptr<Transaction> findById(int id);

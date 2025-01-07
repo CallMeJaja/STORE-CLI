@@ -15,33 +15,13 @@ class ShoppingService {
 
   public:
     ShoppingService(ProductRepository &pRepo, UserRepository &uRepo,
-                    TransactionService &tService, CategoryRepository &cRepo)
-        : productRepository(pRepo), userRepository(uRepo),
-          transactionService(tService), categoryRepository(cRepo) {}
+                    TransactionService &tService, CategoryRepository &cRepo);
 
-    vector<Product> getProductsByCategory(const string &category) {
-        return productRepository.getProductsByCategory(category);
-    }
+    vector<Product> getProductsByCategory(const string &category);
+    vector<Category> getCategories();
+    shared_ptr<Product> getProductDetails(int productId);
+    vector<Transaction> getUserTransactionHistory(int userId);
 
-    vector<Category> getCategories() {
-        return categoryRepository.getCategories();
-    }
-
-    shared_ptr<Product> getProductDetails(int productId) {
-        return productRepository.findById(productId);
-    }
-
-    vector<Transaction> getUserTransactionHistory(int userId) {
-        return transactionService.getUserTransactions(userId);
-    }
-
-    bool purchaseProduct(int userId, int productId, int quantity) {
-        return transactionService.createTransaction(userId, productId,
-                                                    quantity);
-    }
-
-    bool isProductAvailabe(int productId, int quantity) {
-        auto product = productRepository.findById(productId);
-        return product && product->canPurchase(quantity);
-    }
+    bool purchaseProduct(int userId, int productId, int quantity);
+    bool isProductAvailabe(int productId, int quantity);
 };
