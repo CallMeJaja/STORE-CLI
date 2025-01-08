@@ -34,67 +34,12 @@
     },
     {
         "balance": 0,
-        "email": "KOCAK@GMAIL.COM",
+        "email": "KOCAK@KOCAK.KOCAK",
         "fullName": "KOCAK",
         "id": 4,
         "isActive": true,
         "isAdmin": false,
         "password": "KOCAK",
-        "pin": "1111",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 0,
-        "email": "K2OCAK@GMAIL.COM",
-        "fullName": "KOCAK",
-        "id": 5,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "KOCAK",
-        "pin": "1111",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 0,
-        "email": "kocakk@g.a",
-        "fullName": "KOCAK",
-        "id": 6,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "kocak",
-        "pin": "1111",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 0,
-        "email": "kcck@gfa.a",
-        "fullName": "kocak",
-        "id": 7,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "kocak",
-        "pin": "1111",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 0,
-        "email": "kasdkakd@asdk.asd",
-        "fullName": "kocak",
-        "id": 8,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "kocak",
-        "pin": "1111",
-        "totalTransaction": 0
-    },
-    {
-        "balance": 0,
-        "email": "kakakak@kakakaaK..ass",
-        "fullName": "kakaka",
-        "id": 9,
-        "isActive": true,
-        "isAdmin": false,
-        "password": "kakak",
         "pin": "1111",
         "totalTransaction": 0
     }

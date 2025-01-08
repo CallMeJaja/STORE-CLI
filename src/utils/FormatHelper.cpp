@@ -2,10 +2,11 @@
 
 string FormatHelper::displayCurrency(double amount) {
     stringstream ss;
-    ss << fixed << setprecision(2) << amount;
+    ss << fixed << setprecision(0) << amount;
 
     string result = ss.str();
     int insertPosition = result.length() - 3;
+
     while (insertPosition > 0) {
         result.insert(insertPosition, ".");
         insertPosition -= 3;

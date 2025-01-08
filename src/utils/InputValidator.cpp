@@ -3,7 +3,6 @@
 bool InputValidator::validateStringInput(string &input, const string &prompt) {
     while (true) {
         cout << prompt;
-
         getline(cin, input);
         if (input.empty()) {
             FormatHelper::handleInvalidInput();
@@ -17,7 +16,6 @@ bool InputValidator::validateStringInput(string &input, const string &prompt) {
 
 bool InputValidator::validateIntInput(int &input, const string &prompt,
                                       int menuSize) {
-
     while (true) {
         cout << prompt;
         cin >> input;
@@ -28,11 +26,12 @@ bool InputValidator::validateIntInput(int &input, const string &prompt,
             sleep(0.5);
         } else {
             if (menuSize > 0) {
-                if (input < 1 || input > menuSize) {
+                if (input < 0 || input > menuSize) {
                     FormatHelper::handleInvalidOption();
                     sleep(0.5);
                     continue;
                 } else {
+                    sleep(0.5);
                     return true;
                 }
             } else {
@@ -60,6 +59,7 @@ bool InputValidator::validateConfirmation(const string &prompt) {
     char input;
     while (true) {
         cout << prompt;
+        cin >> input;
         if (input == 'y' || input == 'Y') {
             return true;
         } else if (input == 'n' || input == 'N') {

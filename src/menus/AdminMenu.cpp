@@ -12,6 +12,8 @@ AdminMenu::AdminMenu(AdminService &adminService, MainMenu *mainMenu)
 
 void AdminMenu::manageProducts() {
     clearScreen();
+    // InputValidator::clearInputBuffer();
+
     cout << "> Manage Products <" << endl;
     cout << "\n1. Add Product" << endl;
     cout << "2. Update Product" << endl;
@@ -40,7 +42,7 @@ void AdminMenu::manageProducts() {
         return;
     case 5:
         return;
-     }
+    }
 }
 
 void AdminMenu::manageCategories() {
@@ -53,28 +55,23 @@ void AdminMenu::manageCategories() {
         cout << "4. Back" << endl;
 
         int choice;
-        while (true) {
-            while (
-                !InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-                continue;
-            }
 
-            switch (choice) {
-            case 1:
-                addCategory();
-                return;
-            case 2:
-                updateCategory();
-                return;
-            case 3:
-                deleteCategory();
-                return;
-            case 4:
-                return;
-            default:
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            break;
+        }
+
+        switch (choice) {
+        case 1:
+            addCategory();
+            return;
+        case 2:
+            updateCategory();
+            return;
+        case 3:
+            deleteCategory();
+            return;
+        case 4:
+            return;
         }
     }
 }
@@ -88,24 +85,20 @@ void AdminMenu::manageUsers() {
         cout << "3. Back" << endl;
 
         int choice;
-        while (true) {
-            if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-                continue;
-            }
 
-            switch (choice) {
-            case 1:
-                viewUsers();
-                return;
-            case 2:
-                toggleUserAccess();
-                return;
-            case 3:
-                return;
-            default:
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            break;
+        }
+
+        switch (choice) {
+        case 1:
+            viewUsers();
+            return;
+        case 2:
+            toggleUserAccess();
+            return;
+        case 3:
+            return;
         }
     }
 }
@@ -121,7 +114,7 @@ void AdminMenu::listProducts() {
     }
 
     int pageSize = 10;
-    int currentPage = 1; // FIXME Pagination
+    int currentPage = 0;
     int totalPages = (products.size() + pageSize - 1) / pageSize;
 
     while (true) {
@@ -145,9 +138,9 @@ void AdminMenu::listProducts() {
         cout << string(50, '-') << endl;
         cout << "\nPress ";
 
-        if (currentPage > 1)
+        if (currentPage > 0)
             cout << "[p] Previous, ";
-        if (currentPage == totalPages)
+        if (currentPage < totalPages - 1)
             cout << "[n] Next, ";
         cout << "[b] to Back: ";
 
@@ -171,28 +164,23 @@ void AdminMenu::listProducts() {
             currentPage--;
             continue;
         } else {
-            // FIXME Error Output Pagination
-            if (currentPage == 1) {
-                cout << "\n[Error]: Invalid input. Please choose [n] or [b]\n"
-                     << endl;
-            } else if (currentPage == totalPages) {
-                cout << "\n[Error]: Invalid input. Please choose [p] or [b]\n"
-                     << endl;
-            } else {
-                cout << "\n[Error]: Invalid input. Please choose [n], [p] or "
-                        "[b]\n"
-                     << endl;
-            }
+            cout << "\n[Error]: Invalid input. Please choose ";
+            if (currentPage > 0)
+                cout << "[p], ";
+            if (currentPage < totalPages - 1)
+                cout << "[n] ";
+            cout << "or [b]\n\n";
             pause();
             continue;
         }
     }
-
     pause();
 }
 
 void AdminMenu::addProduct() {
     clearScreen();
+    InputValidator::clearInputBuffer();
+
     cout << "> Add Product <" << endl;
     string name, description;
     int price, stock;
@@ -217,24 +205,20 @@ void AdminMenu::addProduct() {
     }
 
     int choice;
-    while (true) {
-        while (!InputValidator::validateIntInput(
-            choice, "\nSelect additional category (0 to skip): ")) {
-            return;
-        }
+
+    while (!InputValidator::validateIntInput(
+        choice, "\nSelect additional category (0 to skip): ",
+        availableCategories.size() - 1)) {
 
         if (choice == 0) {
             break;
         }
-
-        if (choice > 0 && choice <= availableCategories.size() - 1) {
-            categories.push_back(availableCategories[choice].name);
-            break;
-        } else {
-            FormatHelper::handleInvalidOption();
-            continue;
-        }
     }
+
+    if (choice != 0) {
+        categories.push_back(availableCategories[choice].name);
+    }
+
     if (adminService.addProduct(name, price, description, categories, stock)) {
         cout << "\nProduct added successfully!" << endl;
         sleep(1);
@@ -255,27 +239,20 @@ void AdminMenu::updateProduct() {
 
     displayAllCategories();
 
-    while (true) {
-        while (!InputValidator::validateIntInput(
-            categoryId, "\nEnter Category ID (Back = 0)")) {
-            continue;
-        }
-
-        if (categoryId == 0) {
-            return;
-        }
-        auto categoryIt = find_if(
-            categories.begin(), categories.end(),
-            [categoryId](const Category &cat) { return cat.id == categoryId; });
-
-        if (categoryIt == categories.end()) {
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            continue;
-        } else {
-            category = categoryIt->name;
-            break;
-        }
+    while (!InputValidator::validateIntInput(
+        categoryId, "\nEnter Category ID (Back = 0)", categories.size())) {
+        return;
     }
+
+    if (categoryId == 0) {
+        return;
+    }
+
+    auto categoryIt = find_if(
+        categories.begin(), categories.end(),
+        [categoryId](const Category &cat) { return cat.id == categoryId; });
+
+    category = categoryIt->name;
 
     auto products = adminService.getAllProductsByCategory(category);
 
@@ -292,56 +269,41 @@ void AdminMenu::updateProduct() {
         cout << "   Stock: " << products[i].stock << endl;
     }
 
-    while (true) {
-        while (!InputValidator::validateIntInput(
-            productId, "\nEnter Product ID (Back = 0): ")) {
-            continue;
-        }
+    while (!InputValidator::validateIntInput(
+        productId, "\nEnter Product ID (Back = 0): ", products.size())) {
+        return;
+    }
 
-        if (productId == 0) {
-            return;
-        }
-
-        auto productIt = find_if(
-            products.begin(), products.end(),
-            [productId](const Product &prod) { return prod.id == productId; });
-
-        if (productIt == products.end()) {
-            FormatHelper::displayMessage("error",
-                                         "Invalid option. Please try again");
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            continue;
-        } else {
-            break;
-        }
+    if (productId == 0) {
+        return;
     }
 
     auto &product = products[productId - 1];
+
+    InputValidator::clearInputBuffer();
     cout << "\nUpdate Product: " << product.name << endl;
 
     string name, description, priceStr, stockStr;
 
-    cout << "\nCurrent Name: " << product.name << endl;
-    if (InputValidator::validateStringInput(name, "\nNew Name: ")) {
-        product.name = name;
+    while (!InputValidator::validateStringInput(
+               name, "\nEnter New Name (current: " + product.name + "): ") ||
+           !InputValidator::validateStringInput(
+               description, "\nEnter New Description (current: " +
+                                product.description + "): ") ||
+           !InputValidator::validateStringInput(
+               priceStr, "\nEnter New Price (current: " +
+                             FormatHelper::displayCurrency(product.price) +
+                             "): ") ||
+           !InputValidator::validateStringInput(
+               stockStr, "\nEnter New Stock (current: " +
+                             to_string(product.stock) + "): ")) {
+        return;
     }
 
-    cout << "\nCurrent Description: " << product.description << endl;
-    if (InputValidator::validateStringInput(description,
-                                            "\nNew Description: ")) {
-        product.description = description;
-    }
-
-    cout << "\nCurrent Price: " << FormatHelper::displayCurrency(product.price)
-         << endl;
-    if (InputValidator::validateStringInput(priceStr, "\nNew Price: ")) {
-        product.price = stoi(priceStr);
-    }
-
-    cout << "\nCurrent Stock: " << product.stock << endl;
-    if (InputValidator::validateStringInput(stockStr, "\nNew Stock: ")) {
-        product.stock = stoi(stockStr);
-    }
+    product.name = name;
+    product.description = description;
+    product.price = stoi(priceStr);
+    product.stock = stoi(stockStr);
 
     if (adminService.updateProduct(product.id, product.name, product.price,
                                    product.description, product.stock)) {
@@ -358,9 +320,11 @@ void AdminMenu::updateProduct() {
 
 void AdminMenu::deleteProduct() {
     clearScreen();
+    InputValidator::clearInputBuffer();
     cout << "> Delete Product <\n" << endl;
 
     auto products = adminService.getAllProducts();
+
     if (products.empty()) {
         cout << "No products available." << endl;
         pause();
@@ -374,33 +338,27 @@ void AdminMenu::deleteProduct() {
         cout << "   Stock: " << products[i].stock << endl;
     }
 
-    int choice;
-    while (true) {
-        if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-            return;
-        }
-
-        if (choice < 1 || choice > products.size()) {
-            cout << "\n[Error]: Invalid option. Please try again." << endl;
-            pause();
-            return;
-        }
-
-        if (InputValidator::validateConfirmation(
-                "Are you sure you want to delete " + products[choice - 1].name +
-                "? (Y/N): ")) {
-            if (adminService.deleteProduct(products[choice - 1].id)) {
-                cout << "\n[Info]: Product deleted successfully!" << endl;
-                pause();
-                return;
-            } else {
-                cout << "\n[Error]: Failed to delete product. Please try again."
-                     << endl;
-                pause();
-                return;
-            }
-        }
+    int productId;
+    while (!InputValidator::validateIntInput(
+        productId, "\nEnter Product ID: ", products.size())) {
+        return;
     }
+
+    auto &product = products[productId - 1];
+
+    if (InputValidator::validateConfirmation(
+            "Are you sure you want to delete " + product.name + "? (Y/N): ")) {
+        if (adminService.deleteProduct(product.id)) {
+            cout << "\n[Info]: Product deleted successfully!" << endl;
+        } else {
+            cout << "\n[Error]: Failed to delete product. Please try again."
+                 << endl;
+        }
+    } else {
+        cout << "\n[Info]: Product deletion canceled." << endl;
+    }
+
+    pause();
 }
 
 void AdminMenu::listCategories() {
@@ -426,6 +384,7 @@ void AdminMenu::addCategory() {
     cout << "> Add Category <" << endl;
     string name;
 
+    // TODO Refactor Input
     while (true) {
         if (!InputValidator::validateStringInput(name,
                                                  "\nEnter category name: ")) {

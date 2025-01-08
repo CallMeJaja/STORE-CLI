@@ -18,17 +18,24 @@ ProductRepository::getProductsByCategory(const string &category) {
 }
 
 bool ProductRepository::deleteProduct(int id) {
-    auto data = readJSON();
-    auto productIt = find_if(data.begin(), data.end(), [id](const json &item) {
-        return item["id"] == id;
-    });
-    if (productIt != data.end()) {
-        data.erase(productIt);
-        for (int i = 1; i < data.size(); i++) {
-            data[i]["id"] = i + 1;
+    try {
+        auto data = readJSON();
+        auto productIt =
+            find_if(data.begin(), data.end(),
+                    [id](const json &item) { return item["id"] == id; });
+        if (productIt != data.end()) {
+            data.erase(productIt);
+            for (int i = 1; i < data.size(); i++) {
+                data[i]["id"] = i + 1;
+            }
+            writeJSON(data);
+            return true;
+        } else {
+            return false;
         }
-        writeJSON(data);
-        return true;
+    } catch (const std::exception &e) {
+        return false;
+        std::cerr << e.what() << '\n';
     }
     return false;
 }
