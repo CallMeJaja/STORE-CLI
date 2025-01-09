@@ -52,7 +52,8 @@ void AdminMenu::manageCategories() {
         cout << "\n1. Add Category" << endl;
         cout << "2. Update Category" << endl;
         cout << "3. Delete Category" << endl;
-        cout << "4. Back" << endl;
+        cout << "4. List Categories" << endl;
+        cout << "5. Back" << endl;
 
         int choice;
 
@@ -71,6 +72,9 @@ void AdminMenu::manageCategories() {
             deleteCategory();
             return;
         case 4:
+            listCategories();
+            return;
+        case 5:
             return;
         }
     }
@@ -92,7 +96,7 @@ void AdminMenu::manageUsers() {
 
         switch (choice) {
         case 1:
-            viewUsers();
+            listUsers();
             return;
         case 2:
             toggleUserAccess();
@@ -101,80 +105,6 @@ void AdminMenu::manageUsers() {
             return;
         }
     }
-}
-
-void AdminMenu::listProducts() {
-    clearScreen();
-    cout << "> List Products <" << endl;
-    auto products = adminService.getAllProducts();
-    if (products.empty()) {
-        cout << "No products available." << endl;
-        pause();
-        return;
-    }
-
-    int pageSize = 10;
-    int currentPage = 0;
-    int totalPages = (products.size() + pageSize - 1) / pageSize;
-
-    while (true) {
-        clearScreen();
-        int startIndex = currentPage * pageSize;
-        int endIndex =
-            min(startIndex + pageSize, static_cast<int>(products.size()));
-
-        cout << "> List Products - Page " << currentPage + 1 << " of "
-             << totalPages << endl;
-        cout << left << setw(5) << "ID" << setw(25) << "Name" << setw(15)
-             << "Price" << setw(10) << "Stock" << endl;
-        cout << string(50, '-') << endl;
-
-        for (int i = startIndex; i < endIndex; i++) {
-            cout << left << setw(5) << i + 1 << setw(25) << products[i].name
-                 << setw(15) << FormatHelper::displayCurrency(products[i].price)
-                 << setw(10) << products[i].stock << endl;
-        }
-
-        cout << string(50, '-') << endl;
-        cout << "\nPress ";
-
-        if (currentPage > 0)
-            cout << "[p] Previous, ";
-        if (currentPage < totalPages - 1)
-            cout << "[n] Next, ";
-        cout << "[b] to Back: ";
-
-        string input = "";
-        while (input.empty()) {
-            if (_kbhit()) {
-                input += _getch();
-            }
-            sleep(0.1);
-            cout << input;
-        }
-
-        if (input == "b") {
-            return;
-        }
-
-        if (currentPage < totalPages - 1 && input == "n") {
-            currentPage++;
-            continue;
-        } else if (currentPage > 0 && input == "p") {
-            currentPage--;
-            continue;
-        } else {
-            cout << "\n[Error]: Invalid input. Please choose ";
-            if (currentPage > 0)
-                cout << "[p], ";
-            if (currentPage < totalPages - 1)
-                cout << "[n] ";
-            cout << "or [b]\n\n";
-            pause();
-            continue;
-        }
-    }
-    pause();
 }
 
 void AdminMenu::addProduct() {
@@ -232,15 +162,16 @@ void AdminMenu::addProduct() {
 
 void AdminMenu::updateProduct() {
     clearScreen();
-    int categoryId, productId;
-    string category;
+    int categoryId, productId, priceNew, stockNew;
+    string name, description, category;
+
     cout << "> Update Product <\n" << endl;
     auto categories = adminService.getCategories();
 
     displayAllCategories();
 
     while (!InputValidator::validateIntInput(
-        categoryId, "\nEnter Category ID (Back = 0)", categories.size())) {
+        categoryId, "\nEnter Category ID (Back = 0): ", categories.size())) {
         return;
     }
 
@@ -283,27 +214,25 @@ void AdminMenu::updateProduct() {
     InputValidator::clearInputBuffer();
     cout << "\nUpdate Product: " << product.name << endl;
 
-    string name, description, priceStr, stockStr;
-
     while (!InputValidator::validateStringInput(
                name, "\nEnter New Name (current: " + product.name + "): ") ||
            !InputValidator::validateStringInput(
                description, "\nEnter New Description (current: " +
                                 product.description + "): ") ||
-           !InputValidator::validateStringInput(
-               priceStr, "\nEnter New Price (current: " +
+           !InputValidator::validateIntInput(
+               priceNew, "\nEnter New Price (current: " +
                              FormatHelper::displayCurrency(product.price) +
                              "): ") ||
-           !InputValidator::validateStringInput(
-               stockStr, "\nEnter New Stock (current: " +
+           !InputValidator::validateIntInput(
+               stockNew, "\nEnter New Stock (current: " +
                              to_string(product.stock) + "): ")) {
         return;
     }
 
     product.name = name;
     product.description = description;
-    product.price = stoi(priceStr);
-    product.stock = stoi(stockStr);
+    product.price = priceNew;
+    product.stock = stockNew;
 
     if (adminService.updateProduct(product.id, product.name, product.price,
                                    product.description, product.stock)) {
@@ -340,7 +269,11 @@ void AdminMenu::deleteProduct() {
 
     int productId;
     while (!InputValidator::validateIntInput(
-        productId, "\nEnter Product ID: ", products.size())) {
+        productId, "\nEnter Product ID (Back = 0): ", products.size())) {
+        return;
+    }
+
+    if (productId == 0) {
         return;
     }
 
@@ -363,7 +296,7 @@ void AdminMenu::deleteProduct() {
 
 void AdminMenu::listCategories() {
     clearScreen();
-    cout << "> List Categories \n<" << endl;
+    cout << "> List Categories <\n" << endl;
     auto categories = adminService.getCategories();
 
     if (categories.empty()) {
@@ -375,7 +308,7 @@ void AdminMenu::listCategories() {
     for (int i = 0; i < categories.size(); i++) {
         cout << i + 1 << ". " << categories[i].name << endl;
     }
-
+    cout << endl;
     pause();
 }
 
@@ -384,13 +317,8 @@ void AdminMenu::addCategory() {
     cout << "> Add Category <" << endl;
     string name;
 
-    // TODO Refactor Input
-    while (true) {
-        if (!InputValidator::validateStringInput(name,
-                                                 "\nEnter category name: ")) {
-            return;
-        }
-
+    while (
+        InputValidator::validateStringInput(name, "\nEnter category name: ")) {
         if (adminService.addCategory(name)) {
             cout << "\n[Info]: Category added successfully!" << endl;
             pause();
@@ -417,20 +345,21 @@ void AdminMenu::updateCategory() {
     for (int i = 0; i < categories.size(); i++) {
         cout << i + 1 << ". " << categories[i].name << endl;
     }
+    cout << categories.size() + 1 << ". Back" << endl;
 
     int choice;
-    if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-        return;
+    while (InputValidator::validateIntInput(
+        choice, "\nEnter Category ID: ", categories.size() + 1)) {
+        break;
     }
-
-    if (choice < 1 || choice > categories.size()) {
-        cout << "\n[Error]: Invalid option. Please try again." << endl;
-        pause();
+    if (choice == categories.size() + 1) {
         return;
     }
 
     auto &category = categories[choice - 1];
+
     cout << "\n> Update Category: " << category.name << endl;
+    InputValidator::clearInputBuffer();
 
     string name;
     if (InputValidator::validateStringInput(
@@ -621,19 +550,15 @@ void AdminMenu::display() {
 
         int choice;
 
-        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-            if (choice >= 1 && choice <= 5) {
-                break;
-            } else {
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        while (
+            !InputValidator::validateIntInput(choice, "\nEnter choice: ", 5)) {
+            break;
         }
 
         switch (choice) {
         case 1:
             manageProducts();
-            break; // FIXME Return menu bug
+            break;
         case 2:
             manageCategories();
             break;
@@ -653,23 +578,6 @@ void AdminMenu::display() {
     }
 }
 
-void AdminMenu::displayAllProducts() {
-    auto products = adminService.getAllProducts();
-    if (products.empty()) {
-        cout << "No products available." << endl;
-        pause();
-        return;
-    }
-
-    for (int i = 0; i < products.size(); i++) {
-        cout << i + 1 << ". " << products[i].name << "(" << endl;
-        cout << i + 1 << ". " << products[i].name << endl;
-        cout << "   Price: " << FormatHelper::displayCurrency(products[i].price)
-             << endl;
-        cout << "   Stock: " << products[i].stock << endl;
-    }
-}
-
 void AdminMenu::displayAllCategories() {
     auto categories = adminService.getCategories();
     if (categories.empty()) {
@@ -681,4 +589,116 @@ void AdminMenu::displayAllCategories() {
     for (size_t i = 0; i < categories.size(); ++i) {
         cout << i + 1 << ". " << categories[i].name << endl;
     }
+}
+
+template <typename T>
+void listItems(const vector<T> &item, const string &title, const string &header,
+               void (*displayItem)(const T &), int pageSize = 10) {
+    int currentPage = 0;
+    int totalPage = (item.size() + pageSize - 1) / pageSize;
+
+    while (true) {
+        system("cls");
+        int startIndex = currentPage * pageSize;
+        int endIndex =
+            min(startIndex + pageSize, static_cast<int>(item.size()));
+        cout << title << currentPage + 1 << " of " << totalPage << endl << endl;
+        cout << header << endl;
+        cout << string(80, '-') << endl;
+
+        for (int i = startIndex; i < endIndex; i++) {
+            displayItem(item[i]);
+        }
+
+        cout << "\nPress ";
+        if (currentPage > 0)
+            cout << "[p] Previous, ";
+        if (currentPage < totalPage - 1)
+            cout << "[n] Next, ";
+        cout << "[b] to Back: ";
+
+        string input = "";
+        while (input.empty()) {
+            if (kbhit()) {
+                input += getch();
+            }
+            sleep(0.1);
+        }
+
+        if (input == "n" && currentPage < totalPage - 1) {
+            currentPage++;
+            continue;
+        } else if (input == "p" && currentPage > 0) {
+            currentPage--;
+            continue;
+        } else if (input == "b") {
+            break;
+        } else {
+            cout << "\n[Error]: Invalid input. Please choose ";
+            if (currentPage > 0)
+                cout << "[p], ";
+            if (currentPage < totalPage - 1)
+                cout << "[n] ";
+
+            if (totalPage == 1) {
+                cout << "[b]";
+            } else {
+                cout << "or [b]";
+            }
+
+            cout << endl << endl;
+            system("pause");
+            continue;
+        }
+    }
+}
+
+void displayProducts(const Product &product) {
+    cout << left << setw(5) << product.id << setw(25) << product.name
+         << setw(15) << FormatHelper::displayCurrency(product.price) << setw(10)
+         << product.stock << setw(10) << product.sold << setw(10)
+         << product.categories[0] << endl;
+}
+
+void displayUsers(const User &user) {
+    cout << left << setw(5) << user.id << setw(25) << user.fullName << setw(15)
+         << FormatHelper::displayCurrency(user.balance) << setw(5)
+         << user.totalTransactions << setw(10)
+         << (user.isActive ? "Active" : "Inactive") << setw(10)
+         << (user.isAdmin ? "Admin" : "User") << endl;
+}
+
+void AdminMenu::listProducts() {
+    clearScreen();
+    auto products = adminService.getAllProducts();
+    if (products.empty()) {
+        cout << "No products available." << endl;
+        pause();
+        return;
+    }
+
+    stringstream productHeader;
+    productHeader << left << setw(5) << "ID" << setw(25) << "Name" << setw(15)
+                  << "Price" << setw(10) << "Stock" << setw(10) << "Sold"
+                  << setw(10) << "Category";
+
+    listItems(products, "> List Products - Page ", productHeader.str(),
+              displayProducts);
+}
+
+void AdminMenu::listUsers() {
+    clearScreen();
+    auto users = adminService.getAllUsers();
+    if (users.empty()) {
+        cout << "No users available." << endl;
+        pause();
+        return;
+    }
+
+    stringstream userHeader;
+    userHeader << left << setw(5) << "ID" << setw(25) << "Full Name" << setw(15)
+               << "Balance" << setw(5) << "TRX" << setw(10) << "Status"
+               << setw(10) << "Role";
+
+    listItems(users, "> List Users - Page ", userHeader.str(), displayUsers);
 }

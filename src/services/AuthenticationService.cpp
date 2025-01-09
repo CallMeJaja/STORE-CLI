@@ -48,6 +48,8 @@ bool AuthenticationService::registerUser(const string &fullName,
     auto users = userRepository.getUsers();
     int newId = users.empty() ? 1 : users.back().id + 1;
 
+    // TODO Implement Hashing Pass
+
     try {
         User newUser(newId, 0, fullName, email, password, pin, 0, true, false);
         userRepository.saveUsers(newUser);

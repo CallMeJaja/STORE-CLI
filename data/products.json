@@ -1,263 +1,361 @@
 [
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Premium streaming service",
-    "id": 1,
-    "name": "Netflix Premium",
-    "price": 15000,
-    "sold": 24,
-    "stock": 76
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Premium music streaming service",
-    "id": 2,
-    "name": "Spotify Premium",
-    "price": 12000,
-    "sold": 0,
-    "stock": 150
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Online course subscription",
-    "id": 3,
-    "name": "Coursera Plus",
-    "price": 40000,
-    "sold": 0,
-    "stock": 80
-  },
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Streaming service with movies and shows",
-    "id": 4,
-    "name": "Disney+ Hotstar",
-    "price": 20000,
-    "sold": 0,
-    "stock": 75
-  },
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Streaming service with movies and shows",
-    "id": 5,
-    "name": "Amazon Prime Video",
-    "price": 25000,
-    "sold": 0,
-    "stock": 60
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Music streaming service",
-    "id": 6,
-    "name": "Apple Music",
-    "price": 18000,
-    "sold": 0,
-    "stock": 90
-  },
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Ad-free YouTube experience",
-    "id": 7,
-    "name": "YouTube Premium",
-    "price": 16000,
-    "sold": 0,
-    "stock": 120
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Online courses taught by experts",
-    "id": 8,
-    "name": "Masterclass Subscription",
-    "price": 35000,
-    "sold": 0,
-    "stock": 100
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Bundle of online courses",
-    "id": 9,
-    "name": "Udemy Course Bundle",
-    "price": 22000,
-    "sold": 0,
-    "stock": 70
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Music streaming service",
-    "id": 10,
-    "name": "Joox VIP",
-    "price": 10000,
-    "sold": 0,
-    "stock": 85
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "High-fidelity music streaming",
-    "id": 11,
-    "name": "Tidal HiFi",
-    "price": 45000,
-    "sold": 0,
-    "stock": 55
-  },
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Streaming service with movies and shows",
-    "id": 12,
-    "name": "Paramount+",
-    "price": 19000,
-    "sold": 0,
-    "stock": 110
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "University courses online",
-    "id": 13,
-    "name": "edX Plus",
-    "price": 38000,
-    "sold": 1,
-    "stock": 94
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Music streaming service",
-    "id": 14,
-    "name": "SoundCloud Go+",
-    "price": 14000,
-    "sold": 70,
-    "stock": 0
-  },
-  {
-    "categories": ["Gaming", "All Products"],
-    "description": "Subscription for Xbox games",
-    "id": 15,
-    "name": "Xbox Game Pass",
-    "price": 35000,
-    "sold": 0,
-    "stock": 80
-  },
-  {
-    "categories": ["Gaming", "All Products"],
-    "description": "Subscription for Playstation games",
-    "id": 16,
-    "name": "PlayStation Plus",
-    "price": 28000,
-    "sold": 0,
-    "stock": 90
-  },
-  {
-    "categories": ["Books", "All Products"],
-    "description": "Subscription for ebooks",
-    "id": 17,
-    "name": "Kindle Unlimited",
-    "price": 22000,
-    "sold": 0,
-    "stock": 100
-  },
-  {
-    "categories": ["Books", "All Products"],
-    "description": "Subscription for audiobooks",
-    "id": 18,
-    "name": "Audible Premium",
-    "price": 25000,
-    "sold": 0,
-    "stock": 75
-  },
-  {
-    "categories": ["Streaming", "All Products"],
-    "description": "Anime streaming service",
-    "id": 19,
-    "name": "Crunchyroll Premium",
-    "price": 18000,
-    "sold": 0,
-    "stock": 90
-  },
-  {
-    "categories": ["Gaming", "All Products"],
-    "description": "Steam gift card",
-    "id": 20,
-    "name": "Steam Wallet",
-    "price": 50000,
-    "sold": 0,
-    "stock": 60
-  },
-  {
-    "categories": ["Gaming", "All Products"],
-    "description": "Nintendo online service",
-    "id": 21,
-    "name": "Nintendo Switch Online",
-    "price": 15000,
-    "sold": 0,
-    "stock": 120
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Annual subscription to Masterclass",
-    "id": 22,
-    "name": "Masterclass Annual",
-    "price": 48000,
-    "sold": 0,
-    "stock": 85
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Annual subscription to Skillshare",
-    "id": 23,
-    "name": "Skillshare Annual",
-    "price": 42000,
-    "sold": 0,
-    "stock": 70
-  },
-  {
-    "categories": ["Education", "All Products"],
-    "description": "Coding courses subscription",
-    "id": 24,
-    "name": "Codecademy Pro",
-    "price": 30000,
-    "sold": 0,
-    "stock": 100
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Music streaming for family",
-    "id": 25,
-    "name": "Spotify Family",
-    "price": 20000,
-    "sold": 0,
-    "stock": 65
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Unlimited music streaming",
-    "id": 26,
-    "name": "Amazon Music Unlimited",
-    "price": 22000,
-    "sold": 0,
-    "stock": 80
-  },
-  {
-    "categories": ["Music", "All Products"],
-    "description": "Music streaming from YouTube",
-    "id": 27,
-    "name": "YouTube Music Premium",
-    "price": 14000,
-    "sold": 0,
-    "stock": 70
-  },
-  {
-    "categories": ["Books", "All Products"],
-    "description": "Ebooks and audiobooks",
-    "id": 28,
-    "name": "Google Play Books",
-    "price": 19000,
-    "sold": 0,
-    "stock": 95
-  },
-  {
-    "categories": ["Books", "All Products"],
-    "description": "Ebooks subscription",
-    "id": 29,
-    "name": "Kobo Plus",
-    "price": 25000,
-    "sold": 0,
-    "stock": 85
-  }
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Premium streaming service",
+        "id": 1,
+        "name": "Netflix Premium",
+        "price": 15000,
+        "sold": 24,
+        "stock": 76
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Premium music streaming service",
+        "id": 2,
+        "name": "Spotify Premium",
+        "price": 12000,
+        "sold": 0,
+        "stock": 150
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Online course subscription",
+        "id": 3,
+        "name": "Coursera Plus",
+        "price": 40000,
+        "sold": 0,
+        "stock": 80
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Streaming service with movies and shows",
+        "id": 4,
+        "name": "Disney+ Hotstar",
+        "price": 20000,
+        "sold": 0,
+        "stock": 75
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Streaming service with movies and shows",
+        "id": 5,
+        "name": "Amazon Prime Video",
+        "price": 25000,
+        "sold": 0,
+        "stock": 60
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 6,
+        "name": "Apple Music",
+        "price": 18000,
+        "sold": 0,
+        "stock": 90
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Ad-free YouTube experience",
+        "id": 7,
+        "name": "YouTube Premium",
+        "price": 16000,
+        "sold": 0,
+        "stock": 120
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Online courses taught by experts",
+        "id": 8,
+        "name": "Masterclass Subscription",
+        "price": 35000,
+        "sold": 0,
+        "stock": 100
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Bundle of online courses",
+        "id": 9,
+        "name": "Udemy Course Bundle",
+        "price": 22000,
+        "sold": 0,
+        "stock": 70
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 10,
+        "name": "Joox VIP",
+        "price": 10000,
+        "sold": 0,
+        "stock": 85
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "High-fidelity music streaming",
+        "id": 11,
+        "name": "Tidal HiFi",
+        "price": 45000,
+        "sold": 0,
+        "stock": 55
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Streaming service with movies and shows",
+        "id": 12,
+        "name": "Paramount+",
+        "price": 19000,
+        "sold": 0,
+        "stock": 110
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "University courses online",
+        "id": 13,
+        "name": "edX Plus",
+        "price": 38000,
+        "sold": 1,
+        "stock": 94
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming service",
+        "id": 14,
+        "name": "SoundCloud Go+",
+        "price": 14000,
+        "sold": 70,
+        "stock": 0
+    },
+    {
+        "categories": [
+            "Gaming",
+            "All Products"
+        ],
+        "description": "Subscription for Xbox games",
+        "id": 15,
+        "name": "Xbox Game Pass",
+        "price": 35000,
+        "sold": 0,
+        "stock": 80
+    },
+    {
+        "categories": [
+            "Gaming",
+            "All Products"
+        ],
+        "description": "Subscription for Playstation games",
+        "id": 16,
+        "name": "PlayStation Plus",
+        "price": 28000,
+        "sold": 0,
+        "stock": 90
+    },
+    {
+        "categories": [
+            "Books",
+            "All Products"
+        ],
+        "description": "Subscription for ebooks",
+        "id": 17,
+        "name": "Kindle Unlimited",
+        "price": 22000,
+        "sold": 0,
+        "stock": 100
+    },
+    {
+        "categories": [
+            "Books",
+            "All Products"
+        ],
+        "description": "Subscription for audiobooks",
+        "id": 18,
+        "name": "Audible Premium",
+        "price": 25000,
+        "sold": 0,
+        "stock": 75
+    },
+    {
+        "categories": [
+            "Streaming",
+            "All Products"
+        ],
+        "description": "Anime streaming service",
+        "id": 19,
+        "name": "Crunchyroll Premium",
+        "price": 18000,
+        "sold": 0,
+        "stock": 90
+    },
+    {
+        "categories": [
+            "Gaming",
+            "All Products"
+        ],
+        "description": "Steam gift card",
+        "id": 20,
+        "name": "Steam Wallet",
+        "price": 50000,
+        "sold": 0,
+        "stock": 60
+    },
+    {
+        "categories": [
+            "Gaming",
+            "All Products"
+        ],
+        "description": "Nintendo online service",
+        "id": 21,
+        "name": "Nintendo Switch Online",
+        "price": 15000,
+        "sold": 0,
+        "stock": 120
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Annual subscription to Masterclass",
+        "id": 22,
+        "name": "Masterclass Annual",
+        "price": 48000,
+        "sold": 0,
+        "stock": 85
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Annual subscription to Skillshare",
+        "id": 23,
+        "name": "Skillshare Annual",
+        "price": 42000,
+        "sold": 0,
+        "stock": 70
+    },
+    {
+        "categories": [
+            "Education",
+            "All Products"
+        ],
+        "description": "Coding courses subscription",
+        "id": 24,
+        "name": "Codecademy Pro",
+        "price": 30000,
+        "sold": 0,
+        "stock": 100
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming for family",
+        "id": 25,
+        "name": "Spotify Family",
+        "price": 20000,
+        "sold": 0,
+        "stock": 65
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Unlimited music streaming",
+        "id": 26,
+        "name": "Amazon Music Unlimited",
+        "price": 22000,
+        "sold": 0,
+        "stock": 80
+    },
+    {
+        "categories": [
+            "Music",
+            "All Products"
+        ],
+        "description": "Music streaming from YouTube",
+        "id": 27,
+        "name": "YouTube Music Premium",
+        "price": 14000,
+        "sold": 0,
+        "stock": 70
+    },
+    {
+        "categories": [
+            "Books",
+            "All Products"
+        ],
+        "description": "Ebooks and audiobooks",
+        "id": 28,
+        "name": "Google Play Books",
+        "price": 19000,
+        "sold": 5,
+        "stock": 90
+    },
+    {
+        "categories": [
+            "Books",
+            "All Products"
+        ],
+        "description": "Ebooks subscription",
+        "id": 29,
+        "name": "Kobo Plus",
+        "price": 25000,
+        "sold": 5,
+        "stock": 80
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "1",
+        "id": 30,
+        "name": "P",
+        "price": 1,
+        "sold": 2,
+        "stock": 0
+    }
 ]

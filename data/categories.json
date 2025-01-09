@@ -1,38 +1,38 @@
 [
-  {
-    "id": 1,
-    "isActive": true,
-    "isDefault": true,
-    "name": "All Products"
-  },
-  {
-    "id": 2,
-    "isActive": true,
-    "isDefault": false,
-    "name": "Streaming"
-  },
-  {
-    "id": 3,
-    "isActive": true,
-    "isDefault": false,
-    "name": "Music"
-  },
-  {
-    "id": 4,
-    "isActive": true,
-    "isDefault": false,
-    "name": "Education"
-  },
-  {
-    "id": 5,
-    "isActive": true,
-    "isDefault": false,
-    "name": "Gaming"
-  },
-  {
-    "id": 6,
-    "isActive": true,
-    "isDefault": false,
-    "name": "Books"
-  }
+    {
+        "id": 1,
+        "isActive": true,
+        "isDefault": true,
+        "name": "All Products"
+    },
+    {
+        "id": 2,
+        "isActive": true,
+        "isDefault": false,
+        "name": "Streaming"
+    },
+    {
+        "id": 3,
+        "isActive": true,
+        "isDefault": false,
+        "name": "Music"
+    },
+    {
+        "id": 4,
+        "isActive": true,
+        "isDefault": false,
+        "name": "Education"
+    },
+    {
+        "id": 5,
+        "isActive": true,
+        "isDefault": false,
+        "name": "Gaming"
+    },
+    {
+        "id": 6,
+        "isActive": true,
+        "isDefault": false,
+        "name": "Books"
+    }
 ]

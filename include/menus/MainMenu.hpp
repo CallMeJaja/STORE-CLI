@@ -32,4 +32,5 @@ class MainMenu {
              UserService &user, AdminService &admin);
 
     void displayMainMenu();
+    void displayProducts();
 };

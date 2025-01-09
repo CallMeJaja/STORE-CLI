@@ -30,32 +30,28 @@ void ShoppingMenu::display() {
         cout << "5. Sign Out" << endl;
 
         int choice;
-        while (true) {
-            if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
-                continue;
 
-            switch (choice) {
-            case 1:
-                browseCategories();
-                return;
-            case 2:
-                viewTransactionHistory();
-                return;
-            case 3:
-                topUpBalance();
-                return;
-            case 4:
-                updateProfile();
-                return;
-            case 5:
-                cout << "\nSigning out. Please wait..." << endl;
-                userService.clearCurrentUser();
-                mainMenu->displayMainMenu();
-                return;
-            default:
-                cout << "[Error]: Invalid option. Please try again." << endl;
-                continue;
-            }
+        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ", 5))
+            continue;
+
+        switch (choice) {
+        case 1:
+            browseCategories();
+            break;
+        case 2:
+            viewTransactionHistory();
+            break;
+        case 3:
+            topUpBalance();
+            break;
+        case 4:
+            updateProfile();
+            break;
+        case 5:
+            cout << "\nSigning out. Please wait..." << endl;
+            userService.clearCurrentUser();
+            mainMenu->displayMainMenu();
+            break;
         }
     }
 }
@@ -98,6 +94,7 @@ void ShoppingMenu::browseCategories() {
 
 void ShoppingMenu::viewProducts(const string &category) {
     clearScreen();
+    // TODO Improve list product
     cout << "> List Products in " << category << " <" << endl;
 
     auto products = shopService.getProductsByCategory(category);
@@ -121,6 +118,7 @@ void ShoppingMenu::viewProducts(const string &category) {
     cout << products.size() + 1 << ". Back to Menu" << endl;
 
     int choice;
+    // FIXME Improve logic selection
     while (true) {
         if (!InputValidator::validateIntInput(choice, "\nEnter Product ID: ")) {
             break;
@@ -189,6 +187,7 @@ void ShoppingMenu::viewProducts(const string &category) {
 
 void ShoppingMenu::topUpBalance() {
     clearScreen();
+    int amount;
     cout << userService.getCurrentUser()->fullName << endl;
     cout << "> Top Up Balance <\n" << endl;
     cout << "Current Balance: "
@@ -202,73 +201,55 @@ void ShoppingMenu::topUpBalance() {
     cout << "5. Back" << endl;
 
     int choice;
-    while (true) {
-        if (!InputValidator::validateIntInput(choice, "\nEnter choice: "))
-            continue;
 
-        int amount;
-        switch (choice) {
-        case 1:
-            amount = 50000;
-            return;
-        case 2:
-            amount = 100000;
-            return;
-        case 3:
-            amount = 200000;
-            return;
-        case 4:
-            if (!InputValidator::validateIntInput(
-                    amount, "\nEnter custom amount (minimum Rp.10.000): "))
-                continue;
-            if (amount < 10000) {
-                cout << "[Error]: Minimum top up amount is Rp.10.000." << endl;
-                continue;
+    while (InputValidator::validateIntInput(choice, "\nEnter choice: ", 5)) {
+        if (choice == 4) {
+            while (InputValidator::validateIntInput(
+                amount, "\nEnter custom amount (minimum Rp.10.000): ")) {
+                if (amount >= 10000) {
+                    break;
+                } else {
+                    cout << "[Error]: Minimum top up amount is Rp.10.000."
+                         << endl;
+                    continue;
+                }
             }
-            return;
-        case 5:
-            return;
-        default:
-            cout << "\n[Error]: Invalid option. Please try again." << endl;
-            continue;
+            break;
+        } else {
+            break;
         }
+    }
 
+    switch (choice) {
+    case 1:
+        amount = 50000;
+        break;
+
+    case 2:
+        amount = 100000;
+        break;
+
+    case 3:
+        amount = 200000;
+        break;
+    }
+
+    if (InputValidator::validateConfirmation(
+            "\nConfirm top up amount: " +
+            FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
         if (userService.topUpBalance(userService.getCurrentUser()->id,
                                      amount)) {
             cout << "\nTop up successful!" << endl;
-            sleep(0.5);
             cout << "New Balance: "
                  << FormatHelper::displayCurrency(
                         userService.getCurrentUser()->balance)
                  << endl;
             pause();
-            return;
+
         } else {
-            cout << "[Error]: Top up failed. Please try again." << endl;
+            cout << "\n[Error]: Top up failed. Please try again." << endl;
             pause();
-            return;
         }
-        // TODO Confirmation Top Up
-        /* if (InputValidator::validateConfirmation(
-                "Confirm top up amount: " +
-                FormatHelper::displayCurrency(amount) + " (Y/N): ")) {
-            if
-            (userService.topUpBalance(userService.getCurrentUser()->id,
-                                         amount)) {
-                cout << "\nTop up successful!" << endl;
-                cout << "New Balance: "
-                     << FormatHelper::displayCurrency(
-                            userService.getCurrentUser()->balance)
-                     << endl;
-                pause();
-                return;
-            } else {
-                cout << "\n[Error]: Top up failed. Please try again."
-                     << endl;
-                pause();
-                return;
-            }
-        } */
     }
 }
 
@@ -301,6 +282,71 @@ void ShoppingMenu::viewTransactionHistory() {
 
 void ShoppingMenu::updateProfile() {
     clearScreen();
+    string newName, newEmail, newPin, newPass, oldPass;
+    auto user = userService.getCurrentUser();
+
     cout << "> Update Profile <\n" << endl;
+    cout << "Current Name\t: " << user->fullName << endl;
+    cout << "Current Email\t: " << user->email << endl;
+    cout << "Current PIN\t: " << user->pin << endl;
+    cout << string(50, '=') << endl;
+
+    cout << "1. Update Name" << endl;
+    cout << "2. Update Email" << endl;
+    cout << "3. Update PIN" << endl;
+    cout << "4. Update Password" << endl;
+    cout << "5. Back" << endl;
+
+    int choice;
+    while (!InputValidator::validateIntInput(choice, "\nEnter choice: ", 5))
+        continue;
+
+    InputValidator::clearInputBuffer();
+    switch (choice) {
+    case 1:
+        while (!InputValidator::validateStringInput(newName, "New Name: ")) {
+            continue;
+        }
+        user->fullName = newName;
+        break;
+    case 2:
+        while (!InputValidator::validateStringInput(newEmail, "New Email: ")) {
+            continue;
+        }
+        user->email = newEmail;
+        break;
+    case 3:
+        while (!InputValidator::validateStringInput(newPin, "New PIN: ")) {
+            continue;
+        }
+        user->pin = newPin;
+        break;
+    case 4:
+        while (
+            InputValidator::validateStringInput(oldPass, "\nOld Password: ")) {
+            if (oldPass == user->password) {
+                break;
+            } else {
+                cout << "[Error]: Incorrect password. Please try again."
+                     << endl;
+                continue;
+            }
+        }
+        while (
+            !InputValidator::validateStringInput(newPass, "New Password: ")) {
+            continue;
+        }
+        user->password = newPass;
+        break;
+    case 5:
+        return;
+    }
+
+    if (userService.updateUser(*user)) {
+        cout << "\nProfile updated successfully!" << endl;
+    } else {
+        cout << "\n[Error]: Failed to update profile. Please try again."
+             << endl;
+    }
     pause();
 }

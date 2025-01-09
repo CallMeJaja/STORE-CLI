@@ -19,13 +19,11 @@ class AdminMenu : public MenuBase {
     void manageUsers();
 
     // Product Operation
-    void listProducts();
     void addProduct();
     void updateProduct();
     void deleteProduct();
 
     // Category Operation
-    void listCategories();
     void addCategory();
     void updateCategory();
     void deleteCategory();
@@ -39,6 +37,8 @@ class AdminMenu : public MenuBase {
     AdminMenu(AdminService &adminService, MainMenu *mainMenu);
 
     void display();
-    void displayAllProducts();
     void displayAllCategories();
+    void listUsers();
+    void listProducts();
+    void listCategories();
 };

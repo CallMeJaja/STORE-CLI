@@ -118,6 +118,11 @@ void MainMenu::handleSignUp() {
     }
 }
 
+void MainMenu::displayProducts() {
+    AdminMenu adminMenu(adminService, this);
+    adminMenu.listProducts();
+}
+
 void MainMenu::displayMainMenu() {
     int choice = 0;
     while (true) {
@@ -126,10 +131,11 @@ void MainMenu::displayMainMenu() {
         cout << "Your trusted platform for all you needs!\n" << endl;
         cout << "1. Sign In" << endl;
         cout << "2. Sign Up" << endl;
-        cout << "3. Exit" << endl;
+        cout << "3. List Services" << endl;
+        cout << "4. Exit" << endl;
 
         while (!InputValidator::validateIntInput(choice,
-                                                 "\nChoose an option: ", 3)) {
+                                                 "\nChoose an option: ", 4)) {
             break;
         }
 
@@ -141,6 +147,9 @@ void MainMenu::displayMainMenu() {
             handleSignUp();
             break;
         case 3:
+            displayProducts();
+            break;
+        case 4:
             cout << "\nThank you for using J-STORE";
             cout << "\nExiting program..." << endl;
             exit(0);
