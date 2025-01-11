@@ -516,23 +516,24 @@ void AdminMenu::viewReport() {
 
     cout << "Transaction History:\n" << endl;
     for (const auto &transaction : transactions) {
-        cout << "Transaction ID: " << transaction.id << endl;
-        cout << "User ID: " << transaction.userId << endl;
-        cout << "Product ID: " << transaction.productId << endl;
-        cout << "Quantity: " << transaction.quantity << endl;
-        cout << "Total Price: "
+        cout << "Transaction ID\t: " << transaction.id << endl;
+        cout << "User ID\t\t: " << transaction.userId << endl;
+        cout << "Buyer Nume\t: " << transaction.buyerName << endl;
+        cout << "Product ID\t: " << transaction.productId << endl;
+        cout << "Quantity\t: " << transaction.quantity << endl;
+        cout << "Total Price\t: "
              << FormatHelper::displayCurrency(transaction.totalPrice) << endl;
-        cout << "Date: " << FormatHelper::formatDate(transaction.createdAt)
+        cout << "Date\t\t: " << FormatHelper::formatDate(transaction.createdAt)
              << endl;
         cout << string(50, '=') << endl;
     }
 
-    cout << "Total Users: " << adminService.getAllUsers().size() << " users"
+    cout << "\nTotal Users\t\t: " << adminService.getAllUsers().size()
+         << " users" << endl;
+    cout << "Total Transactions\t: " << totalTransactions << endl;
+    cout << "Total Revenue\t\t: " << FormatHelper::displayCurrency(totalRevenue)
          << endl;
-    cout << "Total Transactions: " << totalTransactions << endl;
-    cout << "Total Revenue: " << FormatHelper::displayCurrency(totalRevenue)
-         << endl;
-    cout << "Average Transaction Value: "
+    cout << "AVG Transaction Value\t: "
          << FormatHelper::displayCurrency(avgTransactionValue) << endl;
 
     pause();

@@ -72,18 +72,10 @@ void ShoppingMenu::browseCategories() {
     cout << categories.size() + 1 << ". Back to Menu" << endl;
 
     int choice;
-    while (true) {
-        if (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
-            return;
-        }
-
+    while (InputValidator::validateIntInput(
+        choice, "\nEnter choice: ", categories.size() + 1)) {
         if (choice == categories.size() + 1) {
             return;
-        }
-
-        if (choice < 0 || choice >= categories.size()) {
-            cout << "[Error]: Invalid option. Please try again." << endl;
-            continue;
         } else {
             break;
         }
@@ -157,7 +149,7 @@ void ShoppingMenu::viewProducts(const string &category) {
     cout << "> Product Information <" << endl;
     cout << "Product: " << products[choice - 1].name << endl;
     cout << "Descriptioni: " << products[choice - 1].description << endl;
-    cout << "Stock: " << products[choice - 1].price << endl;
+    cout << "Stock: " << products[choice - 1].stock << endl;
     cout << "Quantity: " << quantity << endl;
     cout << "Unit Price: "
          << FormatHelper::displayCurrency(products[choice - 1].price) << endl;
@@ -165,11 +157,7 @@ void ShoppingMenu::viewProducts(const string &category) {
          << endl;
 
     if (InputValidator::validateConfirmation("Confirm purchase? (Y/N): ")) {
-        if (shopService.purchaseProduct(userService.getCurrentUser()->id,
-                                        products[choice - 1].id, quantity)) {
-            cout << "\nPurchase successful!" << endl;
-            pause();
-        } else {
+        if (userService.getCurrentUser()->balance < totalPrice) {
             cout << "[Error]: Insufficient balance." << endl;
             if (InputValidator::validateConfirmation(
                     "Would you like to top up your balance? (Y/N): ")) {
@@ -178,6 +166,14 @@ void ShoppingMenu::viewProducts(const string &category) {
                 cout << "Redirecting to menu..." << endl;
                 sleep(1);
             }
+        } else if (shopService.purchaseProduct(userService.getCurrentUser()->id,
+                                               products[choice - 1].id,
+                                               quantity)) {
+            cout << "\nPurchase successful!" << endl;
+            pause();
+        } else {
+            cout << "\n[Error]: Purchase failed. Please try again." << endl;
+            pause();
         }
     } else {
         cout << "Purchase canceled" << endl;

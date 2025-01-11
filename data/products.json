@@ -8,8 +8,8 @@
         "id": 1,
         "name": "Netflix Premium",
         "price": 15000,
-        "sold": 24,
-        "stock": 76
+        "sold": 56,
+        "stock": 44
     },
     {
         "categories": [
@@ -20,8 +20,8 @@
         "id": 2,
         "name": "Spotify Premium",
         "price": 12000,
-        "sold": 0,
-        "stock": 150
+        "sold": 3,
+        "stock": 147
     },
     {
         "categories": [
@@ -32,8 +32,8 @@
         "id": 3,
         "name": "Coursera Plus",
         "price": 40000,
-        "sold": 0,
-        "stock": 80
+        "sold": 2,
+        "stock": 78
     },
     {
         "categories": [
@@ -56,8 +56,8 @@
         "id": 5,
         "name": "Amazon Prime Video",
         "price": 25000,
-        "sold": 0,
-        "stock": 60
+        "sold": 1,
+        "stock": 59
     },
     {
         "categories": [
@@ -248,8 +248,8 @@
         "id": 21,
         "name": "Nintendo Switch Online",
         "price": 15000,
-        "sold": 0,
-        "stock": 120
+        "sold": 10,
+        "stock": 110
     },
     {
         "categories": [
@@ -346,16 +346,5 @@
         "price": 25000,
         "sold": 5,
         "stock": 80
-    },
-    {
-        "categories": [
-            "All Products"
-        ],
-        "description": "1",
-        "id": 30,
-        "name": "P",
-        "price": 1,
-        "sold": 2,
-        "stock": 0
     }
 ]

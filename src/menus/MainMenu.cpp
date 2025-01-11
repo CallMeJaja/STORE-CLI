@@ -138,7 +138,6 @@ void MainMenu::displayMainMenu() {
                                                  "\nChoose an option: ", 4)) {
             break;
         }
-
         switch (choice) {
         case 1:
             handleSignIn();
