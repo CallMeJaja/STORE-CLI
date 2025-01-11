@@ -63,7 +63,7 @@ void MainMenu::handleSignUp() {
         }
 
         if (!InputValidator::validateEmail(email)) {
-            cout << "[Error]: Invalid email format\n";
+            cout << "[Error]: Invalid email format. Please try again.\n";
             continue;
         }
         break;
@@ -101,20 +101,88 @@ void MainMenu::handleSignUp() {
         }
 
         if (!InputValidator::validatePin(pin)) {
-            cout << "[Error]: PIN must be 4 digits\n";
+            cout << "[Error]: Invalid PIN format. PIN must be 4 digits. Please "
+                    "try again.\n";
             continue;
         }
         break;
     }
 
     if (authService.registerUser(fullName, email, password, pin)) {
-        cout << "\nRegistration kocak successful! Please sign in to continue.";
+        cout << "\nRegistration successful! Please sign in to continue.";
         sleep(2);
     } else {
         cout << "[Error]: Email already registered. Please try again.\n";
         sleep(1);
         cout << "\nRedirecting to Main Menu..." << endl;
         sleep(2);
+    }
+}
+
+void MainMenu::handleForgotPin() {
+    clearScreen();
+    InputValidator::clearInputBuffer();
+    string email, pin;
+    cout << "> Forgot PIN <" << endl;
+
+    while (InputValidator::validateStringInput(pin, "\nEnter New PIN: ")) {
+        if (InputValidator::validatePin(pin)) {
+            break;
+        } else {
+            cout << "[Error]: Invalid PIN format. PIN must be 4 digits. Please "
+                    "try again.\n";
+            continue;
+        }
+    }
+
+    if (authService.updatePin(pin, email)) {
+        cout << "\n[Info]: PIN reset successful!. Please sign in to "
+                "continue";
+        sleep(2);
+    } else {
+        cout << "[Error]: PIN reset failed. Please try again.\n ";
+        sleep(1);
+    }
+}
+
+void MainMenu::handleForgotPassword() {
+    clearScreen();
+    InputValidator::clearInputBuffer();
+    string email, password;
+    cout << "> Forgot Password <" << endl;
+
+    while (InputValidator::validateStringInput(email, "\nEnter Your Email: ")) {
+        if (authService.findByEmail(email)) {
+            break;
+        } else {
+            cout << "[Error]: Email not found. Please try again.\n";
+            continue;
+        }
+    }
+
+    while (InputValidator::validateStringInput(password,
+                                               "\nEnter New Password: ")) {
+        if (InputValidator::validatePassword(password)) {
+            break;
+        } else {
+            cout << "[Error]: Password must be at least 5 characters. "
+                    "Please try again.\n";
+            continue;
+        }
+    }
+
+    if (authService.resetPassword(password, email)) {
+        if (InputValidator::validateConfirmation(
+                "[Info]: Password reset successful! Would you like to reset "
+                "your PIN as well? (y/n): ")) {
+            handleForgotPin();
+        } else {
+            cout << "\nRedirecting to Main Menu..." << endl;
+            sleep(2);
+        }
+    } else {
+        cout << "[Error]: Password reset failed. Please try again.\n ";
+        sleep(1);
     }
 }
 
@@ -132,10 +200,11 @@ void MainMenu::displayMainMenu() {
         cout << "1. Sign In" << endl;
         cout << "2. Sign Up" << endl;
         cout << "3. List Services" << endl;
-        cout << "4. Exit" << endl;
+        cout << "4. Forgot Password & PIN" << endl;
+        cout << "5. Exit" << endl;
 
         while (!InputValidator::validateIntInput(choice,
-                                                 "\nChoose an option: ", 4)) {
+                                                 "\nChoose an option: ", 5)) {
             break;
         }
         switch (choice) {
@@ -149,6 +218,9 @@ void MainMenu::displayMainMenu() {
             displayProducts();
             break;
         case 4:
+            handleForgotPassword();
+            break;
+        case 5:
             cout << "\nThank you for using J-STORE";
             cout << "\nExiting program..." << endl;
             exit(0);

@@ -1,4 +1,5 @@
 #include "menus/ShoppingMenu.hpp"
+#include "../libs/bcrypt/bcrypt.h"
 #include "services/ShoppingService.hpp"
 #include "services/UserService.hpp"
 #include "string"
@@ -202,6 +203,14 @@ void ShoppingMenu::topUpBalance() {
         if (choice == 4) {
             while (InputValidator::validateIntInput(
                 amount, "\nEnter custom amount (minimum Rp.10.000): ")) {
+                if (amount > 1000000) {
+                    cout << "[Error]: Maximum top up amount is Rp.1.000.000."
+                         << endl;
+                    continue;
+                } else {
+                    break;
+                }
+
                 if (amount >= 10000) {
                     break;
                 } else {
@@ -300,27 +309,40 @@ void ShoppingMenu::updateProfile() {
     InputValidator::clearInputBuffer();
     switch (choice) {
     case 1:
-        while (!InputValidator::validateStringInput(newName, "New Name: ")) {
+        while (!InputValidator::validateStringInput(newName, "\nNew Name: ")) {
             continue;
         }
         user->fullName = newName;
         break;
     case 2:
-        while (!InputValidator::validateStringInput(newEmail, "New Email: ")) {
-            continue;
+        while (InputValidator::validateStringInput(newEmail, "\nNew Email: ")) {
+            if (InputValidator::validateEmail(newEmail)) {
+                user->email = newEmail;
+                break;
+            } else {
+                cout << "[Error]: Invalid email format. Please try again."
+                     << endl;
+                continue;
+            }
         }
-        user->email = newEmail;
         break;
     case 3:
-        while (!InputValidator::validateStringInput(newPin, "New PIN: ")) {
-            continue;
+        while (InputValidator::validateStringInput(newPin, "\nNew PIN: ")) {
+            if (InputValidator::validatePin(newPin)) {
+                user->pin = newPin;
+                break;
+            } else {
+                cout << "[Error]: Invalid PIN format. PIN must be 4 digits. "
+                        "Please try again"
+                     << endl;
+                continue;
+            }
         }
-        user->pin = newPin;
         break;
     case 4:
         while (
             InputValidator::validateStringInput(oldPass, "\nOld Password: ")) {
-            if (oldPass == user->password) {
+            if (bcrypt::validatePassword(oldPass, user->password)) {
                 break;
             } else {
                 cout << "[Error]: Incorrect password. Please try again."
@@ -329,10 +351,17 @@ void ShoppingMenu::updateProfile() {
             }
         }
         while (
-            !InputValidator::validateStringInput(newPass, "New Password: ")) {
-            continue;
+            InputValidator::validateStringInput(newPass, "\nNew Password: ")) {
+            if (InputValidator::validatePassword(newPass)) {
+                user->password = bcrypt::generateHash(newPass);
+                break;
+            } else {
+                cout << "[Error]: Password must be at least 5 characters. "
+                        "Please try again"
+                     << endl;
+                continue;
+            }
         }
-        user->password = newPass;
         break;
     case 5:
         return;

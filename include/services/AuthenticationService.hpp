@@ -27,6 +27,10 @@ class AuthenticationService {
     bool updatePassword(const string &currentPassword,
                         const string &newPasswword);
 
+    bool resetPassword(const string &newPassword, const string &email);
+
+    bool findByEmail(const string &email);
+
     bool updatePin(const string &currentPin, const string &newPin);
 
     shared_ptr<User> getCurrentUser();

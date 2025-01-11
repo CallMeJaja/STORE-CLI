@@ -320,8 +320,8 @@
         "id": 27,
         "name": "YouTube Music Premium",
         "price": 14000,
-        "sold": 0,
-        "stock": 70
+        "sold": 50,
+        "stock": 20
     },
     {
         "categories": [

@@ -26,6 +26,8 @@ class MainMenu {
     void clearScreen();
     void handleSignIn();
     void handleSignUp();
+    void handleForgotPassword();
+    void handleForgotPin();
 
   public:
     MainMenu(AuthenticationService &auth, ShoppingService &shopping,

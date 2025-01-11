@@ -1,4 +1,5 @@
 #include "services/AuthenticationService.hpp"
+#include "bcrypt/bcrypt.h"
 #include "iostream"
 #include "utils/InputValidator.hpp"
 
@@ -15,7 +16,7 @@ bool AuthenticationService::logIn(const string &email, const string &password,
         return false;
     }
 
-    if (password != user->password) {
+    if (!bcrypt::validatePassword(password, user->password)) {
         cout << "[Error]: Incorrect password. Please try again." << endl;
         return false;
     }
@@ -48,10 +49,10 @@ bool AuthenticationService::registerUser(const string &fullName,
     auto users = userRepository.getUsers();
     int newId = users.empty() ? 1 : users.back().id + 1;
 
-    // TODO Implement Hashing Pass
+    string hash = bcrypt::generateHash(password, 10);
 
     try {
-        User newUser(newId, 0, fullName, email, password, pin, 0, true, false);
+        User newUser(newId, 0, fullName, email, hash, pin, 0, true, false);
         userRepository.saveUsers(newUser);
         return true;
     } catch (const std::exception &e) {
@@ -76,6 +77,26 @@ bool AuthenticationService::updatePassword(const string &currentPassword,
 
     getCurrentUser()->password = newPasswword;
     return userRepository.updateUser(*getCurrentUser());
+}
+
+bool AuthenticationService::findByEmail(const string &email) {
+    auto user = userRepository.findByEmail(email);
+    if (!user || user->isAdmin) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+bool AuthenticationService::resetPassword(const string &newPassword,
+                                          const string &email) {
+    auto user = userRepository.findByEmail(email);
+    if (!user) {
+        return false;
+    }
+
+    user->password = bcrypt::generateHash(newPassword, 10);
+    return userRepository.updateUser(*user);
 }
 
 bool AuthenticationService::updatePin(const string &currentPin,
