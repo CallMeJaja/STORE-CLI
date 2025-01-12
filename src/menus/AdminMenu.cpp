@@ -517,6 +517,7 @@ void AdminMenu::viewReport() {
     cout << "Transaction History:\n" << endl;
     for (const auto &transaction : transactions) {
         cout << "Transaction ID\t: " << transaction.id << endl;
+        cout << "Product Name\t: " << transaction.productName << endl;
         cout << "User ID\t\t: " << transaction.userId << endl;
         cout << "Buyer Nume\t: " << transaction.buyerName << endl;
         cout << "Product ID\t: " << transaction.productId << endl;
