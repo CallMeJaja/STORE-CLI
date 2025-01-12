@@ -15,9 +15,21 @@ void UserService::setCurrentUser(int userId) {
 
 void UserService::clearCurrentUser() { currentUser.reset(); }
 
+void UserService::handleInactiveUser() {
+    cout << "[!]: Your account has been deactivated for some "
+            "reason. "
+            "Please contact admin."
+         << endl;
+    clearCurrentUser();
+}
+
 bool UserService::isUserActive(int userId) {
     auto user = userRepository.findById(userId);
-    return user && user->isActive;
+    if (!user || !user->isActive) {
+        handleInactiveUser();
+        return false;
+    }
+    return true;
 }
 
 shared_ptr<User> UserService::findById(int userId) {
@@ -50,7 +62,13 @@ bool UserService::toggleUserStatus(int userId) {
         return false;
 
     user->isActive = !user->isActive;
-    return userRepository.updateUser(*user);
+
+    if (updateUser(*user)) {
+        setCurrentUser(user->id);
+        return true;
+    }
+
+    return false;
 }
 
 bool UserService::updateProfile(int userId, const string &fullName,
@@ -61,6 +79,7 @@ bool UserService::updateProfile(int userId, const string &fullName,
 
     user->fullName = fullName;
     user->email = email;
+    updateCurrentUser(*user);
     return updateUser(*user);
 }
 
@@ -73,6 +92,7 @@ bool UserService::changePassword(int userId, const string &newPassword,
     }
 
     user->password = newPassword;
+    updateCurrentUser(*user);
     return updateUser(*user);
 }
 
@@ -82,16 +102,18 @@ bool UserService::changePin(int userId, const string &newPin) {
         return false;
 
     user->pin = newPin;
+    updateCurrentUser(*user);
     return updateUser(*user);
 }
 
-void UserService::updateCurrentUser(const User &user) {
-    if (currentUser && currentUser->id == user.id) {
-        currentUser = make_shared<User>(user);
+void UserService::updateCurrentUser(const User &updateUser) {
+    if (currentUser && currentUser->id == updateUser.id) {
+        currentUser = make_shared<User>(updateUser);
     }
 }
 
 bool UserService::topUpBalance(int userId, int amount) {
+
     auto user = findById(userId);
     if (!user)
         return false;
@@ -130,3 +152,4 @@ int UserService::getUserTotalTransactions(int userId) {
 int UserService::getTotalTransactions() {
     return transactionRepository.getTransactions().size();
 }
+// FIXME FIX CURRETNUSER

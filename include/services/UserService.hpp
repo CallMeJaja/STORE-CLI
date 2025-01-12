@@ -33,13 +33,14 @@ class UserService {
     int getTotalUsers();
     bool updateUser(User &user);
     bool toggleUserStatus(int userId);
+    void updateCurrentUser(const User &user);
+    void handleInactiveUser();
 
     // Profile Management
     bool updateProfile(int userId, const string &fullName, const string &email);
     bool changePassword(int userId, const string &newPassword,
                         const string &oldPassword);
     bool changePin(int userId, const string &newPin);
-    void updateCurrentUser(const User &user);
 
     // Balance Operation
     bool topUpBalance(int userId, int amount);
@@ -50,9 +51,4 @@ class UserService {
     double getUserTotalSpent(int userId);
     int getUserTotalTransactions(int userId);
     int getTotalTransactions();
-
-    // Validate User email
-    bool validateUserEmail(const string &email) {
-        return !userRepository.findByEmail(email);
-    }
 };

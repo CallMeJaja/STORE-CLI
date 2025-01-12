@@ -8,8 +8,8 @@
         "id": 1,
         "name": "Netflix Premium",
         "price": 15000,
-        "sold": 56,
-        "stock": 44
+        "sold": 76,
+        "stock": 24
     },
     {
         "categories": [
@@ -236,8 +236,8 @@
         "id": 20,
         "name": "Steam Wallet",
         "price": 50000,
-        "sold": 0,
-        "stock": 60
+        "sold": 10,
+        "stock": 50
     },
     {
         "categories": [
@@ -320,8 +320,8 @@
         "id": 27,
         "name": "YouTube Music Premium",
         "price": 14000,
-        "sold": 50,
-        "stock": 20
+        "sold": 65,
+        "stock": 5
     },
     {
         "categories": [
@@ -346,5 +346,16 @@
         "price": 25000,
         "sold": 5,
         "stock": 80
+    },
+    {
+        "categories": [
+            "All Products"
+        ],
+        "description": "TEST",
+        "id": 30,
+        "name": "TESTING",
+        "price": 1000000,
+        "sold": 0,
+        "stock": 100
     }
 ]

@@ -13,6 +13,12 @@ ShoppingMenu::ShoppingMenu(ShoppingService &shopService,
 void ShoppingMenu::display() {
     while (true) {
         clearScreen();
+        if (!userService.isUserActive(userService.getCurrentUser()->id)) {
+            sleep(1);
+            mainMenu->displayMainMenu();
+            return;
+        }
+
         cout << "Hello, " << userService.getCurrentUser()->fullName << "!"
              << endl;
         cout << "> Welcome to J-STORE <" << endl;
@@ -59,6 +65,13 @@ void ShoppingMenu::display() {
 
 void ShoppingMenu::browseCategories() {
     clearScreen();
+
+    if (!userService.isUserActive(userService.getCurrentUser()->id)) {
+        sleep(1);
+        mainMenu->displayMainMenu();
+        return;
+    }
+
     cout << "> Categories List <\n" << endl;
     auto categories = shopService.getCategories();
     if (categories.empty()) {
@@ -185,7 +198,15 @@ void ShoppingMenu::viewProducts(const string &category) {
 void ShoppingMenu::topUpBalance() {
     clearScreen();
     int amount;
-    cout << userService.getCurrentUser()->fullName << endl;
+
+    if (!userService.isUserActive(userService.getCurrentUser()->id)) {
+        sleep(1);
+        mainMenu->displayMainMenu();
+        return;
+    }
+
+    cout << userService.getCurrentUser()->isActive << endl;
+
     cout << "> Top Up Balance <\n" << endl;
     cout << "Current Balance: "
          << FormatHelper::displayCurrency(userService.getCurrentUser()->balance)
@@ -198,8 +219,11 @@ void ShoppingMenu::topUpBalance() {
     cout << "5. Back" << endl;
 
     int choice;
-
     while (InputValidator::validateIntInput(choice, "\nEnter choice: ", 5)) {
+        if (choice == 5) {
+            return;
+        }
+
         if (choice == 4) {
             while (InputValidator::validateIntInput(
                 amount, "\nEnter custom amount (minimum Rp.10.000): ")) {
@@ -260,6 +284,13 @@ void ShoppingMenu::topUpBalance() {
 
 void ShoppingMenu::viewTransactionHistory() {
     clearScreen();
+
+    if (!userService.isUserActive(userService.getCurrentUser()->id)) {
+        sleep(1);
+        mainMenu->displayMainMenu();
+        return;
+    }
+
     cout << "> Transaction History <\n" << endl;
 
     auto transactions =
@@ -287,6 +318,12 @@ void ShoppingMenu::viewTransactionHistory() {
 
 void ShoppingMenu::updateProfile() {
     clearScreen();
+    if (!userService.isUserActive(userService.getCurrentUser()->id)) {
+        sleep(1);
+        mainMenu->displayMainMenu();
+        return;
+    }
+
     string newName, newEmail, newPin, newPass, oldPass;
     auto user = userService.getCurrentUser();
 

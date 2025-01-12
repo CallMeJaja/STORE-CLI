@@ -119,14 +119,11 @@ void MainMenu::handleSignUp() {
     }
 }
 
-void MainMenu::handleForgotPin() {
-    clearScreen();
+void MainMenu::handleForgotPin(const string &email) {
     InputValidator::clearInputBuffer();
-    string email, pin;
-    cout << "> Forgot PIN <" << endl;
-
-    while (InputValidator::validateStringInput(pin, "\nEnter New PIN: ")) {
-        if (InputValidator::validatePin(pin)) {
+    string newPin;
+    while (InputValidator::validateStringInput(newPin, "\nEnter New PIN: ")) {
+        if (InputValidator::validatePin(newPin)) {
             break;
         } else {
             cout << "[Error]: Invalid PIN format. PIN must be 4 digits. Please "
@@ -135,7 +132,7 @@ void MainMenu::handleForgotPin() {
         }
     }
 
-    if (authService.updatePin(pin, email)) {
+    if (authService.resetPin(newPin, email)) {
         cout << "\n[Info]: PIN reset successful!. Please sign in to "
                 "continue";
         sleep(2);
@@ -172,10 +169,10 @@ void MainMenu::handleForgotPassword() {
     }
 
     if (authService.resetPassword(password, email)) {
-        if (InputValidator::validateConfirmation(
-                "[Info]: Password reset successful! Would you like to reset "
-                "your PIN as well? (y/n): ")) {
-            handleForgotPin();
+        cout << "[Info]: Password reset successful!" << endl;
+        if (InputValidator::validateConfirmation("\nWould you like to reset "
+                                                 "your PIN as well? (y/n): ")) {
+            handleForgotPin(email);
         } else {
             cout << "\nRedirecting to Main Menu..." << endl;
             sleep(2);

@@ -27,7 +27,7 @@ class MainMenu {
     void handleSignIn();
     void handleSignUp();
     void handleForgotPassword();
-    void handleForgotPin();
+    void handleForgotPin(const string &email);
 
   public:
     MainMenu(AuthenticationService &auth, ShoppingService &shopping,

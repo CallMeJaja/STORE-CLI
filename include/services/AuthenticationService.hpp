@@ -28,6 +28,7 @@ class AuthenticationService {
                         const string &newPasswword);
 
     bool resetPassword(const string &newPassword, const string &email);
+    bool resetPin(const string &newPin, const string &email);
 
     bool findByEmail(const string &email);
 

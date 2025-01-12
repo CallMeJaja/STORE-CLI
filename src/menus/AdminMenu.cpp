@@ -466,7 +466,7 @@ void AdminMenu::toggleUserAccess() {
     }
 
     for (int i = 0; i < users.size(); i++) {
-        cout << i + 1 << ". " << users[i].fullName << endl;
+        cout << '\n' << i + 1 << ". " << users[i].fullName << endl;
         cout << "   Email: " << users[i].email << endl;
         cout << "   Status: " << (users[i].isActive ? "Active" : "Inactive")
              << endl;

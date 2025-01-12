@@ -99,6 +99,17 @@ bool AuthenticationService::resetPassword(const string &newPassword,
     return userRepository.updateUser(*user);
 }
 
+bool AuthenticationService::resetPin(const string &newPin,
+                                     const string &email) {
+    auto user = userRepository.findByEmail(email);
+    if (!user) {
+        return false;
+    }
+
+    user->pin = newPin;
+    return userRepository.updateUser(*user);
+}
+
 bool AuthenticationService::updatePin(const string &currentPin,
                                       const string &newPin) {
     if (!getCurrentUser() || getCurrentUser()->pin != currentPin ||
