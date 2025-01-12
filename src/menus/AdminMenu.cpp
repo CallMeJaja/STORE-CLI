@@ -107,6 +107,45 @@ void AdminMenu::manageUsers() {
     }
 }
 
+void AdminMenu::manageStores() {
+    while (true) {
+        clearScreen();
+        cout << "> Manage Stores <" << endl;
+        cout << "1. Update Store Name" << endl;
+        cout << "2. Update Owner Name" << endl;
+        cout << "3. Update Description" << endl;
+        cout << "4. Update Phone Number" << endl;
+        cout << "5. View Store Info" << endl;
+        cout << "6. Back" << endl;
+
+        int choice;
+        while (!InputValidator::validateIntInput(choice, "\nEnter choice: ")) {
+            break;
+        }
+
+        switch (choice) {
+            // TODO Store Function
+        case 1:
+            // updateStoreName();
+            return;
+        case 2:
+            // updateOwnerName();
+            return;
+        case 3:
+            // updateDescription();
+            return;
+        case 4:
+            // updatePhoneNumber();
+            return;
+        case 5:
+            // viewStoreInfo();
+            return;
+        case 6:
+            return;
+        }
+    }
+}
+
 void AdminMenu::addProduct() {
     clearScreen();
     InputValidator::clearInputBuffer();
@@ -547,13 +586,14 @@ void AdminMenu::display() {
         cout << "\n1. Manage Products" << endl;
         cout << "2. Manage Categories" << endl;
         cout << "3. Manage Users" << endl;
-        cout << "4. View Reports" << endl;
-        cout << "5. Sign Out" << endl;
+        cout << "4. Manage Stores" << endl;
+        cout << "5. View Reports" << endl;
+        cout << "6. Sign Out" << endl;
 
         int choice;
 
         while (
-            !InputValidator::validateIntInput(choice, "\nEnter choice: ", 5)) {
+            !InputValidator::validateIntInput(choice, "\nEnter choice: ", 6)) {
             break;
         }
 
@@ -571,6 +611,9 @@ void AdminMenu::display() {
             viewReport();
             break;
         case 5:
+            // manageStores(); TODO Manage User
+            break;
+        case 6:
             cout << "\nSigning out from admin panel..." << endl;
             adminService.clearCurrentUser();
             sleep(1);

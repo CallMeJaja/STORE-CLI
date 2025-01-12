@@ -17,6 +17,7 @@ class AdminMenu : public MenuBase {
     void manageProducts();
     void manageCategories();
     void manageUsers();
+    void manageStores();
 
     // Product Operation
     void addProduct();
@@ -32,6 +33,13 @@ class AdminMenu : public MenuBase {
     void viewUsers();
     void toggleUserAccess();
     void viewReport();
+
+    // Store Operation
+    void upateStoreName();
+    void updateOwnerName();
+    void updateDescription();
+    void updatePhoneNumber();
+    void viewStoreInfo();
 
   public:
     AdminMenu(AdminService &adminService, MainMenu *mainMenu);
