@@ -1,3 +1,3 @@
 @echo off
 cls
-start bin\TA.exe
+start .\bin\TA.exe

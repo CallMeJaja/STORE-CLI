@@ -63,6 +63,12 @@ cmake --build .
 cd .. && .\bin\TA.exe
 ```
 
+or
+
+```sh
+cd .. && .\run.bat
+```
+
 ## Data Storage
 
 Currently uses JSON files for data persistence. This will be replaced with a database in a future version.
