@@ -152,4 +152,3 @@ int UserService::getUserTotalTransactions(int userId) {
 int UserService::getTotalTransactions() {
     return transactionRepository.getTransactions().size();
 }
-// FIXME FIX CURRETNUSER
