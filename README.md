@@ -1,6 +1,6 @@
-# J-STORE: Your One-Stop E-commerce Solution
+# J-STORE: Your Command-Line E-commerce Application
 
-J-STORE is a command-line e-commerce application built with C++. It provides a platform for users to browse products, manage their shopping carts, and complete purchases. Administrators can manage products, categories, and user accounts, as well as access various reports for business insights.
+J-STORE is a command-line e-commerce application built with C++ for managing users and their transactions. It currently uses JSON files for data persistence. Future development will include product and category management and expanded administrator capabilities.
 
 ## Features
 
@@ -8,11 +8,10 @@ J-STORE is a command-line e-commerce application built with C++. It provides a p
 
 - Browse products by category.
 - View product details (name, price, description, stock).
-- Manage shopping cart.
 - Securely purchase products.
 - Top-up account balance.
 - View transaction history.
-- Edit profile (planned).
+- Edit profile.
 
 **For Administrators:**
 
@@ -20,8 +19,6 @@ J-STORE is a command-line e-commerce application built with C++. It provides a p
 - Product management (add, update, delete, restock).
 - Category management (add, update, delete).
 - User management (view, toggle access).
-- Generate reports (transactions, revenue, user spending).
-- Low stock alerts.
 
 ## Architecture
 
@@ -41,29 +38,41 @@ J-STORE follows a multi-tier architecture, separating concerns into different co
 git clone https://github.com/CallMeJaja/TA && cd TA
 ```
 
-3.  Compile the code:
+2.  Create a build directory:
 
 ```sh
-g++ src/main.cpp src/menus/*.cpp src/services/*.cpp
+mkdir build
+cd build
 ```
 
-4.  Run the executable:
+3.  Generate the build files:
 
 ```sh
-.\a.exe
+cmake .. -G "MinGW Makefiles"
 ```
 
-## Usage
+4. Compile the project:
 
-Upon launching the application, you'll be presented with the main menu. Choose to sign in, sign up, or view services. Follow the on-screen prompts to navigate through the application.
+```sh
+cmake --build .
+```
+
+5. Run the executable:
+
+```sh
+cd .. && .\bin\TA.exe
+```
+
+## Data Storage
+
+Currently uses JSON files for data persistence. This will be replaced with a database in a future version.
 
 ## Future Development
 
-- Implement a database for more robust data management.
-- Enhanced search and filtering capabilities.
-- Order management features.
-- Improved reporting and analytics.
-- Graphical User Interface (GUI).
+- **Implement a Database:** Migrate data storage to a relational database (e.g., PostgreSQL, MySQL) or NoSQL database (e.g., MongoDB).
+- **Expand Functionality:** Add administrator features, product browsing, shopping cart functionality, and order processing.
+- **Error Handling:** Enhance error handling and reporting for greater robustness.
+- **Testing:** Implement unit and integration tests.
 
 ## Contributing
 
@@ -75,4 +84,8 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions or suggestions, please open an issue or contact the project maintainer.
+For any questions or suggestions, please open an issue or contact the project maintainer:
+
+rezaaasriano@gmail.com
+
+Or contact me directly on WhatsApp: [https://s.id/CallMeJajaWA]

@@ -198,10 +198,11 @@ void MainMenu::displayMainMenu() {
         cout << "2. Sign Up" << endl;
         cout << "3. List Services" << endl;
         cout << "4. Forgot Password & PIN" << endl;
-        cout << "5. Exit" << endl;
+        cout << "5. Contact Us" << endl;
+        cout << "6. Exit" << endl;
 
         while (!InputValidator::validateIntInput(choice,
-                                                 "\nChoose an option: ", 5)) {
+                                                 "\nChoose an option: ", 6)) {
             break;
         }
         switch (choice) {
@@ -218,6 +219,9 @@ void MainMenu::displayMainMenu() {
             handleForgotPassword();
             break;
         case 5:
+            system("start https://s.id/CallMeJajaWA");
+            break;
+        case 6:
             cout << "\nThank you for using J-STORE";
             cout << "\nExiting program..." << endl;
             exit(0);
