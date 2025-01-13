@@ -1,18 +1,14 @@
 #include "menus/MainMenu.hpp"
 #include "iostream"
 #include "menus/AdminMenu.hpp"
-#include "services/AdminService.hpp"
-#include "services/AuthenticationService.hpp"
-#include "services/ShoppingService.hpp"
-#include "services/UserService.hpp"
 #include "utils/InputValidator.hpp"
 
 using namespace std;
 
 MainMenu::MainMenu(AuthenticationService &auth, ShoppingService &shopping,
-                   UserService &user, AdminService &admin)
+                   UserService &user, AdminService &admin, StoreService &store)
     : authService(auth), shoppingService(shopping), userService(user),
-      adminService(admin) {}
+      adminService(admin), storeService(store) {}
 
 void MainMenu::clearScreen() { system("cls"); }
 
@@ -190,9 +186,12 @@ void MainMenu::displayProducts() {
 
 void MainMenu::displayMainMenu() {
     int choice = 0;
+    stringstream ss;
+
     while (true) {
         clearScreen();
-        cout << "> Welcome to J-STORE <" << endl;
+        cout << "> Welcome to " << viewStoreInfo()[0].getStoreName() << " <"
+             << endl;
         cout << "Your trusted platform for all you needs!\n" << endl;
         cout << "1. Sign In" << endl;
         cout << "2. Sign Up" << endl;
@@ -219,12 +218,22 @@ void MainMenu::displayMainMenu() {
             handleForgotPassword();
             break;
         case 5:
-            system("start https://s.id/CallMeJajaWA");
+            ss << "start https://wa.me/" + viewStoreInfo()[0].getPhoneNumber() +
+                      "?text=Hello%20" + viewStoreInfo()[0].getOwnerName() +
+                      "!";
+            system(ss.str().c_str());
             break;
         case 6:
             cout << "\nThank you for using J-STORE";
             cout << "\nExiting program..." << endl;
+            sleep(2);
             exit(0);
         }
     }
+}
+
+vector<Store> MainMenu::viewStoreInfo() { return storeService.viewStoreInfo(); }
+
+bool MainMenu::updateStore(Store &store) {
+    return storeService.updateStore(store);
 }

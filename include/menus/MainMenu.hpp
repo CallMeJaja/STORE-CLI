@@ -6,6 +6,7 @@
 #include "services/AdminService.hpp"
 #include "services/AuthenticationService.hpp"
 #include "services/ShoppingService.hpp"
+#include "services/StoreService.hpp"
 #include "services/UserService.hpp"
 #include "string"
 #include "unistd.h"
@@ -21,6 +22,8 @@ class MainMenu {
     ShoppingService &shoppingService;
     UserService &userService;
     AdminService &adminService;
+    StoreService &storeService;
+
     string fullName, email, password, confirmPassword, pin;
 
     void clearScreen();
@@ -31,8 +34,12 @@ class MainMenu {
 
   public:
     MainMenu(AuthenticationService &auth, ShoppingService &shopping,
-             UserService &user, AdminService &admin);
+             UserService &user, AdminService &admin, StoreService &store);
 
     void displayMainMenu();
     void displayProducts();
+
+    // Store Management
+    vector<Store> viewStoreInfo();
+    bool updateStore(Store &store);
 };

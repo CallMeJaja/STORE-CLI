@@ -13,9 +13,6 @@ bool ProductService::addProduct(const string &name, int price,
     int newId = products.empty() ? 1 : products.back().id + 1;
 
     Product newProduct(newId, name, price, description, categories, stock);
-    // for (const auto &category : categories) {
-    //     newProduct.addCategory(category);
-    // }
     return productRepository.saveProduct(newProduct);
 }
 

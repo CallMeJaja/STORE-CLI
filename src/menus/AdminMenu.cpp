@@ -126,7 +126,7 @@ void AdminMenu::manageStores() {
         switch (choice) {
             // TODO Store Function
         case 1:
-            // updateStoreName();
+            updateStoreName();
             return;
         case 2:
             // updateOwnerName();
@@ -138,7 +138,7 @@ void AdminMenu::manageStores() {
             // updatePhoneNumber();
             return;
         case 5:
-            // viewStoreInfo();
+            viewStoreInfo();
             return;
         case 6:
             return;
@@ -579,10 +579,98 @@ void AdminMenu::viewReport() {
     pause();
 }
 
+void AdminMenu::updateStoreName() {
+    clearScreen();
+    auto store = mainMenu->viewStoreInfo()[0];
+    cout << "> Update Store Name <" << endl;
+    string newName;
+    while (InputValidator::validateStringInput(
+        newName,
+        "\nEnter New Name (current: " + store.getStoreName() + "): ")) {
+        break;
+    }
+    store.setStoreName(newName);
+    if (mainMenu->updateStore(store)) {
+        cout << "Store name updated successfully!" << endl;
+    } else {
+        cout << "Failed to update store name" << endl;
+    }
+    pause();
+}
+
+void AdminMenu::updateOwnerName() {
+    clearScreen();
+    auto store = mainMenu->viewStoreInfo()[0];
+    cout << "> Update Owner Name <" << endl;
+    string newOwnerName;
+    while (InputValidator::validateStringInput(
+        newOwnerName,
+        "\nEnter New Owner Name (current: " + store.getOwnerName() + "): ")) {
+        break;
+    }
+    store.setOwnerName(newOwnerName);
+    if (mainMenu->updateStore(store)) {
+        cout << "Owner name updated successfully!" << endl;
+    } else {
+        cout << "Failed to update owner name" << endl;
+    }
+    pause();
+}
+
+void AdminMenu::updateDescription() {
+    clearScreen();
+    auto store = mainMenu->viewStoreInfo()[0];
+    cout << "> Update Description <" << endl;
+    string newDescription;
+    while (InputValidator::validateStringInput(
+        newDescription, "\nEnter New Description (current: " +
+                            store.getDescription() + "): ")) {
+        break;
+    }
+    store.setDescription(newDescription);
+    if (mainMenu->updateStore(store)) {
+        cout << "Description updated successfully!" << endl;
+    } else {
+        cout << "Failed to update description" << endl;
+    }
+    pause();
+}
+
+void AdminMenu::updatePhoneNumber() {
+    clearScreen();
+    auto store = mainMenu->viewStoreInfo()[0];
+    cout << "> Update Phone Number <" << endl;
+    string newPhoneNumber;
+    while (InputValidator::validateStringInput(
+        newPhoneNumber, "\nEnter New Phone Number (current: " +
+                            store.getPhoneNumber() + "): ")) {
+        break;
+    }
+    store.setPhoneNumber(newPhoneNumber);
+    if (mainMenu->updateStore(store)) {
+        cout << "Phone number updated successfully!" << endl;
+    } else {
+        cout << "Failed to update phone number" << endl;
+    }
+    pause();
+}
+
+void AdminMenu::viewStoreInfo() {
+    clearScreen();
+    auto store = mainMenu->viewStoreInfo()[0];
+    cout << "> Store Information <\n" << endl;
+    cout << "Store Name\t: " << store.getStoreName() << endl;
+    cout << "Owner Name\t: " << store.getOwnerName() << endl;
+    cout << "Description\t: " << store.getDescription() << endl;
+    cout << "Phone Number\t: " << store.getPhoneNumber() << endl << endl;
+    system("pause");
+}
+
 void AdminMenu::display() {
     while (true) {
+        auto store = mainMenu->viewStoreInfo()[0];
         clearScreen();
-        cout << "> Admin Panel - J-STORE <" << endl;
+        cout << "> Admin Panel - " << store.getStoreName() << " <" << endl;
         cout << "\n1. Manage Products" << endl;
         cout << "2. Manage Categories" << endl;
         cout << "3. Manage Users" << endl;
@@ -608,10 +696,10 @@ void AdminMenu::display() {
             manageUsers();
             break;
         case 4:
-            viewReport();
+            manageStores();
             break;
         case 5:
-            // manageStores(); TODO Manage User
+            viewReport();
             break;
         case 6:
             cout << "\nSigning out from admin panel..." << endl;

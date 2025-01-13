@@ -21,7 +21,8 @@ void ShoppingMenu::display() {
 
         cout << "Hello, " << userService.getCurrentUser()->fullName << "!"
              << endl;
-        cout << "> Welcome to J-STORE <" << endl;
+        cout << "> Welcome to " << mainMenu->viewStoreInfo()[0].getStoreName()
+             << " <" << endl;
         cout << "\nTotal User Active: " << userService.getActiveUsers().size()
              << " users" << endl;
         cout << "Total Transactions Completed: "
@@ -183,6 +184,9 @@ void ShoppingMenu::viewProducts(const string &category) {
         } else if (shopService.purchaseProduct(userService.getCurrentUser()->id,
                                                products[choice - 1].id,
                                                quantity)) {
+            auto user = userService.getCurrentUser();
+            user->balance -= totalPrice;
+            userService.updateCurrentUser(*user);
             cout << "\nPurchase successful!" << endl;
             pause();
         } else {
@@ -204,8 +208,6 @@ void ShoppingMenu::topUpBalance() {
         mainMenu->displayMainMenu();
         return;
     }
-
-    cout << userService.getCurrentUser()->isActive << endl;
 
     cout << "> Top Up Balance <\n" << endl;
     cout << "Current Balance: "

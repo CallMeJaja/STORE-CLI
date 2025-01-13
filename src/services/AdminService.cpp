@@ -82,6 +82,4 @@ vector<User> AdminService::getActiveUsers() {
     return userService.getActiveUsers();
 }
 
-// Store Management
-
 void AdminService::clearCurrentUser() { return userService.clearCurrentUser(); }

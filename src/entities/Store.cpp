@@ -1,7 +1,7 @@
 #include "entities/Store.hpp"
 
 Store::Store(string storeName, string ownerName, string description,
-             int phoneNumber)
+             string phoneNumber)
     : storeName(storeName), ownerName(ownerName), description(description),
       phoneNumber(phoneNumber) {}
 
@@ -13,7 +13,9 @@ void Store::setDescription(const string &newDescription) {
     description = newDescription;
 }
 
-void Store::setPhoneNumber(int newPhoneNumber) { phoneNumber = newPhoneNumber; }
+void Store::setPhoneNumber(string newPhoneNumber) {
+    phoneNumber = newPhoneNumber;
+}
 
 string Store::getStoreName() { return storeName; }
 
@@ -21,4 +23,4 @@ string Store::getOwnerName() { return ownerName; }
 
 string Store::getDescription() { return description; }
 
-int Store::getPhoneNumber() { return phoneNumber; }
+string Store::getPhoneNumber() { return phoneNumber; }

@@ -35,7 +35,7 @@ class AdminMenu : public MenuBase {
     void viewReport();
 
     // Store Operation
-    void upateStoreName();
+    void updateStoreName();
     void updateOwnerName();
     void updateDescription();
     void updatePhoneNumber();

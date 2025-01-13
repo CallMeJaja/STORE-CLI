@@ -8,19 +8,19 @@ class Store {
     string storeName;
     string ownerName;
     string description;
-    int phoneNumber;
+    string phoneNumber;
 
   public:
     Store(string storeName, string ownerName, string description,
-          int phoneNumber);
+          string phoneNumber);
 
     void setStoreName(const string &newName);
     void setOwnerName(const string &newName);
     void setDescription(const string &newDescription);
-    void setPhoneNumber(int newPhoneNumber);
+    void setPhoneNumber(string newPhoneNumber);
 
     string getStoreName();
     string getOwnerName();
     string getDescription();
-    int getPhoneNumber();
+    string getPhoneNumber();
 };

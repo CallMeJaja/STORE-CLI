@@ -8,8 +8,8 @@
         "id": 1,
         "name": "Netflix Premium",
         "price": 15000,
-        "sold": 0,
-        "stock": 100
+        "sold": 5,
+        "stock": 95
     },
     {
         "categories": [
@@ -20,8 +20,8 @@
         "id": 2,
         "name": "Spotify Premium",
         "price": 12000,
-        "sold": 0,
-        "stock": 100
+        "sold": 1,
+        "stock": 99
     },
     {
         "categories": [
@@ -80,8 +80,8 @@
         "id": 7,
         "name": "YouTube Premium",
         "price": 16000,
-        "sold": 0,
-        "stock": 100
+        "sold": 1,
+        "stock": 99
     },
     {
         "categories": [

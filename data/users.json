@@ -15,14 +15,14 @@
         "email": "test1@gmail.com",
         "fullName": "Testing 1",
         "id": 2,
-        "isActive": false,
+        "isActive": true,
         "isAdmin": false,
         "password": "$2b$10$tNl0iOCc5pkVYfXSvvoNjOdvLaysGCBDLstIVqfq00Z0S5k4pXnwu",
         "pin": "1111",
         "totalTransaction": 1
     },
     {
-        "balance": 350000,
+        "balance": 657000,
         "email": "test2@gmail.com",
         "fullName": "Testing 2",
         "id": 3,
@@ -30,7 +30,7 @@
         "isAdmin": false,
         "password": "$2b$10$6K/2fooIbaUPIbeTbR8PLenXaR9NWR0zAdR73a5cMxhdpUozpV3kO",
         "pin": "2222",
-        "totalTransaction": 3
+        "totalTransaction": 10
     },
     {
         "balance": 150000,

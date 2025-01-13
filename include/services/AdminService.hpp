@@ -1,6 +1,7 @@
 #pragma once
 #include "CategoryService.hpp"
 #include "ProductService.hpp"
+#include "StoreService.hpp"
 #include "TransactionService.hpp"
 #include "UserService.hpp"
 #include "map"
@@ -46,7 +47,4 @@ class AdminService {
     vector<Product> getAllProductsByCategory(const string &category);
     vector<User> getActiveUsers();
     void clearCurrentUser();
-
-    // Store Management
-    // TODO Implement Update Store
 };
