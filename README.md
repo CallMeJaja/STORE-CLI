@@ -19,6 +19,7 @@ J-STORE is a command-line e-commerce application built with C++ for managing use
 - Product management (add, update, delete, restock).
 - Category management (add, update, delete).
 - User management (view, toggle access).
+- Store management (name, owner name, description, phone number, view)
 
 ## Architecture
 
