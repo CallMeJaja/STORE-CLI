@@ -1,6 +1,6 @@
-# J-STORE: Your Command-Line E-commerce Application
+# STORE-CLI: Your Command-Line E-Commerce Application
 
-J-STORE is a command-line e-commerce application built with C++ for managing users and their transactions. It currently uses JSON files for data persistence. Future development will include product and category management and expanded administrator capabilities.
+STORE-CLI is a command-line e-commerce application built with C++ for managing users and their transactions. It currently uses JSON files for data persistence. Future development will include product and category management and expanded administrator capabilities.
 
 ## Features
 
@@ -23,7 +23,7 @@ J-STORE is a command-line e-commerce application built with C++ for managing use
 
 ## Architecture
 
-J-STORE follows a multi-tier architecture, separating concerns into different components:
+STORE-CLI follows a multi-tier architecture, separating concerns into different components:
 
 - **Entities:** Represent core data structures like `Product`, `Category`, `User`, and `Transaction`.
 - **Repositories:** Handle data persistence using JSON files. A `BaseRepository` provides common functionality.
@@ -36,7 +36,7 @@ J-STORE follows a multi-tier architecture, separating concerns into different co
 1.  Clone the repository:
 
 ```sh
-git clone https://github.com/CallMeJaja/TA && cd TA
+git clone https://github.com/CallMeJaja/STORE-CLI && cd STORE-CLI
 ```
 
 2.  Create a build directory:
@@ -61,7 +61,7 @@ cmake --build .
 5. Run the executable:
 
 ```sh
-cd .. && .\bin\TA.exe
+cd .. && .\bin\store-cli.exe
 ```
 
 or
