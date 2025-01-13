@@ -76,6 +76,7 @@ Currently uses JSON files for data persistence. This will be replaced with a dat
 
 ## Future Development
 
+- **Implement Session Hadnling:** Add a secure session management system for persistent login and user-specific states.
 - **Implement a Database:** Migrate data storage to a relational database (e.g., PostgreSQL, MySQL) or NoSQL database (e.g., MongoDB).
 - **Expand Functionality:** Add administrator features, product browsing, shopping cart functionality, and order processing.
 - **Error Handling:** Enhance error handling and reporting for greater robustness.
