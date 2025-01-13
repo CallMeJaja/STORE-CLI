@@ -124,18 +124,17 @@ void AdminMenu::manageStores() {
         }
 
         switch (choice) {
-            // TODO Store Function
         case 1:
             updateStoreName();
             return;
         case 2:
-            // updateOwnerName();
+            updateOwnerName();
             return;
         case 3:
-            // updateDescription();
+            updateDescription();
             return;
         case 4:
-            // updatePhoneNumber();
+            updatePhoneNumber();
             return;
         case 5:
             viewStoreInfo();
