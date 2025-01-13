@@ -2,7 +2,7 @@
 
 # STORE-CLI: Your Command-Line E-Commerce Application
 
-STORE-CLI is a command-line e-commerce application built with C++ for managing users and their transactions. It currently uses JSON files for data persistence. Future development will include product and category management and expanded administrator capabilities.
+STORE-CLI is a command-line application built with C++ that provides a virtual store management system. It utilizes JSON files for data storage, enabling seamless handling of products, categories, users, and transactions. Designed with a modular architecture, the project separates business logic, data access, and user interface for better maintainability. STORE-CLI is actively being developed to include advanced management features, performance optimization, and enhanced security, making it a straightforward yet powerful solution for e-commerce in a terminal-based environment.
 
 ## Features
 
