@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/github/CallMeJaja/STORE-CLI.svg)](https://wakatime.com/badge/github/CallMeJaja/STORE-CLI)
+
 # STORE-CLI: Your Command-Line E-Commerce Application
 
 STORE-CLI is a command-line e-commerce application built with C++ for managing users and their transactions. It currently uses JSON files for data persistence. Future development will include product and category management and expanded administrator capabilities.
