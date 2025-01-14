@@ -8,8 +8,8 @@
         "id": 1,
         "name": "Netflix Premium",
         "price": 15000,
-        "sold": 5,
-        "stock": 95
+        "sold": 6,
+        "stock": 94
     },
     {
         "categories": [
@@ -592,11 +592,23 @@
             "Books",
             "All Products"
         ],
-        "description": "Comics and graphic novels subscription",
+        "description": "Comic and graphic novels subscription",
         "id": 50,
         "name": "Marvel Unlimited",
-        "price": 35000,
+        "price": 40000,
         "sold": 10,
-        "stock": 90
+        "stock": 100
+    },
+    {
+        "categories": [
+            "All Products",
+            "Books"
+        ],
+        "description": "test",
+        "id": 51,
+        "name": "TESTING 22",
+        "price": 20000,
+        "sold": 10,
+        "stock": 110
     }
 ]

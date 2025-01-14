@@ -262,7 +262,7 @@ void AdminMenu::updateProduct() {
                              FormatHelper::displayCurrency(product.price) +
                              "): ") ||
            !InputValidator::validateIntInput(
-               stockNew, "\nEnter New Stock (current: " +
+               stockNew, "\nEnter Stock Add (current: " +
                              to_string(product.stock) + "): ")) {
         return;
     }
@@ -270,7 +270,7 @@ void AdminMenu::updateProduct() {
     product.name = name;
     product.description = description;
     product.price = priceNew;
-    product.stock = stockNew;
+    product.stock = stockNew + product.stock;
 
     if (adminService.updateProduct(product.id, product.name, product.price,
                                    product.description, product.stock)) {

@@ -22,15 +22,15 @@
         "totalTransaction": 1
     },
     {
-        "balance": 657000,
+        "balance": 542000,
         "email": "test2@gmail.com",
-        "fullName": "Testing 2",
+        "fullName": "Test 2",
         "id": 3,
-        "isActive": true,
+        "isActive": false,
         "isAdmin": false,
         "password": "$2b$10$6K/2fooIbaUPIbeTbR8PLenXaR9NWR0zAdR73a5cMxhdpUozpV3kO",
         "pin": "2222",
-        "totalTransaction": 10
+        "totalTransaction": 11
     },
     {
         "balance": 150000,
@@ -42,5 +42,16 @@
         "password": "$2b$10$KVeacFzOlfMH0CoEBs3Tu.462iEw48n.qcDY4E8HlWBJUxBenAMM6",
         "pin": "3333",
         "totalTransaction": 2
+    },
+    {
+        "balance": 0,
+        "email": "test4@gmail.com",
+        "fullName": "Testing 4",
+        "id": 5,
+        "isActive": true,
+        "isAdmin": false,
+        "password": "$2b$10$A0YAzjSY7/l7/5rZrYkyD.2Q9VgEb.Mq99bZaYK3fbHScvUA8487S",
+        "pin": "4444",
+        "totalTransaction": 0
     }
 ]

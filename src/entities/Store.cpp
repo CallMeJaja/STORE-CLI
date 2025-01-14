@@ -13,7 +13,7 @@ void Store::setDescription(const string &newDescription) {
     description = newDescription;
 }
 
-void Store::setPhoneNumber(string newPhoneNumber) {
+void Store::setPhoneNumber(string &newPhoneNumber) {
     phoneNumber = newPhoneNumber;
 }
 

@@ -2,6 +2,7 @@
 #include "../libs/bcrypt/bcrypt.h"
 #include "services/ShoppingService.hpp"
 #include "services/UserService.hpp"
+#include "sstream"
 #include "string"
 #include "utils/FormatHelper.hpp"
 #include "utils/InputValidator.hpp"
@@ -101,6 +102,7 @@ void ShoppingMenu::browseCategories() {
 
 void ShoppingMenu::viewProducts(const string &category) {
     clearScreen();
+
     // TODO Improve list product
     cout << "> List Products in " << category << " <" << endl;
 
@@ -187,6 +189,9 @@ void ShoppingMenu::viewProducts(const string &category) {
             auto user = userService.getCurrentUser();
             user->balance -= totalPrice;
             userService.updateCurrentUser(*user);
+
+            // TODO Implement Message to Owner Result Order
+
             cout << "\nPurchase successful!" << endl;
             pause();
         } else {

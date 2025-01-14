@@ -17,7 +17,7 @@ class Store {
     void setStoreName(const string &newName);
     void setOwnerName(const string &newName);
     void setDescription(const string &newDescription);
-    void setPhoneNumber(string newPhoneNumber);
+    void setPhoneNumber(string &newPhoneNumber);
 
     string getStoreName();
     string getOwnerName();
